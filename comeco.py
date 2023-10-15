@@ -5,11 +5,10 @@ import sqlite3
 # Função para criar a tabela no banco de dados
 def criar_tabela():
     comando = '''
-    CREATE TABLE IF NOT EXISTS clientes (
-        codigo INTEGER PRIMARY KEY,
-        nome TEXT,
-        telefone TEXT
-    )
+    CREATE TABLE IF NOT EXISTS clientes
+    (codigo INTEGER PRIMARY KEY,
+    nome TEXT,
+    telefone TEXT)
     '''
     cursor.execute(comando)
     conexao.commit()
@@ -48,6 +47,7 @@ class Funcs():
         codigo_entry.delete(0, END)
         nome_entry.delete(0, END)
         telefone_entry.delete(0, END)
+        
 
 class Application(Funcs):
     def __init__(self):  # função para abrir a janela
@@ -69,10 +69,10 @@ class Application(Funcs):
     def frames_da_tela(self):
         self.frame_1 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
         # 3 formas de interação, os widgets. place, pack e grid
-        self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.46)
+        self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.97, relheight=0.48)
 
         self.frame_2 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
-        self.frame_2.place(relx=0.02, rely=0.49, relwidth=0.96, relheight=0.46)
+        self.frame_2.place(relx=0.02, rely=0.49, relwidth=0.97, relheight=0.48)
 
     def widgets_frame1(self):
         ###Botão Limpar
