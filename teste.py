@@ -26,7 +26,18 @@ class Funcs():
                     )
                     self.conn.commit(); print("Banco de Dados criado")
                     self.desconecta_bd()
+          def add_cliente(self):
+                    self.codigo = self.codigo_entry.get()
+                    self.nome = self.nome_entry.get()
+                    self.telefone = self.telefone_entry.get()
+                    self.conecta_bd()
                     
+                    
+                    self.cursor.execute("""
+                                        INSERT INTO clientes (nome_cliente, telefone) VALUES (?,?,?)
+                                        """, (self.nome, self.telefone))
+                    self.conn.commit()
+                    self.desconecta_bd()
 
 class Application(Funcs):
           def __init__(self): #função para abrir a janela
