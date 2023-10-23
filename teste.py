@@ -11,10 +11,10 @@ class Funcs():
                     self.telefone_entry.delete(0, END)
           def conecta_bd(self):
                     self.conn = sqlite3.connect("clientes.bd")
-                    self.cursor = self.conn.cursor(); print("Conectando ao banco de Dados") 
+                    self.cursor = self.conn.cursor(); print("Conectando ao banco de Dados\n") 
           def desconecta_bd(self):
                     self.conn.close()
-          def monta_tabelas(self):
+          def monta_tabelas(self):  
                     self.conecta_bd()
                     ###Criação da Tabela
                     self.cursor.execute(
@@ -24,20 +24,55 @@ class Funcs():
                                         telefone INTEGER(20) NOT NULL
                                         );"""
                     )
-                    self.conn.commit(); print("Banco de Dados criado")
+                    self.conn.commit(); print("Banco de Dados criado\n")
                     self.desconecta_bd()
-          def add_cliente(self):
+          def variaveis(self): ##Evitar de ficar digitando toda hora as mesmas variaveis
                     self.codigo = self.codigo_entry.get()
                     self.nome = self.nome_entry.get()
-                    self.telefone = self.telefone_entry.get()
+                    self.telefone = self.telefone_entry.get()         
+          def add_cliente(self):
+                    self.variaveis()
                     self.conecta_bd()
-                    
-                    
                     self.cursor.execute("""
-                                        INSERT INTO clientes (nome_cliente, telefone) VALUES (?,?,?)
+                                        INSERT INTO clientes (nome_cliente, telefone) VALUES (?,?)
                                         """, (self.nome, self.telefone))
-                    self.conn.commit()
+                    self.conn.commit(); print("Adicionando Cliente\n")
                     self.desconecta_bd()
+                    self.select_lista()
+                    self.limpa_tela()
+          def select_lista(self):       
+                    self.lista_cliente.delete(*self.lista_cliente.get_children())
+                    self.conecta_bd()
+                    lista = self.cursor.execute("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC; """)
+                    for i in lista:
+                              self.lista_cliente.insert("", END, values=i)
+                    self.desconecta_bd()
+          def double_click(self, event): ##Identificar que irá ocorrer um evento ao dar um duplo click na linha selecionada
+                    self.limpa_tela()
+                    self.lista_cliente.selection()
+                    
+                    for n in self.lista_cliente.selection():
+                              col1, col2, col3 = self.lista_cliente.item(n,'values')
+                              self.codigo_entry.insert(END, col1)
+                              self.nome_entry.insert(END, col2)
+                              self.telefone_entry.insert(END, col3)                           
+          def deleta_cliente(self):
+                    self.variaveis()
+                    self.conecta_bd()
+                    self.cursor.execute("""DELETE FROM clientes WHERE cod= ?""", (self.codigo))
+                    self.conn.commit(); print("Apagando cliente\n")
+                    self.desconecta_bd()
+                    self.limpa_tela()
+                    self.select_lista()
+          def alterar_cliente(self):
+                    self.variaveis()
+                    self.conecta_bd()
+                    self.cursor.execute("""UPDATE clientes SET nome_cliente = ?, telefone=? WHERE cod = ?""", (self.nome, self.telefone, self.codigo))
+                    self.conn.commit(); print("Alterando Cliente")
+                    
+                    self.desconecta_bd()
+                    self.select_lista()
+                    self.limpa_tela()
 
 class Application(Funcs):
           def __init__(self): #função para abrir a janela
@@ -47,6 +82,7 @@ class Application(Funcs):
            self.widgtes_frame1() #chamar os botões
            self.tabela()
            self.monta_tabelas()
+           self.select_lista()
            root.mainloop() #criar um loop para abrir a janela
           def tela(self): #função para configurar a tela
                     self.root.title("Cadastro de Clientes" ) #Texto da barra superior
@@ -72,14 +108,14 @@ class Application(Funcs):
                     self.bt_buscar.place(relx=0.3, rely=0.1, relwidth= 0.1, relheight=0.15)
                     
                     ###Botão Novo
-                    self.bt_novo = Button(self.frame_1, text="Novo")
+                    self.bt_novo = Button(self.frame_1, text="Novo", command=self.add_cliente)
                     self.bt_novo.place(relx=0.65, rely=0.1, relwidth= 0.1, relheight=0.15)
                     ###Botão Alterar
-                    self.bt_alterar = Button(self.frame_1, text="Alterar")
+                    self.bt_alterar = Button(self.frame_1, text="Alterar", command=self.alterar_cliente)
                     self.bt_alterar.place(relx=0.75, rely=0.1, relwidth=0.1, relheight=0.15)
                     
                     ###Botão Apagar
-                    self.bt_apagar = Button(self.frame_1, text="Apagar")
+                    self.bt_apagar = Button(self.frame_1, text="Apagar", command=self.deleta_cliente)
                     self.bt_apagar.place(relx=0.85, rely=0.1, relwidth=0.1, relheight=0.15)
                     
                     ###Label e entrada dos códigos
@@ -119,6 +155,12 @@ class Application(Funcs):
                     self.scroll_lista = Scrollbar(self.frame_2, orient= 'vertical') #Barra de rolagen da lista
                     self.lista_cliente.configure(yscroll=self.scroll_lista.set) ##A barra pertence a lista
                     self.scroll_lista.place(relx=0.95, rely=0.1, relwidth=0.04, relheight=0.85)
+                    self.lista_cliente.bind("<Double-1>", self.double_click)
+          def Menus(self):
+                    menubar = Menu(self.root)
+                    self.root.config(menu=menubar)
+                    filemenu= Menu(menubar)
+                    filemenu2= Menu(menubar)
            
                     
 Application() # Cria uma instância da classe Application, o que inicia a aplicação GUI
