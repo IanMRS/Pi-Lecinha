@@ -163,4 +163,4 @@ class Application(Funcs):
                     filemenu2= Menu(menubar)
            
                     
-Application() # Cria uma instância da classe Application, o que inicia a aplicação GUI
+Application() # Cria uma instância da classe Application, o que inicia a aplicação TKINTER
