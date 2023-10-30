@@ -17,7 +17,7 @@ def create_origem(nome, taxa):
 
 # Read
 def read_origem():
-    query = "SELECT id, nome, taxa FROM origem"
+    query = "SELECT * FROM origem"
     cursor.execute(query)
     origem = cursor.fetchall()
     return origem
