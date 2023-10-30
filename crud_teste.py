@@ -3,34 +3,21 @@
 #   https://chat.openai.com/share/b0cb3912-8d6f-4595-859e-60955d6aa3d1 -- resolvendo bug
 
 
-import mysql.connector
+import db_connection as dbc
 
-# Establish a MySQL connection
-connection = mysql.connector.connect(
-    host="127.0.0.1",
-    port=3306,
-    user="root",
-    password="",
-    database="banco"
-)
-
-# Create a cursor object
-cursor = connection.cursor()
+connection = dbc.connect_to_db()
+cursor = dbc.get_db_cursor(connection)
 
 # Create
 def create_origem(nome, taxa):
-    try:
-        query = "INSERT INTO origem (nome, taxa) VALUES (%s, %s)"
-        values = (nome, taxa)
-        cursor.execute(query, values)
-        connection.commit()
-        print("Site created successfully.")
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-
+    query = "INSERT INTO origem (nome, taxa) VALUES (%s, %s)"
+    values = (nome, taxa)
+    cursor.execute(query, values)
+    connection.commit()
+    print("Site created successfully.")
 
 # Read
-def read_origens():
+def read_origem():
     query = "SELECT id, nome, taxa FROM origem"
     cursor.execute(query)
     origens = cursor.fetchall()
@@ -54,7 +41,7 @@ def delete_origem(origem_id):
 # Example usage:
 create_origem("origem 1", 100.0)
 create_origem("origem 2", 150.0)
-read_origens()
+read_origem()
 update_origem(1, "Updated origem 1", 120.0)
 delete_origem(2)
 
