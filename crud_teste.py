@@ -1,3 +1,7 @@
+#fontes:
+#   https://chat.openai.com/share/4a87856a-6027-4078-bd9f-c908e482ae0d
+#   https://chat.openai.com/share/b0cb3912-8d6f-4595-859e-60955d6aa3d1
+
 import mysql.connector
 
 # Establish a MySQL connection
