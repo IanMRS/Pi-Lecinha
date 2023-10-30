@@ -14,15 +14,13 @@ def create_origem(nome, taxa):
     values = (nome, taxa)
     cursor.execute(query, values)
     connection.commit()
-    print("Site created successfully.")
 
 # Read
 def read_origem():
     query = "SELECT id, nome, taxa FROM origem"
     cursor.execute(query)
-    origens = cursor.fetchall()
-    for origem in origens:
-        print(f"ID: {origem[0]}, Nome: {origem[1]}, Taxa: {origem[2]}")
+    origem = cursor.fetchall()
+    return origem
 
 # Update
 def update_origem(origem_id, new_nome, new_taxa):
@@ -34,14 +32,18 @@ def update_origem(origem_id, new_nome, new_taxa):
 # Delete
 def delete_origem(origem_id):
     query = "DELETE FROM origem WHERE id = %s"
-    values = (origem_id,)
+    values = (origem_id,)#ESSA VIRGULA É NECESSÁRIA, NEM OUSE
     cursor.execute(query, values)
     connection.commit()
 
 # Example usage:
 create_origem("origem 1", 100.0)
 create_origem("origem 2", 150.0)
-read_origem()
+
+for origem in read_origem():
+        print(f"ID: {origem[0]}, Nome: {origem[1]}, Taxa: {origem[2]}")
+        read_origem()
+
 update_origem(1, "Updated origem 1", 120.0)
 delete_origem(2)
 
