@@ -37,14 +37,14 @@ def delete_cliente(cliente_id):
     connection.commit()
 
 # Example usage:
-create_cliente("cliente 1", 100.0)
-create_cliente("cliente 2", 150.0)
+create_cliente("joão", 11912345678,"vegano")
+create_cliente("maria", 11987654321, "nda")
 
 for cliente in read_cliente():
-        print(f"ID: {cliente[0]}, Nome: {cliente[1]}, Taxa: {cliente[2]}")
+        print(f"ID: {cliente[0]}, Nome: {cliente[1]}, Fone: {cliente[2]}, Obs: {cliente[3]}")
         read_cliente()
 
-update_cliente(1, "Updated cliente 1", 120.0)
+update_cliente(1, "pedro", "69969696969","Xd")
 delete_cliente(2)
 
 # Close the cursor and connection when done
