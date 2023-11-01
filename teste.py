@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter import ttk
 import sqlite3
 
-from reportlab.pdfgen import canvas 
-from reportlab.lib.pagesizes import letter. A4
+#from reportlab.pdfgen import canvas 
+#from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
 
 root = Tk()  # Cria uma instância da classe Tk(), que representa a janela principal da interface gráfica
 
@@ -84,6 +84,7 @@ class Funcs():
         self.conn.commit()
         print("Apagando cliente\n")
         self.desconecta_bd()
+        self.select_lista() # Adicione esta linha para atualizar a lista imediatamente
         self.limpa_tela()
 
     def alterar_cliente(self):
@@ -96,6 +97,20 @@ class Funcs():
         print("Alterando Cliente")
         self.desconecta_bd()
         self.select_lista()
+    def busca_cliente(self):
+        self.conecta_bd()
+        self.lista_cliente.delete(*self.lista_cliente.get_children())
+        self.nome_entry.insert(END, '%')
+        nome = self.nome_entry.get()
+        self.cursor.execute(
+             """SELECT cod, nome_cliente, telefone FROM clientes WHERE nome_cliente LIKE ? ORDER BY nome_cliente ASC""",
+         ('%' + nome + '%',)  # Aqui, estamos procurando em qualquer lugar do nome.
+        )
+        busca_nome_cliente = self.cursor.fetchall()
+        for i in busca_nome_cliente:
+            self.lista_cliente.insert("", END, values=i)
+        self.limpa_tela()
+        self.desconecta_bd()
 
 class Application(Funcs):
     def __init__(self):
@@ -131,7 +146,7 @@ class Application(Funcs):
         self.bt_limpar = Button(self.frame_1, text="Limpar", command=self.limpa_tela)
         self.bt_limpar.place(relx=0.2, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        self.bt_buscar = Button(self.frame_1, text="Buscar")
+        self.bt_buscar = Button(self.frame_1, text="Buscar", command=self.busca_cliente)
         self.bt_buscar.place(relx=0.3, rely=0.1, relwidth=0.1, relheight=0.15)
 
         self.bt_novo = Button(self.frame_1, text="Novo", command=self.add_cliente)
@@ -180,7 +195,7 @@ class Application(Funcs):
         self.scroll_lista.place(relx=0.95, rely=0.1, relwidth=0.04, relheight=0.85)
         self.lista_cliente.bind("<Double-1>", self.double_click)
 
-    def Menus(self):
+    def Menus(self): #opções, a barrinha q aparece encima, calma q mexo
         menubar = Menu(self.root)
         self.root.config(menu=menubar)
         filemenu = Menu(menubar)
