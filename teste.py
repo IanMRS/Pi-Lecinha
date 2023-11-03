@@ -100,18 +100,36 @@ class Funcs():
     def busca_cliente(self):
         self.conecta_bd()
         self.lista_cliente.delete(*self.lista_cliente.get_children())
-        self.nome_entry.insert(END, '%')
         nome = self.nome_entry.get()
-        self.cursor.execute(
-             """SELECT cod, nome_cliente, telefone FROM clientes WHERE nome_cliente LIKE ? ORDER BY nome_cliente ASC""",
-         ('%' + nome + '%',)  # Aqui, estamos procurando em qualquer lugar do nome.
-        )
+        telefone = self.telefone_entry.get()
+        print(f"Nome: {nome}, Telefone: {telefone}")
+        
+        # Monta a consulta SQL baseada nas condições preenchidas
+        query = """SELECT cod, nome_cliente, telefone FROM clientes WHERE 1=1"""
+        params = tuple()  # Tupla vazia para os parâmetros da consulta
+
+        if nome:
+            query += " AND nome_cliente LIKE ?"
+            params += ('%' + nome + '%',)
+
+        if telefone:
+            query += " AND telefone LIKE ?"
+            params += ('%' + telefone + '%',)  # Adicione uma vírgula para criar uma tupla de um elemento
+
+        query += " ORDER BY nome_cliente ASC"
+        
+        self.cursor.execute(query, params)
         busca_nome_cliente = self.cursor.fetchall()
+        
         for i in busca_nome_cliente:
             self.lista_cliente.insert("", END, values=i)
+        
         self.limpa_tela()
         self.desconecta_bd()
-
+        
+        if not nome and not telefone:
+            # Se nenhum campo estiver preenchido, mostrar todos os clientes
+            self.select_lista()
 class Application(Funcs):
     def __init__(self):
         self.root = root
