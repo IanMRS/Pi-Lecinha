@@ -72,8 +72,6 @@ class Funcs():
     def deleta_cliente(self):
         # Deleta um cliente do banco de dados
         self.variaveis()
-        connection = dbc.connect_db()
-        cursor = dbc.get_db_cursor(connection)
         self.db_input("""DELETE FROM clientes WHERE cod= ?""", (self.codigo,),"Apagando cliente\n")
 
         self.select_lista() # Adicione esta linha para atualizar a lista imediatamente
@@ -83,8 +81,6 @@ class Funcs():
     def alterar_cliente(self):
         # Altera os dados de um cliente no banco de dados
         self.variaveis()
-        connection = dbc.connect_db()
-        cursor = dbc.get_db_cursor(connection)
         self.db_input("""UPDATE clientes SET nome_cliente = ?, telefone=? WHERE cod = ?""",
                             (self.nome, self.telefone, self.codigo),"Alterando Cliente")
         self.select_lista()
