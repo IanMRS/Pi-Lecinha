@@ -16,17 +16,20 @@ class Funcs():
         self.connection.commit()
         print("Banco de Dados criado\n")
 
+
     def limpa_tela(self):
         # Limpa os campos de entrada (Entry)
         self.codigo_entry.delete(0, END)
         self.nome_entry.delete(0, END)
         self.telefone_entry.delete(0, END)
 
+
     def variaveis(self):
         # Obtém as variáveis a partir dos campos de entrada
         self.codigo = self.codigo_entry.get()
         self.nome = self.nome_entry.get()
         self.telefone = self.telefone_entry.get()
+
 
     def add_cliente(self):
         # Adiciona um cliente ao banco de dados
@@ -40,6 +43,7 @@ class Funcs():
         self.select_lista()
         self.limpa_tela()
 
+
     def deleta_cliente(self):
         # Deleta um cliente do banco de dados
         self.variaveis()
@@ -52,6 +56,7 @@ class Funcs():
         self.select_lista() # Adicione esta linha para atualizar a lista imediatamente
         self.limpa_tela()
 
+
     def alterar_cliente(self):
         # Altera os dados de um cliente no banco de dados
         self.variaveis()
@@ -63,6 +68,8 @@ class Funcs():
         print("Alterando Cliente")
         dbc.disconnect_db(self.connection)
         self.select_lista()
+
+
     def busca_cliente(self):
         self.connection = dbc.connect_db()
         self.cursor = dbc.get_db_cursor(self.connection)

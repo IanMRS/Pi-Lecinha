@@ -20,6 +20,7 @@ class Application(dba.Funcs):
         self.Menus()
         root.mainloop()
 
+
     def select_lista(self):
         # Atualiza a lista de clientes na interface
         self.lista_cliente.delete(*self.lista_cliente.get_children())
@@ -29,6 +30,7 @@ class Application(dba.Funcs):
         for i in lista:
             self.lista_cliente.insert("", END, values=i)
         dbc.disconnect_db(self.connection)
+
 
     def double_click(self, event):
         # Manipula o evento de duplo clique em uma linha da lista
@@ -40,6 +42,7 @@ class Application(dba.Funcs):
             self.nome_entry.insert(END, col2)
             self.telefone_entry.insert(END, col3)
 
+
     def tela(self):
         # Configuração da janela principal
         self.root.title("Cadastro de Clientes")
@@ -49,6 +52,7 @@ class Application(dba.Funcs):
         self.root.maxsize(width=1920, height=1800)
         self.root.minsize(width=600, height=500)
 
+
     def frames_da_tela(self):
         # Criação dos frames para organizar os elementos
         self.frame_1 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
@@ -56,6 +60,7 @@ class Application(dba.Funcs):
 
         self.frame_2 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
         self.frame_2.place(relx=0.02, rely=0.49, relwidth=0.96, relheight=0.46)
+
 
     def widgtes_frame1(self):
         # Elementos no frame 1
@@ -90,6 +95,7 @@ class Application(dba.Funcs):
 
         self.telefone_entry = Entry(self.frame_1)
         self.telefone_entry.place(relx=0.05, rely=0.7, relwidth=0.4, relheight=0.1)
+
 
     def tabela(self):
         # Criação da tabela no frame 2
