@@ -22,6 +22,7 @@ def inserir_cliente():
     cursor.execute(comando, dados)
     conexao.commit()
     listar_clientes()
+    Funcs.limpa_tela()
 
 # Função para listar os clientes na Treeview
 def listar_clientes():
@@ -32,7 +33,7 @@ def listar_clientes():
     for item in lista_cliente.get_children():
         lista_cliente.delete(item)
     for linha in resultados:
-        lista_cliente.insert('', 'end', values=linha)
+        lista_cliente.insert('', 'end', values=f"{linha[0]} {linha[1]} ({linha[2][0:2]}){linha[2][2:7]}-{linha[2][7:11]}")
 
 root = Tk()  # Cria uma instância da classe Tk(), que representa a janela principal da interface gráfica
 
