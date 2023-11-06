@@ -2,145 +2,230 @@ from tkinter import *
 from tkinter import ttk
 import sqlite3
 
-# Função para criar a tabela no banco de dados
-def criar_tabela():
-    comando = '''
-    CREATE TABLE IF NOT EXISTS clientes
-    (codigo INTEGER PRIMARY KEY,
-    nome TEXT,
-    telefone TEXT)
-    '''
-    cursor.execute(comando)
-    conexao.commit()
-
-# Função para inserir um novo cliente no banco de dados
-def inserir_cliente():
-    nome = nome_entry.get()
-    telefone = telefone_entry.get()
-    comando = "INSERT INTO clientes (nome, telefone) VALUES (?, ?)"
-    dados = (nome, telefone)
-    cursor.execute(comando, dados)
-    conexao.commit()
-    listar_clientes()
-    Funcs.limpa_tela()
-
-# Função para listar os clientes na Treeview
-def listar_clientes():
-    comando = "SELECT * FROM clientes"
-    cursor.execute(comando)
-    resultados = cursor.fetchall()
-    # Limpa a Treeview antes de adicionar os novos dados
-    for item in lista_cliente.get_children():
-        lista_cliente.delete(item)
-    for linha in resultados:
-        lista_cliente.insert('', 'end', values=f"{linha[0]} {linha[1]} ({linha[2][0:2]}){linha[2][2:7]}-{linha[2][7:11]}")
+#from reportlab.pdfgen import canvas 
+#from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
 
 root = Tk()  # Cria uma instância da classe Tk(), que representa a janela principal da interface gráfica
 
-# Conecta ao banco de dados SQLite
-conexao = sqlite3.connect('banco_de_dados.db')
-cursor = conexao.cursor()
-
-criar_tabela()
-
 class Funcs():
-    def limpa_tela():
-        codigo_entry.delete(0, END)
-        nome_entry.delete(0, END)
-        telefone_entry.delete(0, END)
+    def limpa_tela(self):
+        # Limpa os campos de entrada (Entry)
+        self.codigo_entry.delete(0, END)
+        self.nome_entry.delete(0, END)
+        self.telefone_entry.delete(0, END)
+
+    def conecta_bd(self):
+        # Conecta ao banco de dados SQLite
+        self.conn = sqlite3.connect("banco.db")
+        self.cursor = self.conn.cursor()
+        print("Conectando ao banco de Dados\n")
+
+    def desconecta_bd(self):
+        # Fecha a conexão com o banco de dados
+        self.conn.close()
+
+    def monta_tabelas(self):
+        self.conecta_bd()
+        # Cria uma tabela chamada 'clientes' se ela não existir
+        self.cursor.execute(
+            """ CREATE TABLE IF NOT EXISTS clientes (
+                    cod INTEGER PRIMARY KEY, 
+                    nome_cliente CHAR(255) NOT NULL,
+                    telefone INTEGER(20) NOT NULL
+                    );"""
+        )
+        self.conn.commit()
+        print("Banco de Dados criado\n")
+        self.desconecta_bd()
+
+    def variaveis(self):
+        # Obtém as variáveis a partir dos campos de entrada
+        self.codigo = self.codigo_entry.get()
+        self.nome = self.nome_entry.get()
+        self.telefone = self.telefone_entry.get()
+
+    def add_cliente(self):
+        # Adiciona um cliente ao banco de dados
+        self.variaveis()
+        self.conecta_bd()
+        self.cursor.execute("""
+                            INSERT INTO clientes (nome_cliente, telefone) VALUES (?,?)
+                            """, (self.nome, self.telefone))
+        self.conn.commit()
+        print("Adicionando Cliente\n")
+        self.desconecta_bd()
+        self.select_lista()
+        self.limpa_tela()
+
+    def select_lista(self):
+        # Atualiza a lista de clientes na interface
+        self.lista_cliente.delete(*self.lista_cliente.get_children())
+        self.conecta_bd()
+        lista = self.cursor.execute("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC;""")
+        for i in lista:
+            self.lista_cliente.insert("", END, values=i)
+        self.desconecta_bd()
+
+    def double_click(self, event):
+        # Manipula o evento de duplo clique em uma linha da lista
+        self.limpa_tela()
+        self.lista_cliente.selection()
+        for n in self.lista_cliente.selection():
+            col1, col2, col3 = self.lista_cliente.item(n, 'values')
+            self.codigo_entry.insert(END, col1)
+            self.nome_entry.insert(END, col2)
+            self.telefone_entry.insert(END, col3)
+
+    def deleta_cliente(self):
+        # Deleta um cliente do banco de dados
+        self.variaveis()
+        self.conecta_bd()
+        self.cursor.execute("""DELETE FROM clientes WHERE cod= ?""", (self.codigo,))
+        self.conn.commit()
+        print("Apagando cliente\n")
+        self.desconecta_bd()
+        self.select_lista() # Adicione esta linha para atualizar a lista imediatamente
+        self.limpa_tela()
+
+    def alterar_cliente(self):
+        # Altera os dados de um cliente no banco de dados
+        self.variaveis()
+        self.conecta_bd()
+        self.cursor.execute("""UPDATE clientes SET nome_cliente = ?, telefone=? WHERE cod = ?""",
+                            (self.nome, self.telefone, self.codigo))
+        self.conn.commit()
+        print("Alterando Cliente")
+        self.desconecta_bd()
+        self.select_lista()
+    def busca_cliente(self):
+        self.conecta_bd()
+        self.lista_cliente.delete(*self.lista_cliente.get_children())
+        nome = self.nome_entry.get()
+        telefone = self.telefone_entry.get()
+        print(f"Nome: {nome}, Telefone: {telefone}")
         
+        # Monta a consulta SQL baseada nas condições preenchidas
+        query = """SELECT cod, nome_cliente, telefone FROM clientes WHERE 1=1"""
+        params = tuple()  # Tupla vazia para os parâmetros da consulta
 
+        if nome:
+            query += " AND nome_cliente LIKE ?"
+            params += ('%' + nome + '%',)
+
+        if telefone:
+            query += " AND telefone LIKE ?"
+            params += ('%' + telefone + '%',)  # Adicione uma vírgula para criar uma tupla de um elemento
+
+        query += " ORDER BY nome_cliente ASC"
+        
+        self.cursor.execute(query, params)
+        busca_nome_cliente = self.cursor.fetchall()
+        
+        for i in busca_nome_cliente:
+            self.lista_cliente.insert("", END, values=i)
+        
+        self.limpa_tela()
+        self.desconecta_bd()
+        
+        if not nome and not telefone:
+            # Se nenhum campo estiver preenchido, mostrar todos os clientes
+            self.select_lista()
 class Application(Funcs):
-    def __init__(self):  # função para abrir a janela
+    def __init__(self):
         self.root = root
-        self.tela()  # função tela,
-        self.frames_da_tela()  # chamar a função frame da tela
-        self.widgets_frame1()  # chamar os botões
+        self.tela()
+        self.frames_da_tela()
+        self.widgtes_frame1()
         self.tabela()
-        root.mainloop()  # criar um loop para abrir a janela
+        self.monta_tabelas()
+        self.select_lista()
+        self.Menus()
+        root.mainloop()
 
-    def tela(self):  # função para configurar a tela
-        self.root.title("Cadastro de Clientes")  # Texto da barra superior
+    def tela(self):
+        # Configuração da janela principal
+        self.root.title("Cadastro de Clientes")
         self.root.configure(background='#444444')
-        self.root.geometry("800x600")  # dimensões do começo da janela
-        self.root.resizable(True, True)  # Tela responsiva
-        self.root.maxsize(width=1920, height=1800)  # definir a largura e altura máxima
-        self.root.minsize(width=600, height=500)  # tamanho mínimo
+        self.root.geometry("800x600")
+        self.root.resizable(True, True)
+        self.root.maxsize(width=1920, height=1800)
+        self.root.minsize(width=600, height=500)
 
     def frames_da_tela(self):
+        # Criação dos frames para organizar os elementos
         self.frame_1 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
-        # 3 formas de interação, os widgets. place, pack e grid
-        self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.97, relheight=0.48)
+        self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.46)
 
         self.frame_2 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
-        self.frame_2.place(relx=0.02, rely=0.49, relwidth=0.97, relheight=0.48)
+        self.frame_2.place(relx=0.02, rely=0.49, relwidth=0.96, relheight=0.46)
 
-    def widgets_frame1(self):
-        ###Botão Limpar
-        bt_limpar = Button(self.frame_1, text="Limpar", command=Funcs.limpa_tela)
-        bt_limpar.place(relx=0.2, rely=0.1, relwidth=0.1, relheight=0.15)
+    def widgtes_frame1(self):
+        # Elementos no frame 1
+        self.bt_limpar = Button(self.frame_1, text="Limpar", command=self.limpa_tela)
+        self.bt_limpar.place(relx=0.2, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        ###Botão buscar
-        bt_buscar = Button(self.frame_1, text="Buscar")
-        bt_buscar.place(relx=0.3, rely=0.1, relwidth=0.1, relheight=0.15)
+        self.bt_buscar = Button(self.frame_1, text="Buscar", command=self.busca_cliente)
+        self.bt_buscar.place(relx=0.3, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        ###Botão Novo
-        bt_novo = Button(self.frame_1, text="Novo", command=inserir_cliente)
-        bt_novo.place(relx=0.65, rely=0.1, relwidth=0.1, relheight=0.15)
+        self.bt_novo = Button(self.frame_1, text="Novo", command=self.add_cliente)
+        self.bt_novo.place(relx=0.65, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        ###Botão Alterar
-        bt_alterar = Button(self.frame_1, text="Alterar")
-        bt_alterar.place(relx=0.75, rely=0.1, relwidth=0.1, relheight=0.15)
+        self.bt_alterar = Button(self.frame_1, text="Alterar", command=self.alterar_cliente)
+        self.bt_alterar.place(relx=0.75, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        ###Botão Apagar
-        bt_apagar = Button(self.frame_1, text="Apagar")
-        bt_apagar.place(relx=0.85, rely=0.1, relwidth=0.1, relheight=0.15)
+        self.bt_apagar = Button(self.frame_1, text="Apagar", command=self.deleta_cliente)
+        self.bt_apagar.place(relx=0.85, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        ###Label e entrada dos códigos
-        lb_codigo = Label(self.frame_1, text="Código")  # Código de busca
-        lb_codigo.place(relx=0.05, rely=0.05, relwidth=0.1, relheight=0.1)
+        self.lb_codigo = Label(self.frame_1, text="Código")
+        self.lb_codigo.place(relx=0.05, rely=0.05, relwidth=0.1, relheight=0.1)
 
-        global codigo_entry
-        codigo_entry = Entry(self.frame_1)
-        codigo_entry.place(relx=0.05, rely=0.15, relwidth=0.1, relheight=0.1)
+        self.codigo_entry = Entry(self.frame_1)
+        self.codigo_entry.place(relx=0.05, rely=0.15, relwidth=0.1, relheight=0.1)
 
-        ###Label e entrada de nome
-        lb_nome = Label(self.frame_1, text="Nome")
-        lb_nome.place(relx=0.05, rely=0.35, relwidth=0.1, relheight=0.1)
+        self.lb_nome = Label(self.frame_1, text="Nome")
+        self.lb_nome.place(relx=0.05, rely=0.35, relwidth=0.1, relheight=0.1)
 
-        global nome_entry
-        nome_entry = Entry(self.frame_1)
-        nome_entry.place(relx=0.05, rely=0.45, relwidth=0.90, relheight=0.1)
+        self.nome_entry = Entry(self.frame_1)
+        self.nome_entry.place(relx=0.05,rely=0.45, relwidth=0.90, relheight=0.1)
+        self.lb_telefone = Label(self.frame_1, text="Telefone")
+        self.lb_telefone.place(relx=0.05, rely=0.6, relwidth=0.1, relheight=0.1)
 
-        ###Label e entrada de Ia
-        lb_telefone = Label(self.frame_1, text="Telefone")
-        lb_telefone.place(relx=0.05, rely=0.6, relwidth=0.1, relheight=0.1)
-
-        global telefone_entry
-        telefone_entry = Entry(self.frame_1)
-        telefone_entry.place(relx=0.05, rely=0.7, relwidth=0.4, relheight=0.1)
+        self.telefone_entry = Entry(self.frame_1)
+        self.telefone_entry.place(relx=0.05, rely=0.7, relwidth=0.4, relheight=0.1)
 
     def tabela(self):
-        global lista_cliente
-        lista_cliente = ttk.Treeview(self.frame_2, height=3, columns=("col1", "col2", "col3"))
-        lista_cliente.heading("#0", text="")
-        lista_cliente.heading("#1", text="Código")
-        lista_cliente.heading("#2", text="Nome")
-        lista_cliente.heading("#3", text="Telefone")
+        # Criação da tabela no frame 2
+        self.lista_cliente = ttk.Treeview(self.frame_2, height=3, columns=("col1", "col2", "col3"))
+        self.lista_cliente.heading("#0", text="")
+        self.lista_cliente.heading("#1", text="Código")
+        self.lista_cliente.heading("#2", text="Nome")
+        self.lista_cliente.heading("#3", text="Telefone")
 
-        lista_cliente.column("#0", width=1)
-        lista_cliente.column("#1", width=50)
-        lista_cliente.column("#2", width=200)
-        lista_cliente.column("#3", width=125)
+        self.lista_cliente.column("#0", width=1)
+        self.lista_cliente.column("#1", width=50)
+        self.lista_cliente.column("#2", width=200)
+        self.lista_cliente.column("#3", width=125)
 
-        lista_cliente.place(relx=0.01, rely=0.1, relwidth=0.95, relheight=0.85)
+        self.lista_cliente.place(relx=0.01, rely=0.1, relwidth=0.95, relheight=0.85)
 
-        scroll_lista = Scrollbar(self.frame_2, orient='vertical')  # Barra de rolagem da lista
-        lista_cliente.configure(yscroll=scroll_lista.set)  # A barra pertence à lista
-        scroll_lista.place(relx=0.95, rely=0.1, relwidth=0.04, relheight=0.85)
+        self.scroll_lista = Scrollbar(self.frame_2, orient='vertical')  # Barra de rolagem da lista
+        self.lista_cliente.configure(yscroll=self.scroll_lista.set)  # A barra pertence à lista
+        self.scroll_lista.place(relx=0.95, rely=0.1, relwidth=0.04, relheight=0.85)
+        self.lista_cliente.bind("<Double-1>", self.double_click)
 
-        listar_clientes()
+    def Menus(self): #opções, a barrinha q aparece encima, calma q mexo
+        menubar = Menu(self.root)
+        self.root.config(menu=menubar)
+        filemenu = Menu(menubar)
+        filemenu2 = Menu(menubar)
 
-if __name__ == '__main__':
-    app = Application()
-    app.root.mainloop()
+        def Quit():
+            self.root.destroy()
+
+        menubar.add_cascade(label="Opções", menu=filemenu)
+        menubar.add_cascade(label="Sobre", menu=filemenu2)
+
+        filemenu.add_command(label="Sair", command=Quit)
+        filemenu2.add_command(label="Limpa Cliente", command=self.limpa_tela)
+
+Application()  # Cria uma instância da classe Application, o que inicia a aplicação TKINTER
