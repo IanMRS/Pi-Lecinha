@@ -41,6 +41,13 @@ class Application(dba.Funcs):
         self.root.minsize(width=600, height=500)
 
 
+    def limpa_tela(self):
+        # Limpa os campos de entrada (Entry)
+        self.codigo_entry.delete(0, END)
+        self.nome_entry.delete(0, END)
+        self.telefone_entry.delete(0, END)
+
+
     def frames_da_tela(self):
         # Criação dos frames para organizar os elementos
         self.frame_1 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
