@@ -15,7 +15,7 @@ class Application(dba.Funcs):
         self.frames_da_tela()
         self.widgtes_frame1()
         self.tabela()
-        self.select_lista()
+        self.update_lista()
         self.Menus()
         root.mainloop()
 

@@ -22,7 +22,7 @@ class Funcs():
         self.fone = self.telefone_entry.get()
 
 
-    def select_lista(self):
+    def update_lista(self):
         # Atualiza a lista de clientes na interface
         self.lista_cliente.delete(*self.lista_cliente.get_children())
         lista = self.db_input("""SELECT id, nome, fone FROM cliente ORDER BY nome ASC;""")
@@ -37,16 +37,16 @@ class Funcs():
                     INSERT INTO cliente (nome, fone) VALUES (?,?)
                             """, (self.nome, self.fone), "Adicionando Cliente\n")
 
-        self.select_lista()
+        self.update_lista()
         self.limpa_tela()
 
 
     def deleta_cliente(self):
         # Deleta um cliente do banco de dados
         self.variaveis()
-        self.db_input("""DELETE FROM cliente WHERE id= ?""", (self.codigo,),"Apagando cliente\n")
+        self.db_input("""DELETE FROM cliente WHERE id= ?""", self.codigo,"Apagando cliente\n")
 
-        self.select_lista() # Adicione esta linha para atualizar a lista imediatamente
+        self.update_lista() # Adicione esta linha para atualizar a lista imediatamente
         self.limpa_tela()
 
 
@@ -55,7 +55,7 @@ class Funcs():
         self.variaveis()
         self.db_input("""UPDATE cliente SET nome = ?, fone=? WHERE id = ?""",
                             (self.nome, self.fone, self.codigo),"Alterando Cliente")
-        self.select_lista()
+        self.update_lista()
 
 
     def busca_cliente(self):
@@ -63,7 +63,7 @@ class Funcs():
         cursor = dbc.get_db_cursor(connection)
         self.lista_cliente.delete(*self.lista_cliente.get_children())
         nome = self.nome_entry.get()
-        fone = self.fone_entry.get()
+        fone = self.telefone_entry.get()
         print(f"Nome: {nome}, fone: {fone}")
         
         # Monta a consulta SQL baseada nas condições preenchidas
@@ -89,4 +89,4 @@ class Funcs():
         
         if not nome and not fone:
             # Se nenhum campo estiver preenchido, mostrar todos os clientes
-            self.select_lista()
+            self.update_lista()
