@@ -24,9 +24,7 @@ class Application(dba.Funcs):
     def select_lista(self):
         # Atualiza a lista de clientes na interface
         self.lista_cliente.delete(*self.lista_cliente.get_children())
-        self.connection = dbc.connect_db()
-        self.cursor = dbc.get_db_cursor(self.connection)
-        lista = self.cursor.execute("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC;""")
+        lista = dba.Funcs.cursor.execute("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC;""")
         for i in lista:
             self.lista_cliente.insert("", END, values=i)
         dbc.disconnect_db(self.connection)
