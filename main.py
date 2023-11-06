@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import ttk
 
 import db_action as dba
-import db_connection as dbc
 
 #from reportlab.pdfgen import canvas 
 #from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
@@ -19,15 +18,6 @@ class Application(dba.Funcs):
         self.select_lista()
         self.Menus()
         root.mainloop()
-
-
-    def select_lista(self):
-        # Atualiza a lista de clientes na interface
-        self.lista_cliente.delete(*self.lista_cliente.get_children())
-        lista = dba.Funcs.cursor.execute("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC;""")
-        for i in lista:
-            self.lista_cliente.insert("", END, values=i)
-        dbc.disconnect_db(self.connection)
 
 
     def double_click(self, event):

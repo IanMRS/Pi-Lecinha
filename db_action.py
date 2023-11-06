@@ -1,3 +1,6 @@
+from tkinter import *
+from tkinter import ttk
+
 import db_connection as dbc
 
 class Funcs():
@@ -14,6 +17,25 @@ class Funcs():
     connection.commit()
     print("Banco de Dados criado\n")
 
+
+    def db_query(self, query, out = ""):
+        connection = dbc.connect_db()
+        cursor = dbc.get_db_cursor(connection)
+        cursor.execute(query)
+        connection.commit()
+        print(out)
+        #connection.close()
+
+
+    def db_input(self, query, data, out = ""):
+        connection = dbc.connect_db()
+        cursor = dbc.get_db_cursor(connection)
+        cursor.execute(query, data)
+        connection.commit()
+        print(out)
+        ##connection.close()
+
+
     def limpa_tela(self):
         # Limpa os campos de entrada (Entry)
         self.codigo_entry.delete(0, END)
@@ -28,15 +50,21 @@ class Funcs():
         self.telefone = self.telefone_entry.get()
 
 
+    def select_lista(self):
+        # Atualiza a lista de clientes na interface
+        self.lista_cliente.delete(*self.lista_cliente.get_children())
+        lista = self.cursor.execute("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC;""")
+        for i in lista:
+            self.lista_cliente.insert("", END, values=i)
+
+
     def add_cliente(self):
         # Adiciona um cliente ao banco de dados
         self.variaveis()
-        cursor.execute("""
-                            INSERT INTO clientes (nome_cliente, telefone) VALUES (?,?)
-                            """, (self.nome, self.telefone))
-        connection.commit()
-        print("Adicionando Cliente\n")
-        dbc.disconnect_db(connection)
+        self.db_input("""
+                    INSERT INTO clientes (nome_cliente, telefone) VALUES (?,?)
+                            """, (self.nome, self.telefone), "Adicionando Cliente\n")
+
         self.select_lista()
         self.limpa_tela()
 
@@ -46,10 +74,8 @@ class Funcs():
         self.variaveis()
         connection = dbc.connect_db()
         cursor = dbc.get_db_cursor(connection)
-        cursor.execute("""DELETE FROM clientes WHERE cod= ?""", (self.codigo,))
-        connection.commit()
-        print("Apagando cliente\n")
-        dbc.disconnect_db(connection)
+        self.db_input("""DELETE FROM clientes WHERE cod= ?""", (self.codigo,),"Apagando cliente\n")
+
         self.select_lista() # Adicione esta linha para atualizar a lista imediatamente
         self.limpa_tela()
 
@@ -59,11 +85,8 @@ class Funcs():
         self.variaveis()
         connection = dbc.connect_db()
         cursor = dbc.get_db_cursor(connection)
-        cursor.execute("""UPDATE clientes SET nome_cliente = ?, telefone=? WHERE cod = ?""",
-                            (self.nome, self.telefone, self.codigo))
-        connection.commit()
-        print("Alterando Cliente")
-        dbc.disconnect_db(connection)
+        self.db_input("""UPDATE clientes SET nome_cliente = ?, telefone=? WHERE cod = ?""",
+                            (self.nome, self.telefone, self.codigo),"Alterando Cliente")
         self.select_lista()
 
 
@@ -96,7 +119,6 @@ class Funcs():
             self.lista_cliente.insert("", END, values=i)
         
         self.limpa_tela()
-        dbc.disconnect_db(connection)
         
         if not nome and not telefone:
             # Se nenhum campo estiver preenchido, mostrar todos os clientes

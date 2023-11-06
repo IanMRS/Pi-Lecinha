@@ -9,7 +9,3 @@ def connect_db():
 
 def get_db_cursor(connection):
     return connection.cursor()
-
-def disconnect_db(connection):
-    # Fecha a conexão com o banco de dados
-    connection.close()
