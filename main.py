@@ -1,70 +1,34 @@
 from tkinter import *
 from tkinter import ttk
-import sqlite3
+
+import db_action as dba
+import db_connection as dbc
 
 #from reportlab.pdfgen import canvas 
 #from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
 
 root = Tk()  # Cria uma instância da classe Tk(), que representa a janela principal da interface gráfica
 
-class Funcs():
-    def limpa_tela(self):
-        # Limpa os campos de entrada (Entry)
-        self.codigo_entry.delete(0, END)
-        self.nome_entry.delete(0, END)
-        self.telefone_entry.delete(0, END)
-
-    def conecta_bd(self):
-        # Conecta ao banco de dados SQLite
-        self.conn = sqlite3.connect("banco.db")
-        self.cursor = self.conn.cursor()
-        print("Conectando ao banco de Dados\n")
-
-    def desconecta_bd(self):
-        # Fecha a conexão com o banco de dados
-        self.conn.close()
-
-    def monta_tabelas(self):
-        self.conecta_bd()
-        # Cria uma tabela chamada 'clientes' se ela não existir
-        self.cursor.execute(
-            """ CREATE TABLE IF NOT EXISTS clientes (
-                    cod INTEGER PRIMARY KEY, 
-                    nome_cliente CHAR(255) NOT NULL,
-                    telefone INTEGER(20) NOT NULL
-                    );"""
-        )
-        self.conn.commit()
-        print("Banco de Dados criado\n")
-        self.desconecta_bd()
-
-    def variaveis(self):
-        # Obtém as variáveis a partir dos campos de entrada
-        self.codigo = self.codigo_entry.get()
-        self.nome = self.nome_entry.get()
-        self.telefone = self.telefone_entry.get()
-
-    def add_cliente(self):
-        # Adiciona um cliente ao banco de dados
-        self.variaveis()
-        self.conecta_bd()
-        self.cursor.execute("""
-                            INSERT INTO clientes (nome_cliente, telefone) VALUES (?,?)
-                            """, (self.nome, self.telefone))
-        self.conn.commit()
-        print("Adicionando Cliente\n")
-        self.desconecta_bd()
+class Application(dba.Funcs):
+    def __init__(self):
+        self.root = root
+        self.tela()
+        self.frames_da_tela()
+        self.widgtes_frame1()
+        self.tabela()
         self.select_lista()
-        self.limpa_tela()
+        self.Menus()
+        root.mainloop()
 
     def select_lista(self):
         # Atualiza a lista de clientes na interface
         self.lista_cliente.delete(*self.lista_cliente.get_children())
-        self.conecta_bd()
+        self.connection = dbc.connect_db()
+        self.cursor = dbc.get_db_cursor(self.connection)
         lista = self.cursor.execute("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC;""")
         for i in lista:
             self.lista_cliente.insert("", END, values=i)
-        self.desconecta_bd()
+        dbc.disconnect_db(self.connection)
 
     def double_click(self, event):
         # Manipula o evento de duplo clique em uma linha da lista
@@ -75,72 +39,6 @@ class Funcs():
             self.codigo_entry.insert(END, col1)
             self.nome_entry.insert(END, col2)
             self.telefone_entry.insert(END, col3)
-
-    def deleta_cliente(self):
-        # Deleta um cliente do banco de dados
-        self.variaveis()
-        self.conecta_bd()
-        self.cursor.execute("""DELETE FROM clientes WHERE cod= ?""", (self.codigo,))
-        self.conn.commit()
-        print("Apagando cliente\n")
-        self.desconecta_bd()
-        self.select_lista() # Adicione esta linha para atualizar a lista imediatamente
-        self.limpa_tela()
-
-    def alterar_cliente(self):
-        # Altera os dados de um cliente no banco de dados
-        self.variaveis()
-        self.conecta_bd()
-        self.cursor.execute("""UPDATE clientes SET nome_cliente = ?, telefone=? WHERE cod = ?""",
-                            (self.nome, self.telefone, self.codigo))
-        self.conn.commit()
-        print("Alterando Cliente")
-        self.desconecta_bd()
-        self.select_lista()
-    def busca_cliente(self):
-        self.conecta_bd()
-        self.lista_cliente.delete(*self.lista_cliente.get_children())
-        nome = self.nome_entry.get()
-        telefone = self.telefone_entry.get()
-        print(f"Nome: {nome}, Telefone: {telefone}")
-        
-        # Monta a consulta SQL baseada nas condições preenchidas
-        query = """SELECT cod, nome_cliente, telefone FROM clientes WHERE 1=1"""
-        params = tuple()  # Tupla vazia para os parâmetros da consulta
-
-        if nome:
-            query += " AND nome_cliente LIKE ?"
-            params += ('%' + nome + '%',)
-
-        if telefone:
-            query += " AND telefone LIKE ?"
-            params += ('%' + telefone + '%',)  # Adicione uma vírgula para criar uma tupla de um elemento
-
-        query += " ORDER BY nome_cliente ASC"
-        
-        self.cursor.execute(query, params)
-        busca_nome_cliente = self.cursor.fetchall()
-        
-        for i in busca_nome_cliente:
-            self.lista_cliente.insert("", END, values=i)
-        
-        self.limpa_tela()
-        self.desconecta_bd()
-        
-        if not nome and not telefone:
-            # Se nenhum campo estiver preenchido, mostrar todos os clientes
-            self.select_lista()
-class Application(Funcs):
-    def __init__(self):
-        self.root = root
-        self.tela()
-        self.frames_da_tela()
-        self.widgtes_frame1()
-        self.tabela()
-        self.monta_tabelas()
-        self.select_lista()
-        self.Menus()
-        root.mainloop()
 
     def tela(self):
         # Configuração da janela principal
