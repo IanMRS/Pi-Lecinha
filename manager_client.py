@@ -37,7 +37,7 @@ class Application(dba.Funcs):
         self.root.configure(background='#444444')
         self.root.geometry("800x600")
         self.root.resizable(True, True)
-        self.root.maxsize(width=1920, height=1800)
+        self.root.maxsize(width=1920, height=1080)
         self.root.minsize(width=600, height=500)
 
 
