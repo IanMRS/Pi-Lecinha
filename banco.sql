@@ -1,23 +1,18 @@
-CREATE SCHEMA IF NOT EXISTS banco DEFAULT CHARACTER SET utf8;
-USE banco;
-
 CREATE TABLE IF NOT EXISTS origem (
-    id INT NOT NULL AUTO_INCREMENT,
+    id INTEGER PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    taxa FLOAT NOT NULL,
-    PRIMARY KEY (id)
+    taxa FLOAT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS cliente (
-    id INT NOT NULL AUTO_INCREMENT,
+    id INTEGER PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     fone VARCHAR(13) NOT NULL,
-    obs VARCHAR(255) NULL,
-    PRIMARY KEY (id)
+    obs VARCHAR(255) NULL
 );
 
 CREATE TABLE IF NOT EXISTS aluguel (
-    id INT NOT NULL AUTO_INCREMENT,
+    id INTEGER PRIMARY KEY,
     clienteid INT NOT NULL,
     origemid INT NOT NULL,
     datainicio DATE NOT NULL,
@@ -26,7 +21,6 @@ CREATE TABLE IF NOT EXISTS aluguel (
     quantia_inquilinos INT NOT NULL,
     contrato VARCHAR(255) NOT NULL,
     obs VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id),
 
     FOREIGN KEY (origemid) REFERENCES origem(id)
     ON DELETE NO ACTION
@@ -37,13 +31,12 @@ CREATE TABLE IF NOT EXISTS aluguel (
 );
 
 CREATE TABLE IF NOT EXISTS casa (
-    id INT NOT NULL AUTO_INCREMENT,
+    id INTEGER PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     capacidade INT NOT NULL,
     quartos INT NOT NULL,
     camas INT NOT NULL,
-    banheiros INT NOT NULL,
-    PRIMARY KEY (id)
+    banheiros INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS aluguel_has_casa (

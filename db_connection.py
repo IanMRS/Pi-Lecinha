@@ -7,6 +7,7 @@ def connect_db():
 
     return connection
 
+
 def get_db_cursor(connection):
     return connection.cursor()
 
@@ -14,12 +15,16 @@ def get_db_cursor(connection):
 def create_db():
     connection = connect_db()
 
-    get_db_cursor(connection).execute(""" CREATE TABLE IF NOT EXISTS clientes (
-                cod INTEGER PRIMARY KEY, 
-                nome_cliente CHAR(255) NOT NULL,
-                telefone INTEGER(20) NOT NULL
-                );
-        """)
-    connection.commit()
+    with open("banco.sql", "r") as banco:
+        query=""
 
+        for line in banco.readlines():
+            query += f" {line}"
+            if ";" in query:
+                print(query)
+                get_db_cursor(connection).execute(query)
+                connection.commit()
+                query = ""
+
+              
     print("Banco de Dados criado\n")
