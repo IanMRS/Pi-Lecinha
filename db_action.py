@@ -18,22 +18,13 @@ class Funcs():
     print("Banco de Dados criado\n")
 
 
-    def db_query(self, query, out = ""):
+    def db_input(self, query, data = "", show = ""):
         connection = dbc.connect_db()
         cursor = dbc.get_db_cursor(connection)
-        cursor.execute(query)
+        output = cursor.execute(query if not data else query, data)
         connection.commit()
-        print(out)
-        #connection.close()
-
-
-    def db_input(self, query, data, out = ""):
-        connection = dbc.connect_db()
-        cursor = dbc.get_db_cursor(connection)
-        cursor.execute(query, data)
-        connection.commit()
-        print(out)
-        ##connection.close()
+        print(show)
+        return output
 
 
     def limpa_tela(self):
@@ -53,7 +44,7 @@ class Funcs():
     def select_lista(self):
         # Atualiza a lista de clientes na interface
         self.lista_cliente.delete(*self.lista_cliente.get_children())
-        lista = self.cursor.execute("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC;""")
+        lista = self.db_input("""SELECT cod, nome_cliente, telefone FROM clientes ORDER BY nome_cliente ASC;""")
         for i in lista:
             self.lista_cliente.insert("", END, values=i)
 
@@ -108,8 +99,7 @@ class Funcs():
 
         query += " ORDER BY nome_cliente ASC"
         
-        cursor.execute(query, params)
-        busca_nome_cliente = cursor.fetchall()
+        busca_nome_cliente = self.db_input(query, params)
         
         for i in busca_nome_cliente:
             self.lista_cliente.insert("", END, values=i)
