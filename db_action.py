@@ -4,8 +4,6 @@ from tkinter import ttk
 import db_connection as dbc
 
 class Funcs():
-    dbc.create_db()
-
     def db_input(self, query, data = "", show = ""):
         connection = dbc.connect_db()
         cursor = dbc.get_db_cursor(connection)

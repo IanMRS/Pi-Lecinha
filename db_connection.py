@@ -1,11 +1,10 @@
 import sqlite3 as sql
 
 def connect_db():
-    # Conecta ao banco de dados via SQLite
     connection = sql.connect("banco.db")
-    print("Conectando ao banco de Dados\n")
 
     return connection
+    print("Conectando ao banco de Dados\n")
 
 
 def get_db_cursor(connection):
@@ -26,5 +25,4 @@ def create_db():
                 connection.commit()
                 query = ""
 
-              
     print("Banco de Dados criado\n")
