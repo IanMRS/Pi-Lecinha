@@ -74,17 +74,21 @@ class Application(dba.Funcs):
         self.bt_apagar = Button(self.frame_1, text="Apagar", command=self.deleta_cliente)
         self.bt_apagar.place(relx=0.85, rely=0.1, relwidth=0.1, relheight=0.15)
 
+
         self.lb_codigo = Label(self.frame_1, text="Código")
         self.lb_codigo.place(relx=0.05, rely=0.05, relwidth=0.1, relheight=0.1)
 
         self.codigo_entry = Entry(self.frame_1)
         self.codigo_entry.place(relx=0.05, rely=0.15, relwidth=0.1, relheight=0.1)
 
+
         self.lb_nome = Label(self.frame_1, text="Nome")
         self.lb_nome.place(relx=0.05, rely=0.35, relwidth=0.1, relheight=0.1)
 
         self.nome_entry = Entry(self.frame_1)
         self.nome_entry.place(relx=0.05,rely=0.45, relwidth=0.90, relheight=0.1)
+
+
         self.lb_telefone = Label(self.frame_1, text="Telefone")
         self.lb_telefone.place(relx=0.05, rely=0.6, relwidth=0.1, relheight=0.1)
 
