@@ -1,16 +1,15 @@
-import mysql.connector
+import sqlite3 as sql
 
-def connect_to_db():
-    connection = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
-        user="root",
-        password="",
-        database="banco"
-    )
+def connect_db():
+    # Conecta ao banco de dados via SQLite
+    connection = sql.connect("banco.db")
+    print("Conectando ao banco de Dados\n")
+
     return connection
 
-def get_db_cursor(connect):
-    cursor = connect.cursor()
+def get_db_cursor(connection):
+    return connection.cursor()
 
-    return cursor
+def disconnect_db(connection):
+    # Fecha a conexão com o banco de dados
+    connection.close()
