@@ -4,19 +4,7 @@ from tkinter import ttk
 import db_connection as dbc
 
 class Funcs():
-    connection = dbc.connect_db()
-    cursor = dbc.get_db_cursor(connection)
-    cursor.execute(
-            """ CREATE TABLE IF NOT EXISTS clientes (
-                    cod INTEGER PRIMARY KEY, 
-                    nome_cliente CHAR(255) NOT NULL,
-                    telefone INTEGER(20) NOT NULL
-                    );
-            """)
-
-    connection.commit()
-    print("Banco de Dados criado\n")
-
+    dbc.create_db()
 
     def db_input(self, query, data = "", show = ""):
         connection = dbc.connect_db()
@@ -25,13 +13,6 @@ class Funcs():
         connection.commit()
         print(show)
         return output
-
-
-    def limpa_tela(self):
-        # Limpa os campos de entrada (Entry)
-        self.codigo_entry.delete(0, END)
-        self.nome_entry.delete(0, END)
-        self.telefone_entry.delete(0, END)
 
 
     def variaveis(self):
