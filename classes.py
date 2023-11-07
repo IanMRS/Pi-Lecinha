@@ -1,8 +1,9 @@
 from tkinter import *
 
 class Window(Frame):
-    def __init__(self):
+    def __init__(self,title=None):
         self.root = Tk()
+        self.root.title(title)
         pass
 
     def start(self):
@@ -11,7 +12,6 @@ class Window(Frame):
     def stop(self):
         self.root.destroy()
 
-janela = Window()
-janela.root.wm_title("TESTE")
+janela = Window("TESTE")
 
 janela.start()
