@@ -51,6 +51,21 @@ class Application(dba.Funcs):
         self.telefone_entry.delete(0, END)
 
 
+    def update_lista(self):
+        # Atualiza a lista de clientes na interface
+        self.lista_cliente.delete(*self.lista_cliente.get_children())
+        lista = self.db_input("""SELECT id, nome, fone FROM cliente ORDER BY nome ASC;""")
+        for i in lista:
+            self.lista_cliente.insert("", END, values=i)
+
+
+    def press_button(self, action):
+        #É recomendável que ponha isso toda vez q um botão for apertado e altere as listas
+        action()
+        self.update_lista()
+        self.limpa_tela()
+
+
     def frames_da_tela(self):
         # Criação dos frames para organizar os elementos
         self.frame_1 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
@@ -62,19 +77,19 @@ class Application(dba.Funcs):
 
     def widgtes_frame1(self):
         # Elementos no frame 1
-        self.bt_limpar = Button(self.frame_1, text="Limpar", command=self.limpa_tela)
+        self.bt_limpar = Button(self.frame_1, text="Limpar", command=lambda: self.press_button(self.limpa_tela))
         self.bt_limpar.place(relx=0.2, rely=0.1, relwidth=0.1, relheight=0.15)
 
         self.bt_buscar = Button(self.frame_1, text="Buscar", command=self.busca_cliente)
         self.bt_buscar.place(relx=0.3, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        self.bt_novo = Button(self.frame_1, text="Novo", command=self.add_cliente)
+        self.bt_novo = Button(self.frame_1, text="Novo", command=lambda: self.press_button(self.add_cliente))
         self.bt_novo.place(relx=0.65, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        self.bt_alterar = Button(self.frame_1, text="Alterar", command=self.alterar_cliente)
+        self.bt_alterar = Button(self.frame_1, text="Alterar", command=lambda: self.press_button(self.alterar_cliente))
         self.bt_alterar.place(relx=0.75, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        self.bt_apagar = Button(self.frame_1, text="Apagar", command=self.deleta_cliente)
+        self.bt_apagar = Button(self.frame_1, text="Apagar", command=lambda: self.press_button(self.deleta_cliente))
         self.bt_apagar.place(relx=0.85, rely=0.1, relwidth=0.1, relheight=0.15)
 
 

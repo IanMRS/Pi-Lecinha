@@ -163,14 +163,6 @@ class Funcs():
         self.fone = self.telefone_entry.get()
 
 
-    def update_lista(self):
-        # Atualiza a lista de clientes na interface
-        self.lista_cliente.delete(*self.lista_cliente.get_children())
-        lista = self.db_input("""SELECT id, nome, fone FROM cliente ORDER BY nome ASC;""")
-        for i in lista:
-            self.lista_cliente.insert("", END, values=i)
-
-
     def add_cliente(self):
         # Adiciona um cliente ao banco de dados
         self.variaveis()
@@ -178,17 +170,10 @@ class Funcs():
                     INSERT INTO cliente (nome, fone) VALUES (?,?)
                             """, (self.nome, self.fone), "Adicionando Cliente\n")
 
-        self.update_lista()
-        self.limpa_tela()
-
-
     def deleta_cliente(self):
         # Deleta um cliente do banco de dados
         self.variaveis()
         self.db_input("""DELETE FROM cliente WHERE id= ?""", self.codigo,"Apagando cliente\n")
-
-        self.update_lista() # Adicione esta linha para atualizar a lista imediatamente
-        self.limpa_tela()
 
 
     def alterar_cliente(self):
@@ -196,8 +181,6 @@ class Funcs():
         self.variaveis()
         self.db_input("""UPDATE cliente SET nome = ?, fone=? WHERE id = ?""",
                             (self.nome, self.fone, self.codigo),"Alterando Cliente")
-        self.update_lista()
-
 
     def busca_cliente(self):
         connection = dbc.connect_db()
