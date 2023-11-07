@@ -6,11 +6,9 @@ import db_action as dba
 #from reportlab.pdfgen import canvas 
 #from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
 
-root = Tk()  # Cria uma instância da classe Tk(), que representa a janela principal da interface gráfica
-
 class Application(dba.Funcs):
     def __init__(self):
-        self.root = root
+        self.root = Tk() # Cria uma instância da classe Tk(), que representa a janela principal da interface gráfica
         self.tela()
         self.frames_da_tela()
         self.widgtes_frame1()
