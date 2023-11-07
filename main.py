@@ -3,4 +3,4 @@ import manager_client as mc
 
 dbc.create_db() # Cria um banco de dados local
 
-mc.Application().start() # Cria uma instância da classe Application, o que inicia a aplicação TKINTER
+mc.maneja_clientes.start() # Cria uma instância da classe Application, o que inicia a aplicação TKINTER
