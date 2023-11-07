@@ -153,7 +153,7 @@ class CRUD:
         print("Valor atualizado com sucesso")
 
 
-    def delete(self, condition = "1=1"):
+    def delete(self, condition):
         """
         Delete records from the database table based on a condition.
 
