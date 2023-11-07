@@ -1,6 +1,3 @@
-from tkinter import *
-from tkinter import ttk
-
 import db_connection as dbc
 
 class CRUD:
