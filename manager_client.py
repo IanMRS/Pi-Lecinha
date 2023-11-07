@@ -15,7 +15,12 @@ class Application(dba.Funcs):
         self.tabela()
         self.update_lista()
         self.Menus()
-        root.mainloop()
+
+    def stop(self):
+        self.root.destroy()
+
+    def start(self):
+        self.root.mainloop()
 
 
     def double_click(self, event):
@@ -120,11 +125,8 @@ class Application(dba.Funcs):
         filemenu = Menu(menubar)
         filemenu2 = Menu(menubar)
 
-        def Quit():
-            self.root.destroy()
-
         menubar.add_cascade(label="Opções", menu=filemenu)
         menubar.add_cascade(label="Sobre", menu=filemenu2)
 
-        filemenu.add_command(label="Sair", command=Quit)
+        filemenu.add_command(label="Sair", command=self.stop)
         filemenu2.add_command(label="Limpa Cliente", command=self.limpa_tela)
