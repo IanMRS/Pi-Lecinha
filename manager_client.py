@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-import db_action as dba
+import crud as c
 
 #from reportlab.pdfgen import canvas 
 #from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
@@ -160,4 +160,4 @@ class Application():
         filemenu.add_command(label="Sair", command=self.stop)
         filemenu2.add_command(label="Limpa Cliente", command=self.limpa_tela)
 
-maneja_clientes = Application(dba.crud_clientes)
+maneja_clientes = Application(c.crud_clientes)
