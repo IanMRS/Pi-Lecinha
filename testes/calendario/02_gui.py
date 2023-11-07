@@ -5,6 +5,9 @@ def show_current_month():
     global current_date
     year, month = current_date.year, current_date.month
     create_day_buttons(year, month)
+    
+    # Update the current_month label
+    current_month.config(text=num_to_month(month))
 
 def show_previous_month():
     global current_date
@@ -36,15 +39,36 @@ def create_day_buttons(year, month):
         button.grid_forget()  # Clear existing buttons
 
     _, last_day = calendar.monthrange(year, month)
+    first_weekday, _ = calendar.monthrange(year, month)
+
     for i in range(1, last_day + 1):
-        day_button = tk.Button(frame, text=str(i), command=lambda i=i: show_day(i), width=button_width, height=button_height)
-        row = 4 + (i - 1) // 7
-        col = (i - 1) % 7
+        day_button = tk.Button(frame, text=str(i), command=lambda i=i: show_day(i), width=button_width, height=button_height,borderwidth=2, relief="ridge")
+        row = 4 + (i + first_weekday - 2) // 7
+        col = 1+ (i + first_weekday - 2) % 7
+
         day_button.grid(row=row, column=col)
         day_buttons.append(day_button)
 
+def num_to_month(num):
+    months = {
+        1: "January",
+        2: "February",
+        3: "March",
+        4: "April",
+        5: "May",
+        6: "June",
+        7: "July",
+        8: "August",
+        9: "September",
+        10: "October",
+        11: "November",
+        12: "December"
+    }
+    return months[num]
+
+
 def main():
-    global root, frame, current_date, day_buttons, cal_display, button_width, button_height
+    global root, frame, current_date, day_buttons, cal_display, button_width, button_height, current_month
 
     root = tk.Tk()
     root.title("Python Calendar")
@@ -55,17 +79,22 @@ def main():
     current_date = calendar.datetime.datetime.now()
 
     prev_month_button = tk.Button(frame, text="Previous Month", command=show_previous_month)
-    prev_month_button.grid(row=1, column=0)
+    prev_month_button.grid(row=0, column=0)
+
+    current_month = tk.Label(frame, text=num_to_month(current_date.month))
+    current_month.grid(row=0, column=4)
+
+
     next_month_button = tk.Button(frame, text="Next Month", command=show_next_month)
-    next_month_button.grid(row=1, column=2)
+    next_month_button.grid(row=0, column=8)
 
     days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     for i, day in enumerate(days):
         day_label = tk.Label(frame, text=day)
-        day_label.grid(row=2, column=i)
+        day_label.grid(row=1, column=i+1)
 
     cal_display = tk.Label(frame, text="", justify='left')
-    cal_display.grid(row=3, columnspan=7)
+    cal_display.grid(row=3, columnspan=8)
 
     # Configure uniform button size
     button_width = 5
@@ -76,5 +105,4 @@ def main():
     show_current_month()
     root.mainloop()
 
-if __name__ == "__main__":
-    main()
+main()
