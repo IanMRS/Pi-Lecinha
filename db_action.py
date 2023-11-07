@@ -18,8 +18,9 @@ class CRUD:
         cursor: A cursor object for executing SQL commands.
 
     Methods:
+        - db_input(query, data)
         - insert(data)
-        - read()
+        - read(condition)
         - update(data, condition)
         - delete(condition)
         - close_connection()
@@ -40,8 +41,24 @@ class CRUD:
 
         self.table_name = table_name
         self.columns = columns
-        self.conn = dbc.connect_db()
-        self.cursor = self.conn.cursor()
+        self.connection = dbc.connect_db()
+        self.cursor = dbc.get_db_cursor(self.connection)
+
+
+    def db_input(self, query, data = ""):
+        """
+        Execute a database query and commit the transaction.
+
+        Args:
+            query (str): A SQL query string to be executed.
+            data (tuple, optional): Data to be used with the query (default: ""). The data should match the query's placeholders, if any.
+
+        Example usage:
+            db_input("INSERT INTO users (name, age) VALUES (?, ?)", ("Alice", 30))
+        """
+        output = self.cursor.execute(query if not data else query, data)
+        self.connection.commit()
+        return output
 
 
     def insert(self, data):
@@ -58,12 +75,9 @@ class CRUD:
             my_crud.insert((1, "John Doe", 50000))
         """
 
-        if self.conn is None or self.cursor is None:
-            raise Exception("Connection to the database is not established. Call connect_to_database() first.")
         placeholders = ', '.join(['?'] * len(data))
         insert_query = f"INSERT INTO {self.table_name} ({', '.join(self.columns)}) VALUES ({placeholders})"
-        self.cursor.execute(insert_query, data)
-        self.conn.commit()
+        self.db_input(insert_query, data)
 
 
     def read(self, condition = "1"):
@@ -80,12 +94,8 @@ class CRUD:
             data = my_crud.read()
         """
 
-        if self.conn is None or self.cursor is None:
-            raise Exception("Connection to the database is not established. Call connect_to_database() first.")
         select_query = f"SELECT * FROM {self.table_name} WHERE {condition}"
-        self.cursor.execute(select_query)
-        return self.cursor.fetchall()
-
+        return self.db_input(select_query).fetchall()
 
     def update(self, data, condition = "1"):
         """
@@ -102,11 +112,8 @@ class CRUD:
             my_crud.update("name = 'Updated Name'", "id = 1")
         """
 
-        if self.conn is None or self.cursor is None:
-            raise Exception("Connection to the database is not established. Call connect_to_database() first.")
         update_query = f"UPDATE {self.table_name} SET {data} WHERE {condition}"
-        self.cursor.execute(update_query)
-        self.conn.commit()
+        self.db_input(update_query)
 
 
     def delete(self, condition = "1"):
@@ -123,11 +130,8 @@ class CRUD:
             my_crud.delete("id = 1")
         """
 
-        if self.conn is None or self.cursor is None:
-            raise Exception("Connection to the database is not established. Call connect_to_database() first.")
         delete_query = f"DELETE FROM {self.table_name} WHERE {condition}"
-        self.cursor.execute(delete_query)
-        self.conn.commit()
+        self.db_input(delete_query)
 
 
     def close_connection(self):
@@ -138,8 +142,8 @@ class CRUD:
             my_crud.close_connection()
         """
 
-        if self.conn:
-            self.conn.close()
+        if self.connection:
+            self.connection.close()
 
 
 class Funcs():
