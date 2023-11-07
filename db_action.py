@@ -66,7 +66,7 @@ class CRUD:
         self.conn.commit()
 
 
-    def read(self):
+    def read(self, condition = "1"):
         """
         Retrieve all records from the database table.
 
@@ -82,12 +82,12 @@ class CRUD:
 
         if self.conn is None or self.cursor is None:
             raise Exception("Connection to the database is not established. Call connect_to_database() first.")
-        select_query = f"SELECT * FROM {self.table_name}"
+        select_query = f"SELECT * FROM {self.table_name} WHERE {condition}"
         self.cursor.execute(select_query)
         return self.cursor.fetchall()
 
 
-    def update(self, data, condition):
+    def update(self, data, condition = "1"):
         """
         Update records in the database table based on a condition.
 
@@ -109,7 +109,7 @@ class CRUD:
         self.conn.commit()
 
 
-    def delete(self, condition):
+    def delete(self, condition = "1"):
         """
         Delete records from the database table based on a condition.
 
