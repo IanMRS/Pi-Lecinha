@@ -3,6 +3,47 @@ from tkinter import ttk
 
 import db_connection as dbc
 
+class CRUD:
+    def __init__(self, table_name, columns):
+        self.table_name = table_name
+        self.columns = columns
+        self.conn = dbc.connect_db()
+        self.cursor = self.conn.cursor()
+
+    def insert(self, data):
+        if self.conn is None or self.cursor is None:
+            raise Exception("Connection to the database is not established. Call connect_to_database() first.")
+        placeholders = ', '.join(['?'] * len(data))
+        insert_query = f"INSERT INTO {self.table_name} ({', '.join(self.columns)}) VALUES ({placeholders})"
+        self.cursor.execute(insert_query, data)
+        self.conn.commit()
+
+    def read(self):
+        if self.conn is None or self.cursor is None:
+            raise Exception("Connection to the database is not established. Call connect_to_database() first.")
+        select_query = f"SELECT * FROM {self.table_name}"
+        self.cursor.execute(select_query)
+        return self.cursor.fetchall()
+
+    def update(self, data, condition):
+        if self.conn is None or self.cursor is None:
+            raise Exception("Connection to the database is not established. Call connect_to_database() first.")
+        update_query = f"UPDATE {self.table_name} SET {data} WHERE {condition}"
+        self.cursor.execute(update_query)
+        self.conn.commit()
+
+    def delete(self, condition):
+        if self.conn is None or self.cursor is None:
+            raise Exception("Connection to the database is not established. Call connect_to_database() first.")
+        delete_query = f"DELETE FROM {self.table_name} WHERE {condition}"
+        self.cursor.execute(delete_query)
+        self.conn.commit()
+
+    def close_connection(self):
+        if self.conn:
+            self.conn.close()
+
+
 class Funcs():
     def db_input(self, query, data = "", show = ""):
         connection = dbc.connect_db()
