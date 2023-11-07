@@ -21,6 +21,7 @@ class CRUD:
         - db_input(query, data)
         - insert(data)
         - read(condition)
+        - search(dataset)
         - update(data, condition)
         - delete(condition)
         - close_connection()
@@ -56,6 +57,7 @@ class CRUD:
         Example usage:
             db_input("INSERT INTO users (name, age) VALUES (?, ?)", ("Alice", 30))
         """
+
         output = self.cursor.execute(query if not data else query, data)
         self.connection.commit()
         return output
@@ -80,7 +82,7 @@ class CRUD:
         self.db_input(insert_query, data)
 
 
-    def read(self, condition = "1"):
+    def read(self, condition = "1=1"):
         """
         Retrieve all records from the database table.
 
@@ -97,7 +99,33 @@ class CRUD:
         select_query = f"SELECT * FROM {self.table_name} WHERE {condition}"
         return self.db_input(select_query).fetchall()
 
-    def update(self, data, condition = "1"):
+
+    def search(self, dataset):
+        """
+        Search for records in the database table based on the provided dataset.
+
+        Args:
+            dataset (list): A list of values to search for in corresponding columns.
+
+        Returns:
+            list: A list of tuples, each representing a row in the table that matches the search criteria.
+
+        Example usage:
+            # Example dataset: [value1, value2, None, value4]
+            # The None value means the column will not be included in the search.
+            data = my_crud.search([value1, value2, None, value4])
+        """
+
+        condition = "1=1"
+
+        for i, data in enumerate(dataset):
+            if data is not None:
+                condition += f" AND {self.columns[i]} LIKE '%{data}%'"
+
+        return self.read(condition)
+
+
+    def update(self, data, condition = "1=1"):
         """
         Update records in the database table based on a condition.
 
@@ -116,7 +144,7 @@ class CRUD:
         self.db_input(update_query)
 
 
-    def delete(self, condition = "1"):
+    def delete(self, condition = "1=1"):
         """
         Delete records from the database table based on a condition.
 
@@ -183,8 +211,6 @@ class Funcs():
                             (self.nome, self.fone, self.codigo),"Alterando Cliente")
 
     def busca_cliente(self):
-        connection = dbc.connect_db()
-        cursor = dbc.get_db_cursor(connection)
         self.lista_cliente.delete(*self.lista_cliente.get_children())
         nome = self.nome_entry.get()
         fone = self.telefone_entry.get()
