@@ -12,6 +12,7 @@ class Window(Frame):
     def stop(self):
         self.root.destroy()
 
-janela = Window("TESTE")
+    def test():
+        janela = Window("TESTE")
 
-janela.start()
+        janela.start()
