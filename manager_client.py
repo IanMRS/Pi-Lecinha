@@ -16,8 +16,10 @@ class Application(dba.Funcs):
         self.update_lista()
         self.Menus()
 
+
     def stop(self):
         self.root.destroy()
+
 
     def start(self):
         self.root.mainloop()
@@ -133,6 +135,7 @@ class Application(dba.Funcs):
         self.lista_cliente.configure(yscroll=self.scroll_lista.set)  # A barra pertence à lista
         self.scroll_lista.place(relx=0.95, rely=0.1, relwidth=0.04, relheight=0.85)
         self.lista_cliente.bind("<Double-1>", self.double_click)
+
 
     def Menus(self): #opções, a barrinha q aparece encima, calma q mexo
         menubar = Menu(self.root)
