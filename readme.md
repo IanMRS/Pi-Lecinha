@@ -13,6 +13,9 @@
 <li>
 <a href="https://grugbrain.dev/">siga como se sua vida dependesse nisso</a>
 </li>
+<li>
+<a href="https://docs.python-guide.org/writing/structure/">Útil para quando dúvidas de organização sugirem</a>
+</li>
 <li>Tente criar funções genéricas</li>
 <li>Separe funcionalidades em diferentes scripts</li>
 </ul>
