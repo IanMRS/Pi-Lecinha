@@ -113,13 +113,13 @@ class CRUD:
             data = my_crud.search([value1, value2, None, value4])
         """
 
-        condition = "1=1"
+        conditions = ["1=1"]
 
         for i, data in enumerate(dataset):
             if data is not None and data is not "":
-                condition += f" AND {self.columns[i]} LIKE '%{data}%'"
+                conditions.append(f" AND {self.columns[i]} LIKE '%{data}%'")
 
-        print(self.read(condition))
+        condition = "".join(conditions)
 
         return self.read(condition)
 
@@ -148,8 +148,6 @@ class CRUD:
 
         update_query = f"UPDATE {self.table_name} SET {','.join(columns_altered)} WHERE {condition}"
 
-        print(update_query)
-
         self.db_input(update_query, values)
 
         print("Valor atualizado com sucesso")
@@ -171,6 +169,8 @@ class CRUD:
 
         delete_query = f"DELETE FROM {self.table_name} WHERE {condition}"
         self.db_input(delete_query)
+
+        print("Valor apagado com sucesso")
 
 
     def close_connection(self):
