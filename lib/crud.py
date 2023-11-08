@@ -228,5 +228,3 @@ class CRUD:
         crud.close_connection()
 
 crud_clientes = CRUD("cliente",["nome", "fone", "obs"])
-
-CRUD.test()

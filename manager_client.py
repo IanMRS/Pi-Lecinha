@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-import crud as c
+from lib import crud as c
 
 #from reportlab.pdfgen import canvas 
 #from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
