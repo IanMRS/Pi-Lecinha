@@ -56,10 +56,12 @@ class Application():
         self.obs_entry.delete(0, END)
 
 
-    def update_lista(self):
+    def update_lista(self, lista = None):
         # Atualiza a lista de clientes na interface
         self.lista_cliente.delete(*self.lista_cliente.get_children())
-        for i in self.crud.read():
+        if lista is None:
+            lista = self.crud.read()
+        for i in lista:
             self.lista_cliente.insert("", END, values=i)
 
 
@@ -112,7 +114,7 @@ class Application():
         self.bt_limpar = Button(self.frame_1, text="Limpar", command=self.limpa_tela)
         self.bt_limpar.place(relx=0.2, rely=0.1, relwidth=0.1, relheight=0.15)
 
-        self.bt_buscar = Button(self.frame_1, text="Buscar", command=lambda: self.crud.search([self.nome_entry.get(),self.telefone_entry.get(), self.obs_entry.get()]))
+        self.bt_buscar = Button(self.frame_1, text="Buscar", command=lambda: self.update_lista(self.crud.search([self.nome_entry.get(),self.telefone_entry.get(), self.obs_entry.get()])))
         self.bt_buscar.place(relx=0.3, rely=0.1, relwidth=0.1, relheight=0.15)
 
         self.bt_novo = Button(self.frame_1, text="Novo", command=lambda: self.press_button(self.crud.insert([self.nome_entry.get(),self.telefone_entry.get(),self.obs_entry.get()])))

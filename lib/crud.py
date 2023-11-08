@@ -116,8 +116,10 @@ class CRUD:
         condition = "1=1"
 
         for i, data in enumerate(dataset):
-            if data is not None:
+            if data is not None and data is not "":
                 condition += f" AND {self.columns[i]} LIKE '%{data}%'"
+
+        print(self.read(condition))
 
         return self.read(condition)
 
