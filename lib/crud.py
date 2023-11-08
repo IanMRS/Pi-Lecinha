@@ -184,49 +184,4 @@ class CRUD:
         if self.connection:
             self.connection.close()
 
-
-    def test():
-        """
-            Add all necessary tests for this function here, this function should never ask for parameters
-
-        Example usage:
-            CRUD.test()
-        """
-
-        print("Tentando criar o CRUD")
-
-        table_name = "cliente"
-        columns = ["nome", "fone","obs"]
-        crud = CRUD(table_name, columns)
-
-
-        print("Tentando inserir dados")
-
-        crud.insert(("John Doe", "12345432211", "fumante"))
-        crud.insert(("Jane Smith", "12345432241", "sonegadora de imposto"))        
-
-
-        print("Tentando alterar dados")
-
-        print(f"Coluna a ser alterada (ANTES): \n{crud.read('id=1')}\n")
-        crud.update([None, "32", None], "id=1")
-        print(f"Coluna a ser alterada (DEPOIS): \n{crud.read('id=1')}\n")
-        
-
-        print("Tentando apagar dados")
-
-        print(f"Tabela (ANTES): \n{crud.read()}\n")
-        crud.delete("id=2")
-        print(f"Tabela (DEPOIS): \n{crud.read()}\n")
-
-        
-        print("Tentando pesquisar dados")
-
-        print(f"{crud.search(['J', None, None])}\n")
-
-
-        print("Fechando o servidor")
-
-        crud.close_connection()
-
 crud_clientes = CRUD("cliente",["nome", "fone", "obs"])
