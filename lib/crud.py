@@ -1,4 +1,4 @@
-from lib import connection as dbc
+import connection as dbc
 
 class CRUD:
     """

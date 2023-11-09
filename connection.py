@@ -18,6 +18,7 @@ def create_db():
         query=""
 
         for line in banco.readlines():
+            print(line)
             query += f" {line}"
             if ";" in query:
                 print(query)
@@ -26,3 +27,5 @@ def create_db():
                 query = ""
 
     print("Banco de Dados criado\n")
+
+create_db()
