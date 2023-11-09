@@ -52,6 +52,8 @@ def create_day_buttons(year, month):
         day_button.grid(row=row, column=col)
         day_buttons.append(day_button)
 
+    return day_buttons
+
 def num_to_month(num):
     months = {
         1: "January",
