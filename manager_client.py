@@ -77,14 +77,24 @@ class Application():
     def frames_da_tela(self):
         # Criação dos frames para organizar os elementos
         self.frame_1 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
-        self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.6)
+        self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.46)
 
         self.frame_2 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
-        self.frame_2.place(relx=0.02, rely=.6, relwidth=0.96, relheight=0.40)
+        self.frame_2.place(relx=0.02, rely=0.5, relwidth=0.96, relheight=0.46)
 
 
     def widgtes_frame1(self):
-        # Elementos no frame 1
+        self.abas = ttk.Notebook(self.frame_1)
+        self.aba1 = Frame(self.abas)
+        self.aba2= Frame(self.abas)
+        
+        self.aba1.configure(background ="gray")
+        self.aba2.configure(background="lightray")
+        
+        self.abas.add(self.aba1, text= "Cadastro de Clientes")
+        self.abas.add(self.aba2, text="Caléndario")
+        
+        self.abas.place(relx=0, rely=0. relwit))        # Elementos no frame 1
         self.lb_codigo = Label(self.frame_1, text="Código")
         self.lb_codigo.place(relx=0.05, rely=0.05, relwidth=0.1, relheight=0.1)
 
@@ -93,24 +103,24 @@ class Application():
 
 
         self.lb_nome = Label(self.frame_1, text="Nome")
-        self.lb_nome.place(relx=0.05, rely=0.26, relwidth=0.1, relheight=0.1)
+        self.lb_nome.place(relx=0.05, rely=0.35, relwidth=0.1, relheight=0.1)
 
         self.nome_entry = Entry(self.frame_1)
-        self.nome_entry.place(relx=0.05,rely=0.36, relwidth=0.90, relheight=0.1)
+        self.nome_entry.place(relx=0.05,rely=0.45, relwidth=0.90, relheight=0.12)
 
 
         self.lb_telefone = Label(self.frame_1, text="Telefone")
-        self.lb_telefone.place(relx=0.05, rely=0.47, relwidth=0.1, relheight=0.1)
+        self.lb_telefone.place(relx=0.05, rely=0.6, relwidth=0.1, relheight=0.12)
 
         self.telefone_entry = Entry(self.frame_1)
-        self.telefone_entry.place(relx=0.05, rely=0.57, relwidth=0.4, relheight=0.1)
+        self.telefone_entry.place(relx=0.05, rely=0.7, relwidth=0.4, relheight=0.12)
 
 
         self.lb_obs = Label(self.frame_1, text="Observações")
-        self.lb_obs.place(relx=0.05, rely=0.68, relwidth=0.1, relheight=0.1)
+        self.lb_obs.place(relx=0.5, rely=0.6, relwidth=0.1, relheight=0.1)
 
         self.obs_entry = Entry(self.frame_1)
-        self.obs_entry.place(relx=0.05, rely=.78, relwidth=0.4, relheight=0.1)
+        self.obs_entry.place(relx=0.5, rely=0.7, relwidth=0.45, relheight=0.12)
 
 
         self.bt_limpar = Button(self.frame_1, text="Limpar", command=self.limpa_tela)
