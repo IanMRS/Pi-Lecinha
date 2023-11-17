@@ -76,7 +76,11 @@ class Application():
         # Aba 2
         self.aba2 = Frame(self.notebook)
         self.notebook.add(self.aba2, text='Calendário')
-
+        
+        # Aba 3
+        self.aba3= Frame(self.notebook)
+        self.notebook.add(self.aba3, text='Dashbord Financeiro')
+        
         # Frame 1 dentro da aba 1
         self.frame_1 = Frame(self.aba1, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
         self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.46)
