@@ -19,14 +19,11 @@ class Application():
         self.update_lista()
         self.Menus()
 
-
     def stop(self):
         self.root.destroy()
 
-
     def start(self):
         self.root.mainloop()
-
 
     def double_click(self, event):
         # Manipula o evento de duplo clique em uma linha da lista
@@ -39,7 +36,6 @@ class Application():
             self.telefone_entry.insert(END, col3)
             self.obs_entry.insert(END, col4)
 
-
     def tela(self):
         # Configuração da janela principal
         self.root.title("Cadastro de Clientes")
@@ -49,14 +45,12 @@ class Application():
         self.root.maxsize(width=1920, height=1080)
         self.root.minsize(width=600, height=500)
 
-
     def limpa_tela(self):
         # Limpa os campos de entrada (Entry)
         self.codigo_entry.delete(0, END)
         self.nome_entry.delete(0, END)
         self.telefone_entry.delete(0, END)
         self.obs_entry.delete(0, END)
-
 
     def update_lista(self, lista = None):
         # Atualiza a lista de clientes na interface
@@ -66,35 +60,36 @@ class Application():
         for i in lista:
             self.lista_cliente.insert("", END, values=i)
 
-
     def press_button(self, action):
         #É recomendável que ponha isso toda vez q um botão for apertado e altere as listas
         action
         self.update_lista()
         self.limpa_tela()
 
-
     def frames_da_tela(self):
-        # Criação dos frames para organizar os elementos
-        self.frame_1 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
+        self.notebook = ttk.Notebook(self.root)  # Criar o Notebook
+
+        # Aba 1
+        self.aba1 = Frame(self.notebook)
+        self.notebook.add(self.aba1, text='Cadastro de Cliente')  # Adicionar a aba ao Notebook
+
+        # Aba 2
+        self.aba2 = Frame(self.notebook)
+        self.notebook.add(self.aba2, text='Calendário')
+
+        # Frame 1 dentro da aba 1
+        self.frame_1 = Frame(self.aba1, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
         self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.46)
 
-        self.frame_2 = Frame(self.root, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
+        # Frame 2 dentro da aba 1
+        self.frame_2 = Frame(self.aba1, bd=4, bg='#045D32', highlightbackground='#ffffff', highlightthickness=1)
         self.frame_2.place(relx=0.02, rely=0.5, relwidth=0.96, relheight=0.46)
 
+        self.notebook.pack(fill='both', expand=True)  # Empacotar o Notebook para exibição
+        # Criação dos frames para organizar os elementos
 
     def widgtes_frame1(self):
-        self.abas = ttk.Notebook(self.frame_1)
-        self.aba1 = Frame(self.abas)
-        self.aba2= Frame(self.abas)
-        
-        self.aba1.configure(background ="gray")
-        self.aba2.configure(background="lightray")
-        
-        self.abas.add(self.aba1, text= "Cadastro de Clientes")
-        self.abas.add(self.aba2, text="Caléndario")
-        
-        self.abas.place(relx=0, rely=0. relwit))        # Elementos no frame 1
+
         self.lb_codigo = Label(self.frame_1, text="Código")
         self.lb_codigo.place(relx=0.05, rely=0.05, relwidth=0.1, relheight=0.1)
 
@@ -138,7 +133,6 @@ class Application():
         self.bt_apagar = Button(self.frame_1, text="Apagar", command=lambda: self.press_button(self.crud.delete(f"id = {self.codigo_entry.get()}")))
         self.bt_apagar.place(relx=0.85, rely=0.1, relwidth=0.1, relheight=0.15)
 
-
     def tabela(self):
         # Criação da tabela no frame 2
         self.lista_cliente = ttk.Treeview(self.frame_2, height=3, columns=("col1", "col2", "col3", "col4"))
@@ -160,7 +154,6 @@ class Application():
         self.lista_cliente.configure(yscroll=self.scroll_lista.set)  # A barra pertence à lista
         self.scroll_lista.place(relx=0.95, rely=0.1, relwidth=0.04, relheight=0.85)
         self.lista_cliente.bind("<Double-1>", self.double_click)
-
 
     def Menus(self): #opções, a barrinha q aparece encima, calma q mexo
         menubar = Menu(self.root)
