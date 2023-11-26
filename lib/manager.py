@@ -68,23 +68,23 @@ class GenericManager(Frame):
         self.id_label = Label(self.inputs, text="Código")
         self.id_entrie = Entry(self.inputs)
         self.id_label.grid(row=0,column=0)
-        self.id_entrie.grid(row=0,column=1)
+        self.id_entrie.grid(row=1,column=0)
 
         for i,column in enumerate(self.crud.columns):
             label = Label(self.inputs, text=column.capitalize())
             entrie = Entry(self.inputs)
-            label.grid(row=i+1,column=0)
-            entrie.grid(row=i+1,column=1)
+            label.grid(row=0,column=i+1)
+            entrie.grid(row=1,column=i+1)
             self.entries.append(entrie)
             self.labels.append(label)
 
         def entries_content(): return [entrie_text.get() for entrie_text in self.entries]
 
-        self.botoes = [Button(self.top_row, text="Limpar", command=self.limpa_tela),
-                       Button(self.top_row, text="Buscar", command=lambda: self.update_lista(self.crud.search(entries_content()))),
-                       Button(self.top_row, text="Novo", command=lambda: self.press_button(self.crud.insert(entries_content()))),
+        self.botoes = [Button(self.top_row, text="Limpar",  command=self.limpa_tela),
+                       Button(self.top_row, text="Buscar",  command=lambda: self.update_lista(self.crud.search(entries_content()))),
+                       Button(self.top_row, text="Novo",    command=lambda: self.press_button(self.crud.insert(entries_content()))),
                        Button(self.top_row, text="Alterar", command=lambda: self.press_button(self.crud.update(entries_content(), f"id = {self.id_entrie.get()}"))),
-                       Button(self.top_row, text="Apagar", command=lambda: self.press_button(self.crud.delete(f"id = {self.id_entrie.get()}")))]
+                       Button(self.top_row, text="Apagar",  command=lambda: self.press_button(self.crud.delete(f"id = {self.id_entrie.get()}")))]
 
         for i,botao in enumerate(self.botoes):
             botao.grid(row=0,column=i)
