@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS aluguel (
     datatermino DATE NOT NULL,
     valor FLOAT NOT NULL,
     quantia_inquilinos INT NOT NULL,
-    contrato VARCHAR(255) NOT NULL,
     obs VARCHAR(255) NOT NULL,
 
     FOREIGN KEY (origemid) REFERENCES origem(id)
