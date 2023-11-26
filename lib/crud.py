@@ -1,4 +1,4 @@
-import connection as dbc
+from lib import connection as dbc
 
 class CRUD:
     """
@@ -184,4 +184,7 @@ class CRUD:
         if self.connection:
             self.connection.close()
 
-crud_clientes = CRUD("cliente",["nome", "fone", "obs"])
+crud_cliente = CRUD("cliente",["nome", "fone", "obs"])
+crud_origem = CRUD("origem",["nome", "taxa"])
+crud_aluguel = CRUD("aluguel",["clienteid", "origemid", "datainicio","datatermino","valor","quantia_inquilinos","contrato","obs"])
+crud_casa = CRUD("casa",["nome", "capacidade", "quartos","camas","banheiros"])
