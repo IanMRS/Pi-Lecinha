@@ -60,6 +60,8 @@ class GenericManager(Frame):
 
         self.bottom_row = Frame(self)
         self.bottom_row.pack(fill='both', expand=True, padx=10, pady=10)
+        self.bottom_row.grid_columnconfigure(0, weight=1)
+        self.bottom_row.grid_rowconfigure(0, weight=1)
 
     def widgets(self):
         self.entries = []
@@ -90,20 +92,21 @@ class GenericManager(Frame):
             botao.grid(row=0,column=i)
 
     def table(self):
-        table_columns=[]
-        table_columns.append("Código")
-        for column in self.crud.columns:
-            table_columns.append(column)
+        table_columns = ["Código"] + self.crud.columns
 
         # Criação da tabela no frame 2
         self.lista_itens = ttk.Treeview(self.bottom_row, columns=table_columns, show='headings')
         for column in table_columns:
             self.lista_itens.heading(column, text=column.capitalize())
-            self.lista_itens.column(column, width=125)
+            self.lista_itens.column(column, anchor='center')  # Set anchor to center
 
-        self.lista_itens.grid(row=0,column=0)
+        # Configure column stretch behavior
+        for i in range(len(table_columns)):
+            self.lista_itens.column(i, stretch=YES)
 
-        self.scroll_lista = Scrollbar(self.bottom_row, orient='vertical')  # Barra de rolagem da lista
-        self.lista_itens.configure(yscroll=self.scroll_lista.set)  # A barra pertence à lista
-        self.scroll_lista.grid(row=0,column=1)
+        self.lista_itens.grid(row=0, column=0, sticky="nsew")  # Set sticky to "nsew" to stretch in all directions
+
+        self.scroll_lista = Scrollbar(self.bottom_row, orient=VERTICAL, command=self.lista_itens.yview)
+        self.lista_itens.configure(yscroll=self.scroll_lista.set)
+        self.scroll_lista.grid(row=0, column=1, sticky="ns")  # Set sticky to "ns" for vertical scrollbar
         self.lista_itens.bind("<Double-1>", self.double_click)
