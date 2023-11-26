@@ -67,7 +67,7 @@ class Calendario(Frame):
 
 
     def show_day(self, day):#função quando vc clica em botão
-        self.cal_display.config(text=f"You clicked on day {day}")
+        self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month}{day}")
 
 
     def create_day_buttons(self, year, month):
