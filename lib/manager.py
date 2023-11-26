@@ -82,10 +82,10 @@ class GenericManager(Frame):
 
         def entries_content(): return [entrie_text.get() for entrie_text in self.entries]
 
-        self.botoes = [Button(self.top_row, text="Limpar",  command=self.limpa_tela),
-                       Button(self.top_row, text="Buscar",  command=lambda: self.update_lista(self.crud.search(entries_content()))),
-                       Button(self.top_row, text="Novo",    command=lambda: self.press_button(self.crud.insert(entries_content()))),
+        self.botoes = [Button(self.top_row, text="Novo",    command=lambda: self.press_button(self.crud.insert(entries_content()))),
                        Button(self.top_row, text="Alterar", command=lambda: self.press_button(self.crud.update(entries_content(), f"id = {self.id_entrie.get()}"))),
+                       Button(self.top_row, text="Buscar",  command=lambda: self.update_lista(self.crud.search(entries_content()))),
+                       Button(self.top_row, text="Limpar",  command=self.limpa_tela),
                        Button(self.top_row, text="Apagar",  command=lambda: self.press_button(self.crud.delete(f"id = {self.id_entrie.get()}")))]
 
         for i,botao in enumerate(self.botoes):
