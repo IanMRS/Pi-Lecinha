@@ -53,10 +53,10 @@ class GenericManager(Frame):
 
     def frames(self):
         self.top_row = Frame(self)
-        self.top_row.pack(fill='both', expand=True, padx=10, pady=10)
+        self.top_row.pack(padx=10, pady=10)
 
         self.inputs = Frame(self)
-        self.inputs.pack(fill='both', expand=True, padx=10, pady=10)
+        self.inputs.pack(padx=10, pady=10)
 
         self.bottom_row = Frame(self)
         self.bottom_row.pack(fill='both', expand=True, padx=10, pady=10)
