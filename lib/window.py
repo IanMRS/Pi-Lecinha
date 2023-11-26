@@ -18,7 +18,10 @@ class Window(Frame):
         self.root.destroy()
 
     def full_screen(self):
-        self.root.geometry('{0}x{1}+0+0'.format(self.root.winfo_screenwidth(), self.root.winfo_screenheight()))
+        try:
+            self.root.geometry('{0}x{1}+0+0'.format(self.root.winfo_screenwidth(), self.root.winfo_screenheight()))
+        except:
+            pass
 
     def exit_full_screen(self):
         self.root.attributes('-fullscreen', False)
