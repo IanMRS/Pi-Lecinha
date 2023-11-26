@@ -3,6 +3,7 @@ from tkinter import ttk
 from lib import window as w
 from lib import manager as man
 from lib import crud as c
+from lib import calendario as car
 
 class MainScreen(w.Window):
     def __init__(self):
@@ -37,7 +38,7 @@ class MainScreen(w.Window):
             self.notebook.add(self.aba4, text='Alugueis')
 
             # Aba 5
-            self.aba5 = Frame(self.notebook)
+            self.aba5 = car.Calendario(self.notebook)
             self.notebook.add(self.aba5, text='Calendário')
             
             # Aba 6
