@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-
 #from reportlab.pdfgen import canvas 
 #from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
 
@@ -19,31 +18,27 @@ class GenericManager(Frame):
 
 
     def double_click(self, event):
-        # Manipula o evento de duplo clique em uma linha da lista
-        self.limpa_tela()
-        selected_item = self.lista_itens.selection()
-        if selected_item:
-            for n in selected_item:
-                col = self.lista_itens.item(n, 'values')
-                [entrie.insert(END, col[i]) for i, entrie in enumerate(self.entries)]
+        selected_row = self.lista_itens.selection()
+        if selected_row:
+            self.limpa_tela()
+            for row_id in selected_row:
+                columns = self.lista_itens.item(row_id, 'values')
+                [entry.insert(END, col) for col, entry in zip(columns, self.entries)]
 
 
     def limpa_tela(self):
-        # Limpa os campos de entrada (Entry)
-        [entrie.delete(0, END) for entrie in self.entries]
+        [entry.delete(0, END) for entry in self.entries]
 
 
-    def update_lista(self, lista = None):
-        # Atualiza a lista de clientes na interface
+    def update_lista(self, lista=None):
         self.lista_itens.delete(*self.lista_itens.get_children())
         if lista is None:
             lista = self.crud.read()
-        for i in lista:
-            self.lista_itens.insert("", END, values=i)
+        for item in lista:
+            self.lista_itens.insert("", END, values=item)
 
 
     def press_button(self, action):
-        #É recomendável que ponha isso toda vez q um botão for apertado e altere as listas
         action
         self.update_lista()
         self.limpa_tela()
@@ -64,15 +59,12 @@ class GenericManager(Frame):
 
     def widgets(self):
         self.entries = []
-        self.labels = []
-
-        for i,column in enumerate(self.crud.columns):
+        for i, column in enumerate(self.crud.columns):
             label = Label(self.inputs, text=column.capitalize())
-            entrie = Entry(self.inputs)
-            label.grid(row=0,column=i)
-            entrie.grid(row=1,column=i)
-            self.entries.append(entrie)
-            self.labels.append(label)
+            entry = Entry(self.inputs)
+            label.grid(row=0, column=i)
+            entry.grid(row=1, column=i)
+            self.entries.append(entry)
 
         def entries_content(): return [entrie_text.get() for entrie_text in self.entries]
 
@@ -82,26 +74,24 @@ class GenericManager(Frame):
                        Button(self.top_row, text="Limpar",  command=self.limpa_tela),
                        Button(self.top_row, text="Apagar",  command=lambda: self.press_button(self.crud.delete(f"id = {entries_content()[0]}")))]
 
-        for i,botao in enumerate(self.botoes):
-            botao.grid(row=0,column=i)
+        for i, button in enumerate(self.botoes):
+            button.grid(row=0, column=i)
 
 
     def table(self):
         table_columns = self.crud.columns
 
-        # Criação da tabela no frame 2
         self.lista_itens = ttk.Treeview(self.bottom_row, columns=table_columns, show='headings')
         for column in table_columns:
             self.lista_itens.heading(column, text=column.capitalize())
-            self.lista_itens.column(column, anchor='center')  # Set anchor to center
+            self.lista_itens.column(column, anchor='center')
 
-        # Configure column stretch behavior
         for i in range(len(table_columns)):
             self.lista_itens.column(i, stretch=YES)
 
-        self.lista_itens.grid(row=0, column=0, sticky="nsew")  # Set sticky to "nsew" to stretch in all directions
+        self.lista_itens.grid(row=0, column=0, sticky="nsew")
 
         self.scroll_lista = Scrollbar(self.bottom_row, orient=VERTICAL, command=self.lista_itens.yview)
         self.lista_itens.configure(yscroll=self.scroll_lista.set)
-        self.scroll_lista.grid(row=0, column=1, sticky="ns")  # Set sticky to "ns" for vertical scrollbar
+        self.scroll_lista.grid(row=0, column=1, sticky="ns")
         self.lista_itens.bind("<Double-1>", self.double_click)
