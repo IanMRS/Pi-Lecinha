@@ -1,7 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-#from reportlab.pdfgen import canvas 
-#from reportlab.lib.pagesizes import letter. A4#Gerar relatorios em PDF, dps eu vejo isso
 
 class GenericManager(Frame):
     def __init__(self, crud, frame):

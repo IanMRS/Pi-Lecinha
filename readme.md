@@ -2,7 +2,7 @@
 
 <h2>Features necessárias</h2>
 <ul>
-<li>Interface principal</li>
+<li>Dashboard financeiro</li>
 <li>Manejamento e visualização de: clientes, alugueis, casas e sites</li>
 <li>Cálculo automático de tarifas</li>
 <li>Produção automática de contratos</li>
@@ -18,4 +18,10 @@
 </li>
 <li>Tente criar funções genéricas</li>
 <li>Separe funcionalidades em diferentes scripts</li>
+</ul>
+
+<h2>Potencialmente útil para criação de PDFs com python</h2>
+<ul>
+<li>reportlab.pdfgen import canvas </li>
+<li>reportlab.lib.pagesizes import letter. A4 </li>
 </ul>
