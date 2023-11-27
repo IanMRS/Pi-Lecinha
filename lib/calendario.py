@@ -86,10 +86,6 @@ class Calendario(Frame):
         self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month}{day}")
 
     def create_day_buttons(self, year, month):
-        # Configure uniform button size
-        button_width = 5
-        button_height = 2
-
         dates_in_month = []
 
         for button in self.day_buttons:
