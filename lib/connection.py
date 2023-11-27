@@ -3,6 +3,7 @@ import re
 
 TABLES = {}
 
+
 def connect_db():
     connection = sql.connect("banco.db")
 
@@ -30,8 +31,6 @@ def parse_sql(sql_statements):
 
         post_processed_statements.append(statement)
 
-    print(post_processed_statements)
-
     for statement in post_processed_statements:
         if statement.startswith('CREATE TABLE'):
             match = re.match(r'CREATE TABLE(?: if NOT EXISTS)? (\w+) \(', statement)
@@ -48,7 +47,6 @@ def parse_sql(sql_statements):
     return tables
 
 
-
 def create_db():
     connection = connect_db()
 
@@ -58,20 +56,17 @@ def create_db():
         texto_banco = banco.readlines()
 
         for line in texto_banco:
-            #print(line)
             query += f" {line}"
             if ";" in query:
-                #print(query)
                 get_db_cursor(connection).execute(query)
                 connection.commit()
                 query = ""
 
         print("Banco de Dados criado\n")
 
-        #return " ".join(texto_banco).translate(str.maketrans('', '', '\n'))
         return texto_banco
-text_db = create_db()
 
-print(text_db)
+
+text_db = create_db()
 
 TABLES = parse_sql(text_db)
