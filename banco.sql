@@ -1,17 +1,17 @@
-CREATE TABLE origem (
+CREATE TABLE if NOT EXISTS origem (
     id INTEGER PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     taxa FLOAT NOT NULL
 );
 
-CREATE TABLE cliente (
+CREATE TABLE if NOT EXISTS cliente (
     id INTEGER PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     fone VARCHAR(13) NOT NULL,
     obs VARCHAR(255)
 );
 
-CREATE TABLE aluguel (
+CREATE TABLE if NOT EXISTS aluguel (
     id INTEGER PRIMARY KEY,
     clienteid INT NOT NULL,
     origemid INT NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE aluguel (
     ON UPDATE NO ACTION
 );
 
-CREATE TABLE casa (
+CREATE TABLE if NOT EXISTS casa (
     id INTEGER PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     capacidade INT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE casa (
     banheiros INT NOT NULL
 );
 
-CREATE TABLE aluguel_has_casa (
+CREATE TABLE if NOT EXISTS aluguel_has_casa (
     id INTEGER PRIMARY KEY,
     aluguel_id INT NOT NULL,
     casa_id INT NOT NULL,
