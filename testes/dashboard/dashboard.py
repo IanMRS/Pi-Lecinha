@@ -89,11 +89,7 @@ class FinanceiroApp:
 
         self.label_data_final.grid(row=11, column=3, padx=10, pady=5)
         self.entry_data_final.grid(row=11, column=4, padx=10, pady=5)
-
-        # Configuração da grade para que as células se expandam com a janela
-        for i in range(12):
-            root.grid_rowconfigure(i, weight=1)
-            root.grid_columnconfigure(i, weight=1)
+        
 
     def adicionar_transacao(self):
         data = self.entry_data.get()
@@ -111,9 +107,11 @@ class FinanceiroApp:
             if tipo.lower() == 'receita':
                 self.receitas_aluguel.append(transacao)
                 self.tree_receitas.insert('', 'end', values=transacao)
+                self.plotar_grafico(self.receitas_aluguel, 'Receitas de Aluguel por Data', 'green')
             elif tipo.lower() == 'despesa':
                 self.despesas.append(transacao)
                 self.tree_despesas.insert('', 'end', values=transacao)
+                self.plotar_grafico(self.despesas, 'Despesas por Data', 'red')
 
     def filtrar_por_data(self):
         data_inicial = self.data_inicial_var.get()
