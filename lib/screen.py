@@ -34,7 +34,7 @@ class MainScreen(w.Window):
             self.notebook.add(self.aba3, text='Sites')
 
             # Aba 4
-            self.aba4 = man.GenericManager(c.crud_aluguel,self.notebook)
+            self.aba4 = man.AluguelManager(c.crud_aluguel,self.notebook)
             self.notebook.add(self.aba4, text='Alugueis')
 
             # Aba 5
