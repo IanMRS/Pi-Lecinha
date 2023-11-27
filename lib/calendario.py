@@ -23,7 +23,7 @@ class Calendario(Frame):
         self.prev_month_button = Button(self.header_frame, text="Previous Month", command=self.show_previous_month)
         self.prev_month_button.grid(row=0, column=0)
 
-        self.current_month = Label(self.header_frame, text=self.num_to_month(self.current_date.month))
+        self.current_month = Label(self.header_frame, text=f"{self.num_to_month(self.current_date.month)}, {self.current_date.year}")
         self.current_month.grid(row=0, column=1, padx=10)  # Adjusted column and added padx for spacing
 
         self.next_month_button = Button(self.header_frame, text="Next Month", command=self.show_next_month)
@@ -57,7 +57,7 @@ class Calendario(Frame):
         self.ler_alugueis()
         self.create_day_buttons(year, month)
         
-        self.current_month.config(text=self.num_to_month(month))
+        self.current_month.config(text=f"{self.num_to_month(self.current_date.month)}, {self.current_date.year}")
 
 
     def show_previous_month(self):
@@ -118,33 +118,32 @@ class Calendario(Frame):
 
     def apply_color_to_button(self, day_button, day):
         for data in self.dados_aluguel:
-            date_start = str(data[3])[:6]
-            date_end = str(data[4])[:6]
+            date_start_year = int(str(data[3])[:4])
+            date_end_year = int(str(data[4])[:4])
 
+            date_start_month = int(str(data[3])[4:6])
+            date_end_month = int(str(data[4])[4:6])
+            
             date_start_day = int(str(data[3])[6:])
             date_end_day = int(str(data[4])[6:])
 
-            starts_in_this_month = date_start == self.formatted_date()
-            ends_in_this_month = date_end == self.formatted_date()
+            starts_in_this_month = date_start_month == self.current_date.month
+            ends_in_this_month = date_end_month == self.current_date.month
 
             day_is_bigger_than_start = date_start_day <= day
             day_is_smaller_than_end = date_end_day >= day
 
-            is_between_months = int(f"{str(data[3])[4]}{str(data[3])[5]}") < self.current_date.month < int(f"{str(data[4])[4]}{str(data[4])[5]}")
+            within_same_year = self.current_date.year == date_start_year and self.current_date.year == date_end_year
 
-            starts_in_other_month = date_start != self.formatted_date()
-            ends_in_other_month = date_end != self.formatted_date()
-
-            if starts_in_other_month and ends_in_this_month and day_is_smaller_than_end:
-                day_button.configure(bg=COLOR_RED)
+            between_months = date_start_month < self.current_date.month < date_end_month and within_same_year
 
             if starts_in_this_month and day_is_bigger_than_start and ends_in_this_month and day_is_smaller_than_end:
                 day_button.configure(bg=COLOR_BLUE)
-
-            if starts_in_this_month and day_is_bigger_than_start and ends_in_other_month:
+            elif not starts_in_this_month and ends_in_this_month and day_is_smaller_than_end and within_same_year:
+                day_button.configure(bg=COLOR_RED)
+            elif starts_in_this_month and day_is_bigger_than_start and not ends_in_this_month and within_same_year:
                 day_button.configure(bg=COLOR_GREEN)
-
-            if starts_in_other_month and is_between_months and ends_in_other_month:
+            elif between_months and not starts_in_this_month and not ends_in_this_month and within_same_year:
                 day_button.configure(bg=COLOR_MAGENTA)
 
     def grid_button(self, day_button, day, first_weekday):
