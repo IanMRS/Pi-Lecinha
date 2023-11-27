@@ -1,4 +1,4 @@
-import tkinter as tk
+from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkcalendar import DateEntry
@@ -16,22 +16,22 @@ class FinanceiroApp:
         self.receitas_aluguel = []
 
         # Variáveis para filtrar datas nos gráficos
-        self.data_inicial_var = tk.StringVar()
-        self.data_final_var = tk.StringVar()
+        self.data_inicial_var = StringVar()
+        self.data_final_var = StringVar()
 
         # Widgets
-        self.label_data = tk.Label(root, text="Data:")
+        self.label_data = Label(root, text="Data:")
         self.entry_data = DateEntry(root, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yyyy')
 
-        self.label_valor = tk.Label(root, text="Valor:")
-        self.entry_valor = tk.Entry(root)
+        self.label_valor = Label(root, text="Valor:")
+        self.entry_valor = Entry(root)
 
-        self.label_tipo = tk.Label(root, text="Tipo:")
-        self.tipo_var = tk.StringVar()
+        self.label_tipo = Label(root, text="Tipo:")
+        self.tipo_var = StringVar()
         self.tipo_combobox = ttk.Combobox(root, textvariable=self.tipo_var, values=["Receita", "Despesa"])
         self.tipo_combobox.set("Receita")
 
-        self.button_adicionar = tk.Button(root, text="Adicionar Transação", command=self.adicionar_transacao)
+        self.button_adicionar = Button(root, text="Adicionar Transação", command=self.adicionar_transacao)
 
         self.tree_receitas = ttk.Treeview(root, columns=('Data', 'Casa', 'Valor'), show='headings')
         self.tree_receitas.heading('Data', text='Data')
@@ -47,17 +47,17 @@ class FinanceiroApp:
         self.tree_despesas_scroll = ttk.Scrollbar(root, orient='vertical', command=self.tree_despesas.yview)
         self.tree_despesas.configure(yscrollcommand=self.tree_despesas_scroll.set)
 
-        self.button_filtrar = tk.Button(root, text="Filtrar por Data", command=self.filtrar_por_data)
+        self.button_filtrar = Button(root, text="Filtrar por Data", command=self.filtrar_por_data)
 
-        self.button_plot_receitas = tk.Button(root, text="Plotar Gráfico Receitas", command=self.plotar_grafico_receitas)
-        self.button_plot_despesas = tk.Button(root, text="Plotar Gráfico Despesas", command=self.plotar_grafico_despesas)
+        self.button_plot_receitas = Button(root, text="Plotar Gráfico Receitas", command=self.plotar_grafico_receitas)
+        self.button_plot_despesas = Button(root, text="Plotar Gráfico Despesas", command=self.plotar_grafico_despesas)
 
         # Widgets para filtrar datas nos gráficos
-        self.label_data_inicial = tk.Label(root, text="Data Inicial:")
+        self.label_data_inicial = Label(root, text="Data Inicial:")
         self.entry_data_inicial = DateEntry(root, width=12, background='darkblue', foreground='white', borderwidth=2,
                                             textvariable=self.data_inicial_var, date_pattern='dd/mm/yyyy')
 
-        self.label_data_final = tk.Label(root, text="Data Final:")
+        self.label_data_final = Label(root, text="Data Final:")
         self.entry_data_final = DateEntry(root, width=12, background='darkblue', foreground='white', borderwidth=2,
                                           textvariable=self.data_final_var, date_pattern='dd/mm/yyyy')
 
@@ -158,6 +158,6 @@ class FinanceiroApp:
         canvas_widget.grid(row=0, column=5, rowspan=12, padx=10, pady=10, sticky='nsew')
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = Tk()
     app = FinanceiroApp(root)
     root.mainloop()

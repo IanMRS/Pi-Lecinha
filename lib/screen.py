@@ -34,17 +34,21 @@ class MainScreen(w.Window):
             self.notebook.add(self.aba3, text='Sites')
 
             # Aba 4
-            self.aba4 = man.AluguelManager(c.crud_aluguel,self.notebook)
+            self.aba4 = man.GenericManager(c.crud_aluguel,self.notebook)
             self.notebook.add(self.aba4, text='Alugueis')
+
+            # Aba 5
+            self.aba7 = man.GenericManager(c.crud_aluguel_casa,self.notebook)
+            self.notebook.add(self.aba7, text='Aluguel-Casa')
 
             # Aba 5
             self.aba5 = car.Calendario(self.notebook)
             self.notebook.add(self.aba5, text='Calendário')
             
-            # Aba 6
-            self.aba6 = Frame(self.notebook)
-            self.notebook.add(self.aba6, text='Dashbord Financeiro')
-            
+            # Aba 5
+            #self.aba6 = d.FinanceiroApp(self.notebook)
+            #self.notebook.add(self.aba6, text='Calendário')
+
             self.notebook.pack(fill='both', expand=True)  # Empacotar o Notebook para exibição
             # Criação dos frames para organizar os elementos
 

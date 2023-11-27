@@ -187,4 +187,5 @@ class CRUD:
 crud_cliente = CRUD("cliente",["nome", "fone", "obs"])
 crud_origem = CRUD("origem",["nome", "taxa"])
 crud_aluguel = CRUD("aluguel",["clienteid", "origemid", "datainicio","datatermino","valor","quantia_inquilinos","obs"])
+crud_aluguel_casa = CRUD("aluguel_has_casa",["aluguel_id", "casa_id"])
 crud_casa = CRUD("casa",["nome", "capacidade", "quartos","camas","banheiros"])

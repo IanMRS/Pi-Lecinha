@@ -39,9 +39,9 @@ CREATE TABLE IF NOT EXISTS casa (
 );
 
 CREATE TABLE IF NOT EXISTS aluguel_has_casa (
+    id INTEGER PRIMARY KEY,
     aluguel_id INT NOT NULL,
     casa_id INT NOT NULL,
-    PRIMARY KEY (aluguel_id, casa_id),
 
     FOREIGN KEY (aluguel_id) REFERENCES aluguel(id)
     ON DELETE NO ACTION

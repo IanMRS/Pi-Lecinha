@@ -135,7 +135,7 @@ class Calendario(Frame):
 
             between_months = date_start_month < self.current_date.month < date_end_month and within_same_year
 
-            if starts_in_this_month and day_is_bigger_than_start and ends_in_this_month and day_is_smaller_than_end:
+            if starts_in_this_month and day_is_bigger_than_start and ends_in_this_month and day_is_smaller_than_end and within_same_year:
                 day_button.configure(bg=COLOR_RED)
             elif not starts_in_this_month and ends_in_this_month and day_is_smaller_than_end and within_same_year:
                 day_button.configure(bg=COLOR_RED)
