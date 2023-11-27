@@ -1,4 +1,3 @@
-from tkinter import *
 from tkinter import ttk
 
 from lib.window import FullScreenWindow
@@ -11,24 +10,28 @@ class MainScreen(FullScreenWindow):
     def __init__(self):
         super().__init__("Administrar aluguel de temporada")
 
-        self.frames_da_tela()
-        self.root.configure(background='#444444')
+        self.create_widgets()
+        self.configure_layout()
 
+        self.root.configure(background='#444444')
         self.start()
         
     
-    def frames_da_tela(self):
-        self.notebook = ttk.Notebook(self.root)  # Criar o Notebook
+    def create_widgets(self):
+        self.main_notebook = ttk.Notebook(self.root)
 
-        abas = [('Dashboard Financeiro',    FinanceiroApp(self.notebook)),
-                ('Clientes',                GenericManager(crud.bancos["cliente"],self.notebook)),
-                ('Casas',                   GenericManager(crud.bancos["casa"],self.notebook)),
-                ('Sites',                   GenericManager(crud.bancos["origem"],self.notebook)),
-                ('Alugueis',                GenericManager(crud.bancos["aluguel"],self.notebook)),
-                ('Aluguel-Casa',            GenericManager(crud.bancos["aluguel_has_casa"],self.notebook)),
-                ('Calendário',              Calendario(self.notebook))]
+        abas = [
+            ('Dashboard Financeiro',FinanceiroApp(self.main_notebook)),
+            ('Clientes',            GenericManager(crud.bancos["cliente"],self.main_notebook)),
+            ('Casas',               GenericManager(crud.bancos["casa"],self.main_notebook)),
+            ('Sites',               GenericManager(crud.bancos["origem"],self.main_notebook)),
+            ('Alugueis',            GenericManager(crud.bancos["aluguel"],self.main_notebook)),
+            ('Aluguel-Casa',        GenericManager(crud.bancos["aluguel_has_casa"],self.main_notebook)),
+            ('Calendário',          Calendario(self.main_notebook))]
             
-        for titulo, aba in abas:                        # Adicionar as abas
-            self.notebook.add(aba, text = titulo)       
+        for titulo, aba in abas:
+            self.main_notebook.add(aba, text = titulo)       
 
-        self.notebook.pack(fill='both', expand=True)    # Empacotar o Notebook para exibição
+
+    def configure_layout(self):
+        self.main_notebook.pack(fill='both', expand=True)
