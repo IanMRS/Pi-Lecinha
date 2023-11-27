@@ -1,15 +1,13 @@
 CREATE TABLE if NOT EXISTS origem (
     id INTEGER PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    taxa FLOAT NOT NULL
-);
+    taxa FLOAT NOT NULL);
 
 CREATE TABLE if NOT EXISTS cliente (
     id INTEGER PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     fone VARCHAR(13) NOT NULL,
-    obs VARCHAR(255)
-);
+    obs VARCHAR(255));
 
 CREATE TABLE if NOT EXISTS aluguel (
     id INTEGER PRIMARY KEY,
@@ -26,8 +24,7 @@ CREATE TABLE if NOT EXISTS aluguel (
     ON UPDATE NO ACTION,
     FOREIGN KEY (clienteid) REFERENCES cliente(id)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-);
+    ON UPDATE NO ACTION);
 
 CREATE TABLE if NOT EXISTS casa (
     id INTEGER PRIMARY KEY,
@@ -35,8 +32,7 @@ CREATE TABLE if NOT EXISTS casa (
     capacidade INT NOT NULL,
     quartos INT NOT NULL,
     camas INT NOT NULL,
-    banheiros INT NOT NULL
-);
+    banheiros INT NOT NULL);
 
 CREATE TABLE if NOT EXISTS aluguel_has_casa (
     id INTEGER PRIMARY KEY,
@@ -49,5 +45,4 @@ CREATE TABLE if NOT EXISTS aluguel_has_casa (
 
     FOREIGN KEY (casa_id) REFERENCES casa (id)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-);
+    ON UPDATE NO ACTION);
