@@ -9,9 +9,14 @@ class GenericManager(Frame):
         super().__init__(frame)
         self.crud = crud
         self.nome_dado = self.crud.table_name.capitalize()
-        #self.root = Frame(frame)
 
-        self.inicializar()
+        self.configure(background='#444444')
+
+        self.frames()
+        self.widgets()
+        self.table()
+        self.update_lista()
+
 
     def double_click(self, event):
         # Manipula o evento de duplo clique em uma linha da lista
@@ -22,18 +27,11 @@ class GenericManager(Frame):
                 col = self.lista_itens.item(n, 'values')
                 [entrie.insert(END, col[i]) for i, entrie in enumerate(self.entries)]
 
-    def inicializar(self):
-        self.configure(background='#444444')
-
-        self.frames()
-        self.widgets()
-        self.table()
-        self.update_lista()
-        
 
     def limpa_tela(self):
         # Limpa os campos de entrada (Entry)
         [entrie.delete(0, END) for entrie in self.entries]
+
 
     def update_lista(self, lista = None):
         # Atualiza a lista de clientes na interface
@@ -43,11 +41,13 @@ class GenericManager(Frame):
         for i in lista:
             self.lista_itens.insert("", END, values=i)
 
+
     def press_button(self, action):
         #É recomendável que ponha isso toda vez q um botão for apertado e altere as listas
         action
         self.update_lista()
         self.limpa_tela()
+
 
     def frames(self):
         self.top_row = Frame(self)
@@ -60,6 +60,7 @@ class GenericManager(Frame):
         self.bottom_row.pack(fill='both', expand=True, padx=10, pady=10)
         self.bottom_row.grid_columnconfigure(0, weight=1)
         self.bottom_row.grid_rowconfigure(0, weight=1)
+
 
     def widgets(self):
         self.entries = []
@@ -83,6 +84,7 @@ class GenericManager(Frame):
 
         for i,botao in enumerate(self.botoes):
             botao.grid(row=0,column=i)
+
 
     def table(self):
         table_columns = self.crud.columns
