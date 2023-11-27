@@ -1,5 +1,7 @@
 from lib import connection as dbc
 
+BANCOS = {}
+
 class CRUD:
     def __init__(self, table_name : str, columns : list):
         self.table_name = table_name
@@ -62,7 +64,6 @@ class CRUD:
 
         print("Valor apagado com sucesso")
 
-bancos = {}
 
 for name,table in dbc.TABLES.items():
-    bancos[name] = CRUD(name, table)
+    BANCOS[name] = CRUD(name, table)

@@ -22,11 +22,11 @@ class MainScreen(FullScreenWindow):
 
         abas = [
             ('Dashboard Financeiro',FinanceiroApp(self.main_notebook)),
-            ('Clientes',            GenericManager(crud.bancos["cliente"],self.main_notebook)),
-            ('Casas',               GenericManager(crud.bancos["casa"],self.main_notebook)),
-            ('Sites',               GenericManager(crud.bancos["origem"],self.main_notebook)),
-            ('Alugueis',            GenericManager(crud.bancos["aluguel"],self.main_notebook)),
-            ('Aluguel-Casa',        GenericManager(crud.bancos["aluguel_has_casa"],self.main_notebook)),
+            ('Clientes',            GenericManager(crud.BANCOS["cliente"],self.main_notebook)),
+            ('Casas',               GenericManager(crud.BANCOS["casa"],self.main_notebook)),
+            ('Sites',               GenericManager(crud.BANCOS["origem"],self.main_notebook)),
+            ('Alugueis',            GenericManager(crud.BANCOS["aluguel"],self.main_notebook)),
+            ('Aluguel-Casa',        GenericManager(crud.BANCOS["aluguel_has_casa"],self.main_notebook)),
             ('Calendário',          Calendario(self.main_notebook))]
             
         for titulo, aba in abas:

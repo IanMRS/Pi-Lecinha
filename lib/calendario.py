@@ -43,8 +43,8 @@ class Calendario(Frame):
 
 
     def ler_alugueis(self):
-        self.dados_aluguel = c.bancos["aluguel"].read()
-        self.dados_casa = c.bancos["casa"].read()
+        self.dados_aluguel = c.BANCOS["aluguel"].read()
+        self.dados_casa = c.BANCOS["casa"].read()
 
 
     def formatted_date(self):
