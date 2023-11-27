@@ -18,20 +18,35 @@ def parse_sql(sql_statements):
     tables = {}
     current_table = None
 
+    post_processed_statements = []
+
     for statement in sql_statements:
+        # Remove leading spaces and trailing newline characters
+        statement = statement.strip()
+
+        # Skip empty lines
+        if not statement:
+            continue
+
+        post_processed_statements.append(statement)
+
+    print(post_processed_statements)
+
+    for statement in post_processed_statements:
         if statement.startswith('CREATE TABLE'):
-            match = re.match(r'CREATE TABLE if NOT EXISTS (\w+) \(', statement)
+            match = re.match(r'CREATE TABLE(?: if NOT EXISTS)? (\w+) \(', statement)
             if match:
                 current_table = match.group(1)
                 tables[current_table] = []
-        elif current_table and statement.strip().endswith(',') and statement.strip()[0] in "abcdefghijklmnopqrstuvwxyz":
-            column_definition = statement.strip().rstrip(',').split()
+        elif current_table and statement[0] in "abcdefghijklmnopqrstuvwxyz":
+            column_definition = statement.rstrip(',').split()
             column_name = column_definition[0]
             tables[current_table].append(column_name)
-        elif current_table and statement.strip().endswith(');'):
+        elif current_table and statement.endswith(');'):
             current_table = None
 
     return tables
+
 
 
 def create_db():
