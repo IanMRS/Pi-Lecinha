@@ -20,7 +20,7 @@ class CRUD:
 
         placeholders = ', '.join(['?'] * len(data_no_id))
         insert_query = f"INSERT INTO {self.table_name} ({', '.join(self.columns_no_id)}) VALUES ({placeholders})"
-        self.db_input(insert_query, data)
+        self.db_input(insert_query, data_no_id)
 
 
     def read(self, condition = "1=1"):
