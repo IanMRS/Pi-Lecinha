@@ -3,16 +3,13 @@ import re
 
 TABLES = {}
 
-
 def connect_db():
     connection = sql.connect("banco.db")
     print("Conectando ao banco de Dados\n")
     return connection
 
-
 def get_db_cursor(connection):
     return connection.cursor()
-
 
 def parse_sql(sql_statements):
     tables = {}
@@ -41,12 +38,13 @@ def create_db():
 
     with open("banco.sql", "r") as banco:
         texto_banco = banco.readlines()
-        script = banco.read()
-        connection.executescript(script)
 
-        print("Banco de Dados criado\n")
+    script = " ".join(texto_banco)
 
-        return texto_banco
+    connection.executescript(script)
+
+    print("Banco de Dados criado\n")
+    return texto_banco
 
 
 text_db = create_db()
