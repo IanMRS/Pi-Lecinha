@@ -4,6 +4,7 @@ from lib import window as w
 from lib import manager as man
 from lib import crud as c
 from lib import calendario as car
+from lib import dashboard as d
 
 class MainScreen(w.Window):
     def __init__(self):
@@ -17,40 +18,21 @@ class MainScreen(w.Window):
         
     
     def frames_da_tela(self):
-            self.notebook = ttk.Notebook(self.root)  # Criar o Notebook
+        self.notebook = ttk.Notebook(self.root)  # Criar o Notebook
 
-            # Aba 1
-            self.aba1 = man.GenericManager(c.bancos["cliente"],self.notebook)
-            #self.aba1 = Frame(self.notebook)
-
-            self.notebook.add(self.aba1, text='Clientes')
-
-            # Aba 2
-            self.aba2 = man.GenericManager(c.bancos["casa"],self.notebook)
-            self.notebook.add(self.aba2, text='Casas')
-
-            # Aba 3
-            self.aba3 = man.GenericManager(c.bancos["origem"],self.notebook)
-            self.notebook.add(self.aba3, text='Sites')
-
-            # Aba 4
-            self.aba4 = man.GenericManager(c.bancos["aluguel"],self.notebook)
-            self.notebook.add(self.aba4, text='Alugueis')
-
-            # Aba 5
-            self.aba7 = man.GenericManager(c.bancos["aluguel_has_casa"],self.notebook)
-            self.notebook.add(self.aba7, text='Aluguel-Casa')
-
-            # Aba 5
-            self.aba5 = car.Calendario(self.notebook)
-            self.notebook.add(self.aba5, text='Calendário')
+        abas = [('Dashboard Financeiro',    d.FinanceiroApp(self.notebook)),
+                ('Clientes',                man.GenericManager(c.bancos["cliente"],self.notebook)),
+                ('Casas',                   man.GenericManager(c.bancos["casa"],self.notebook)),
+                ('Sites',                   man.GenericManager(c.bancos["origem"],self.notebook)),
+                ('Alugueis',                man.GenericManager(c.bancos["aluguel"],self.notebook)),
+                ('Aluguel-Casa',            man.GenericManager(c.bancos["aluguel_has_casa"],self.notebook)),
+                ('Calendário',              car.Calendario(self.notebook))]
             
-            # Aba 5
-            #self.aba6 = d.FinanceiroApp(self.notebook)
-            #self.notebook.add(self.aba6, text='Calendário')
+        for titulo, aba in abas:
+            self.notebook.add(aba, text = titulo)
 
-            self.notebook.pack(fill='both', expand=True)  # Empacotar o Notebook para exibição
-            # Criação dos frames para organizar os elementos
+        self.notebook.pack(fill='both', expand=True)  # Empacotar o Notebook para exibição
+        # Criação dos frames para organizar os elementos
 
     def menus(self): #opções, a barrinha q aparece encima, calma q mexo
         menubar = Menu(self.root)
