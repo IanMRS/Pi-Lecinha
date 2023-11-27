@@ -3,6 +3,11 @@ from tkinter import ttk
 import calendar
 from lib import crud as c
 
+COLOR_RED = 'red'
+COLOR_BLUE = 'blue'
+COLOR_GREEN = 'green'
+COLOR_MAGENTA = 'magenta'
+
 class Calendario(Frame):
     def __init__(self, frame):
         super().__init__(frame)
@@ -80,52 +85,68 @@ class Calendario(Frame):
     def show_day(self, day):#função quando vc clica em botão
         self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month}{day}")
 
-
     def create_day_buttons(self, year, month):
-            # Configure uniform button size
-            button_width = 5
-            button_height = 2
+        # Configure uniform button size
+        button_width = 5
+        button_height = 2
 
 
-            dates_in_month = []
+        dates_in_month = []
 
 
-            for button in self.day_buttons:
-                button.grid_forget()  # Clear existing buttons
+        for button in self.day_buttons:
+            button.grid_forget()  # Clear existing buttons
 
-            _, last_day = calendar.monthrange(year, month)
-            first_weekday, _ = calendar.monthrange(year, month)
+        _, last_day = calendar.monthrange(year, month)
+        first_weekday, _ = calendar.monthrange(year, month)
 
-            for i in range(1, last_day + 1):
-                day_button = Button(self.calendar_frame, text=str(i), command=lambda i=i: self.show_day(i), width=button_width, height=button_height, borderwidth=2, relief="ridge")
+        for i in range(1, last_day + 1):
+            day_button = self.create_day_button(i)
+            self.apply_color_to_button(day_button, i)
+            self.grid_button(day_button, i, first_weekday)
 
-                for data in self.dados_aluguel:
-                    starts_in_this_month = str(data[3])[:6] == self.formatted_date()
-                    starts_in_other_month = str(data[3])[:6] != self.formatted_date()
+    def create_day_button(self, i):
+        return Button(
+            self.calendar_frame,
+            text=str(i),
+            command=lambda i=i: self.show_day(i),
+            width=5,
+            height=2,
+            borderwidth=2,
+            relief="ridge"
+        )
 
-                    day_is_in_it = int(str(data[3])[6:]) <= i
-                    print(f"{int(str(data[3])[6:])} , {i}")
+    def apply_color_to_button(self, day_button, day):
+        for data in self.dados_aluguel:
+            starts_in_this_month = str(data[3])[:6] == self.formatted_date()
+            ends_in_this_month = str(data[4])[:6] == self.formatted_date()
 
+            day_is_in_it = int(str(data[3])[6:]) <= day
+            is_between_months = int(f"{str(data[3])[4]}{str(data[3])[5]}") < self.current_date.month < int(f"{str(data[4])[4]}{str(data[4])[5]}")
 
-                    ends_in_other_month = str(data[4])[:6] != self.formatted_date() and int(str(data[4])[6:]) <= i
-                    ends_in_this_month = str(data[4])[:6] == self.formatted_date() and int(str(data[4])[6:]) >= i
+            starts_in_other_month = str(data[3])[:6] != self.formatted_date()
+            ends_in_other_month = str(data[4])[:6] != self.formatted_date()
 
-                    #print(int(str(data[4])[6:]))
-                    
-                    if starts_in_other_month and ends_in_this_month:
-                        day_button.configure(bg='red')  # Change the color to red (you can modify this)
+            is_day_after_rental_start = int(str(data[4])[6:]) >= day
+            is_day_before_rental_end = int(str(data[4])[6:]) <= day
 
-                    if  starts_in_this_month and day_is_in_it and ends_in_this_month:
-                        day_button.configure(bg='blue')  # Change the color to red (you can modify this)
+            if starts_in_other_month and ends_in_this_month and is_day_after_rental_start:
+                day_button.configure(bg=COLOR_RED)
 
-                    if  starts_in_this_month and day_is_in_it and ends_in_other_month:
-                        day_button.configure(bg='green')
+            if starts_in_this_month and day_is_in_it and ends_in_this_month and is_day_after_rental_start:
+                day_button.configure(bg=COLOR_BLUE)
 
-                row = 2 + (i + first_weekday - 2) // 7  # Adjusted row
-                col = (i + first_weekday - 2) % 7 + 1
+            if starts_in_this_month and day_is_in_it and ends_in_other_month and is_day_before_rental_end:
+                day_button.configure(bg=COLOR_GREEN)
 
-                day_button.grid(row=row, column=col)
-                self.day_buttons.append(day_button)
+            if starts_in_other_month and is_between_months and ends_in_other_month:
+                day_button.configure(bg=COLOR_MAGENTA)
+
+    def grid_button(self, day_button, day, first_weekday):
+        row = 2 + (day + first_weekday - 2) // 7
+        col = (day + first_weekday - 2) % 7 + 1
+        day_button.grid(row=row, column=col)
+        self.day_buttons.append(day_button)
 
     def num_to_month(self, num):
         months = {
