@@ -90,9 +90,7 @@ class Calendario(Frame):
         button_width = 5
         button_height = 2
 
-
         dates_in_month = []
-
 
         for button in self.day_buttons:
             button.grid_forget()  # Clear existing buttons
@@ -138,13 +136,13 @@ class Calendario(Frame):
             between_months = date_start_month < self.current_date.month < date_end_month and within_same_year
 
             if starts_in_this_month and day_is_bigger_than_start and ends_in_this_month and day_is_smaller_than_end:
-                day_button.configure(bg=COLOR_BLUE)
+                day_button.configure(bg=COLOR_RED)
             elif not starts_in_this_month and ends_in_this_month and day_is_smaller_than_end and within_same_year:
                 day_button.configure(bg=COLOR_RED)
             elif starts_in_this_month and day_is_bigger_than_start and not ends_in_this_month and within_same_year:
-                day_button.configure(bg=COLOR_GREEN)
+                day_button.configure(bg=COLOR_RED)
             elif between_months and not starts_in_this_month and not ends_in_this_month and within_same_year:
-                day_button.configure(bg=COLOR_MAGENTA)
+                day_button.configure(bg=COLOR_RED)
 
     def grid_button(self, day_button, day, first_weekday):
         row = 2 + (day + first_weekday - 2) // 7
