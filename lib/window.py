@@ -6,8 +6,8 @@ class Window(Frame):
         self.root.title(title)
 
         #atalhos
-        #self.root.bind('<F11>', lambda event: self.toggle_full_screen())
-        #self.root.bind('<Escape>', lambda event: self.exit_full_screen())
+        self.root.bind('<F11>', lambda event: self.toggle_full_screen())
+        self.root.bind('<Escape>', lambda event: self.exit_full_screen())
         pass
 
     def start(self):
