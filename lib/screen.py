@@ -1,20 +1,20 @@
 from tkinter import *
 from tkinter import ttk
 
-from lib.window import Window
+from lib.window import FullScreenWindow
 from lib.manager import GenericManager
 from lib import crud
 from lib.calendario import Calendario
 from lib.dashboard import FinanceiroApp
 
-class MainScreen(Window):
+class MainScreen(FullScreenWindow):
     def __init__(self):
-        super().__init__()
+        super().__init__("Administrar aluguel de temporada")
 
         self.frames_da_tela()
-
-        self.root.title(f"Administrar aluguel de temporada")
         self.root.configure(background='#444444')
+
+        self.start()
         
     
     def frames_da_tela(self):

@@ -1,33 +1,32 @@
-from tkinter import *
+import tkinter as tk
 
-class Window(Frame):
-    def __init__(self,title=None):
-        self.root = Tk()
+class FullScreenWindow:
+    def __init__(self, title=None):
+        self.root = tk.Tk()
         self.root.title(title)
 
-        #atalhos
-        self.root.bind('<F11>', lambda event: self.toggle_full_screen())
-        self.root.bind('<Escape>', lambda event: self.exit_full_screen())
-        pass
+        self.setup_key_bindings()
+
+    def setup_key_bindings(self):
+        self.root.bind('<F11>', self.toggle_full_screen)
+        self.root.bind('<Escape>', self.exit_full_screen)
 
     def start(self):
-        self.full_screen()
         self.root.mainloop()
 
     def stop(self):
         self.root.destroy()
 
-    def full_screen(self):
+    def toggle_full_screen(self):
+        """Toggle between fullscreen and normal mode."""
         try:
-            self.root.geometry('{0}x{1}+0+0'.format(self.root.winfo_screenwidth(), self.root.winfo_screenheight()))
-        except:
-            pass
+            self.root.attributes('-fullscreen', not self.root.attributes('-fullscreen'))
+        except tk.TclError as e:
+            print(f"Error toggling fullscreen: {e}")
 
     def exit_full_screen(self):
-        self.root.attributes('-fullscreen', False)
-
-    def toggle_full_screen(self):
-        if self.root.attributes('-fullscreen'):
-            self.exit_full_screen()
-        else:
-            self.full_screen()
+        """Exit fullscreen mode."""
+        try:
+            self.root.attributes('-fullscreen', False)
+        except tk.TclError as e:
+            print(f"Error exiting fullscreen: {e}")
