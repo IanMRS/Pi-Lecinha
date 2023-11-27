@@ -17,14 +17,14 @@ class FullScreenWindow:
     def stop(self):
         self.root.destroy()
 
-    def toggle_full_screen(self):
+    def toggle_full_screen(self, event=None):
         """Toggle between fullscreen and normal mode."""
         try:
             self.root.attributes('-fullscreen', not self.root.attributes('-fullscreen'))
         except tk.TclError as e:
             print(f"Error toggling fullscreen: {e}")
 
-    def exit_full_screen(self):
+    def exit_full_screen(self, event=None):
         """Exit fullscreen mode."""
         try:
             self.root.attributes('-fullscreen', False)
