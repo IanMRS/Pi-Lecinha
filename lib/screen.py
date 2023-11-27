@@ -20,25 +20,25 @@ class MainScreen(w.Window):
             self.notebook = ttk.Notebook(self.root)  # Criar o Notebook
 
             # Aba 1
-            self.aba1 = man.GenericManager(c.crud_cliente,self.notebook)
+            self.aba1 = man.GenericManager(c.bancos["cliente"],self.notebook)
             #self.aba1 = Frame(self.notebook)
 
             self.notebook.add(self.aba1, text='Clientes')
 
             # Aba 2
-            self.aba2 = man.GenericManager(c.crud_casa,self.notebook)
+            self.aba2 = man.GenericManager(c.bancos["casa"],self.notebook)
             self.notebook.add(self.aba2, text='Casas')
 
             # Aba 3
-            self.aba3 = man.GenericManager(c.crud_origem,self.notebook)
+            self.aba3 = man.GenericManager(c.bancos["origem"],self.notebook)
             self.notebook.add(self.aba3, text='Sites')
 
             # Aba 4
-            self.aba4 = man.GenericManager(c.crud_aluguel,self.notebook)
+            self.aba4 = man.GenericManager(c.bancos["aluguel"],self.notebook)
             self.notebook.add(self.aba4, text='Alugueis')
 
             # Aba 5
-            self.aba7 = man.GenericManager(c.crud_aluguel_casa,self.notebook)
+            self.aba7 = man.GenericManager(c.bancos["aluguel_has_casa"],self.notebook)
             self.notebook.add(self.aba7, text='Aluguel-Casa')
 
             # Aba 5
