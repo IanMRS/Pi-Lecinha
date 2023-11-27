@@ -118,25 +118,30 @@ class Calendario(Frame):
 
     def apply_color_to_button(self, day_button, day):
         for data in self.dados_aluguel:
-            starts_in_this_month = str(data[3])[:6] == self.formatted_date()
-            ends_in_this_month = str(data[4])[:6] == self.formatted_date()
+            date_start = str(data[3])[:6]
+            date_end = str(data[4])[:6]
 
-            day_is_in_it = int(str(data[3])[6:]) <= day
+            date_start_day = int(str(data[3])[6:])
+            date_end_day = int(str(data[4])[6:])
+
+            starts_in_this_month = date_start == self.formatted_date()
+            ends_in_this_month = date_end == self.formatted_date()
+
+            day_is_bigger_than_start = date_start_day <= day
+            day_is_smaller_than_end = date_end_day >= day
+
             is_between_months = int(f"{str(data[3])[4]}{str(data[3])[5]}") < self.current_date.month < int(f"{str(data[4])[4]}{str(data[4])[5]}")
 
-            starts_in_other_month = str(data[3])[:6] != self.formatted_date()
-            ends_in_other_month = str(data[4])[:6] != self.formatted_date()
+            starts_in_other_month = date_start != self.formatted_date()
+            ends_in_other_month = date_end != self.formatted_date()
 
-            is_day_after_rental_start = int(str(data[4])[6:]) >= day
-            is_day_before_rental_end = int(str(data[4])[6:]) <= day
-
-            if starts_in_other_month and ends_in_this_month and is_day_after_rental_start:
+            if starts_in_other_month and ends_in_this_month and day_is_smaller_than_end:
                 day_button.configure(bg=COLOR_RED)
 
-            if starts_in_this_month and day_is_in_it and ends_in_this_month and is_day_after_rental_start:
+            if starts_in_this_month and day_is_bigger_than_start and ends_in_this_month and day_is_smaller_than_end:
                 day_button.configure(bg=COLOR_BLUE)
 
-            if starts_in_this_month and day_is_in_it and ends_in_other_month and is_day_before_rental_end:
+            if starts_in_this_month and day_is_bigger_than_start and ends_in_other_month:
                 day_button.configure(bg=COLOR_GREEN)
 
             if starts_in_other_month and is_between_months and ends_in_other_month:
