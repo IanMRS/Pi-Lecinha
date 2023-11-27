@@ -32,6 +32,3 @@ class MainScreen(FullScreenWindow):
             self.notebook.add(aba, text = titulo)       
 
         self.notebook.pack(fill='both', expand=True)    # Empacotar o Notebook para exibição
-
-tela = MainScreen()
-tela.start()
