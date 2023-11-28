@@ -111,7 +111,7 @@ class Calendario(Frame):
 
 
     def apply_color_to_button(self, day_button, day):
-        formatted_day = f"{self.current_date.year}{self.current_date.month}{day}"
+        formatted_day = f"{self.current_date.year}{self.current_date.month:02d}{day:02d}"
 
         for data in self.dados_aluguel:
             dates_between = self.get_days_between_dates(str(data[3]), str(data[4]))

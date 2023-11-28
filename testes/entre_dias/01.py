@@ -17,7 +17,16 @@ def get_days_between_dates(start_date_str, end_date_str):
     return result
 
 # Example usage:
-start_date = "20221115"
-end_date = "20230105"
-result = get_days_between_dates(start_date, end_date)
+
+start_date2 = "20231115"
+end_date2 = "20240105"
+start_date = "20231115"
+end_date = "20231120"
+
+result1 = get_days_between_dates(start_date, end_date)
+result2 = get_days_between_dates(start_date2, end_date2)
+result = []
+result.extend(result1)
+result.extend(result2)
+result = set(result)
 print(result)
