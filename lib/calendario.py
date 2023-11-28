@@ -44,7 +44,7 @@ class Calendario(Frame):
 
     def show_month(self):
         year, month = self.current_date.year, self.current_date.month
-        self.ler_alugueis()
+        self.update_rented_dates()
         self.create_day_buttons(year, month)
         self.current_month.config(text=self.get_current_month_text())
 
@@ -106,7 +106,7 @@ class Calendario(Frame):
         day_element.grid(row=row, column=col)
         self.day_buttons.append(day_element)
 
-    def ler_alugueis(self):
+    def update_rented_dates(self):
         self.dados_aluguel = c.BANCOS["aluguel"].read()
         self.dados_casa = c.BANCOS["casa"].read()
 
