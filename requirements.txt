@@ -1,3 +1,8 @@
 tk
 sqlite
 calendar
+holidays
+datetime
+matplotlib
+tkcalendar
+re
