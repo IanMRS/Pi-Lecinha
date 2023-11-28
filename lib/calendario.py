@@ -9,6 +9,9 @@ COLOR_RED = 'red'
 COLOR_LIGHT_GREEN = 'green'
 
 class Calendario(Frame):
+    MONTHS = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
+    DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
     def __init__(self, frame):
         super().__init__(frame)
 
@@ -23,80 +26,59 @@ class Calendario(Frame):
         self.prev_month_button = Button(self.header_frame, text="Previous Month", command=self.show_previous_month)
         self.prev_month_button.grid(row=0, column=0)
 
-        self.current_month = Label(self.header_frame, text=f"{Calendario.num_to_month(self.current_date.month)}, {self.current_date.year}")
-        self.current_month.grid(row=0, column=1, padx=10)  # Adjusted column and added padx for spacing
+        self.current_month = Label(self.header_frame, text=self.get_current_month_text())
+        self.current_month.grid(row=0, column=1, padx=10)
 
         self.next_month_button = Button(self.header_frame, text="Next Month", command=self.show_next_month)
-        self.next_month_button.grid(row=0, column=2)  # Adjusted column
+        self.next_month_button.grid(row=0, column=2)
 
-        self.days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        for i, day in enumerate(self.days):
-            day_label = Label(self.calendar_frame, text=day)
-            day_label.grid(row=0, column=i+1)
+        self.cal_display = Label(self.calendar_frame, text="", justify='left')
+        self.cal_display.grid(row=1, column=0, columnspan=8)
 
-        self.cal_display = Label(self.calendar_frame, text="", justify='left')  # Changed variable name to cal_display
-        self.cal_display.grid(row=1, column=0, columnspan=8)  # Adjusted row and columnspan
-
-        self.day_buttons = []  # Store day buttons
+        self.day_buttons = []
 
         self.show_month()
 
-    def ler_alugueis(self):
-        self.dados_aluguel = c.BANCOS["aluguel"].read()
-        self.dados_casa = c.BANCOS["casa"].read()
-
+    def get_current_month_text(self):
+        return f"{Calendario.MONTHS[self.current_date.month]}, {self.current_date.year}"
 
     def show_month(self):
         year, month = self.current_date.year, self.current_date.month
-
         self.ler_alugueis()
         self.create_day_buttons(year, month)
-        
-        self.current_month.config(text=f"{Calendario.num_to_month(self.current_date.month)}, {self.current_date.year}")
+        self.current_month.config(text=self.get_current_month_text())
 
     def show_previous_month(self):
-        year, month = self.current_date.year, self.current_date.month
-        if month == 1:
-            year -= 1
-            month = 12
-        else:
-            month -= 1
-        self.current_date = self.current_date.replace(year=year, month=month)
+        self.update_current_date(-1)
         self.show_month()
 
     def show_next_month(self):
-        year, month = self.current_date.year, self.current_date.month
-        if month == 12:
-            year += 1
-            month = 1
-        else:
-            month += 1
-        self.current_date = self.current_date.replace(year=year, month=month)
+        self.update_current_date(1)
         self.show_month()
 
-    def show_day(self, day):#função quando vc clica em botão
+    def update_current_date(self, increment):
+        self.current_date = self.current_date + timedelta(days=calendar.monthrange(self.current_date.year, self.current_date.month)[1] * increment)
+
+    def show_day(self, day):
         self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month:02d}{day:02d}")
 
     def create_day_buttons(self, year, month):
-        dates_in_month = []
-
         for button in self.day_buttons:
-            button.grid_forget()  # Clear existing buttons
+            button.grid_forget()
 
         _, last_day = calendar.monthrange(year, month)
         first_weekday, _ = calendar.monthrange(year, month)
 
-        feriados = Calendario.get_holidays(month,year)
+        feriados = Calendario.get_holidays(month, year)
 
         for i in range(1, last_day + 1):
-            day_button = self.create_day_button(i)
+            day_element = self.create_day_button(i)
 
             if i in feriados:
-                day_button.configure(background=COLOR_RED)            
+                day_element.configure(background=COLOR_RED)
 
-            self.paint_day_button_based_on_rent_status(day_button, i)
-            self.grid_button(day_button, i, first_weekday)
-
+            self.paint_day_button_based_on_rent_status(day_element, i)
+            self.grid_element(day_element, i, first_weekday)
 
     def create_day_button(self, i):
         return Button(
@@ -109,21 +91,26 @@ class Calendario(Frame):
             relief="ridge"
         )
 
-    def paint_day_button_based_on_rent_status(self, day_button, day):
+    def paint_day_button_based_on_rent_status(self, day_element, day):
         formatted_day = f"{self.current_date.year}{self.current_date.month:02d}{day:02d}"
 
         for data in self.dados_aluguel:
             dates_between = Calendario.get_days_between_dates(str(data[3]), str(data[4]))
             if formatted_day in dates_between:
-                day_button.configure(bg=COLOR_LIGHT_GREEN)
+                day_element.configure(bg=COLOR_LIGHT_GREEN)
                 break
 
-    def grid_button(self, day_button, day, first_weekday):
+    def grid_element(self, day_element, day, first_weekday):
         row = 2 + (day + first_weekday - 2) // 7
         col = (day + first_weekday - 2) % 7 + 1
-        day_button.grid(row=row, column=col)
-        self.day_buttons.append(day_button)
+        day_element.grid(row=row, column=col)
+        self.day_buttons.append(day_element)
 
+    def ler_alugueis(self):
+        self.dados_aluguel = c.BANCOS["aluguel"].read()
+        self.dados_casa = c.BANCOS["casa"].read()
+
+    @staticmethod
     def get_holidays(month, year):
         brazilian_holidays = holidays.country_holidays('BR')
         holidays_list = []
@@ -134,35 +121,11 @@ class Calendario(Frame):
 
         return holidays_list
 
-    def num_to_month(num):
-        months = {
-            1: "January",
-            2: "February",
-            3: "March",
-            4: "April",
-            5: "May",
-            6: "June",
-            7: "July",
-            8: "August",
-            9: "September",
-            10: "October",
-            11: "November",
-            12: "December"
-        }
-        return months[num]
-
+    @staticmethod
     def get_days_between_dates(start_date_str, end_date_str):
-        # Convert input date strings to datetime objects
         start_date = datetime.strptime(start_date_str, "%Y%m%d")
         end_date = datetime.strptime(end_date_str, "%Y%m%d")
-
-        # Calculate the number of days between the two dates
         delta = end_date - start_date
-
-        # Generate a list of all days in between, including start and end dates
         days_in_between = [start_date + timedelta(days=i) for i in range(delta.days + 1)]
-
-        # Format the result as strings in the YYYYMMDD format
         result = [day.strftime("%Y%m%d") for day in days_in_between]
-
         return result
