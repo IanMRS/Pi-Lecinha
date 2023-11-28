@@ -3,9 +3,10 @@ from tkinter import ttk
 import calendar
 import holidays
 from lib import crud as c
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 COLOR_RED = 'red'
+COLOR_LIGHT_GREEN = 'green'
 
 class Calendario(Frame):
     def __init__(self, frame):
@@ -78,7 +79,7 @@ class Calendario(Frame):
 
 
     def get_holidays(month, year):
-        brazilian_holidays = holidays.country_holidays('BR', subdiv="BA")
+        brazilian_holidays = holidays.country_holidays('BR')
         holidays_list = []
 
         for day in range(1, calendar.monthrange(year, month)[1] + 1):
@@ -101,9 +102,15 @@ class Calendario(Frame):
         _, last_day = calendar.monthrange(year, month)
         first_weekday, _ = calendar.monthrange(year, month)
 
+        feriados = Calendario.get_holidays(month,year)
+
         for i in range(1, last_day + 1):
             day_button = self.create_day_button(i)
-            self.apply_color_to_button(day_button, i)
+
+            if i in feriados:
+                day_button.configure(background=COLOR_RED)            
+
+            self.paint_day_button_based_on_rent_status(day_button, i)
             self.grid_button(day_button, i, first_weekday)
 
 
@@ -119,13 +126,13 @@ class Calendario(Frame):
         )
 
 
-    def apply_color_to_button(self, day_button, day):
+    def paint_day_button_based_on_rent_status(self, day_button, day):
         formatted_day = f"{self.current_date.year}{self.current_date.month:02d}{day:02d}"
 
         for data in self.dados_aluguel:
             dates_between = self.get_days_between_dates(str(data[3]), str(data[4]))
             if formatted_day in dates_between:
-                day_button.configure(bg=COLOR_RED)
+                day_button.configure(bg=COLOR_LIGHT_GREEN)
                 break
 
 
