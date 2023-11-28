@@ -76,8 +76,19 @@ class Calendario(Frame):
         self.show_month()
 
 
+    def get_holidays(month, year):
+        brazilian_holidays = holidays.country_holidays('BR', subdiv="BA")
+        holidays_list = []
+
+        for day in range(1, calendar.monthrange(year, month)[1] + 1):
+            if date(year, month, day) in brazilian_holidays:
+                holidays_list.append(day)
+
+        return holidays_list
+
+
     def show_day(self, day):#função quando vc clica em botão
-        self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month}{day}")
+        self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month:02d}{day:02d}")
 
 
     def create_day_buttons(self, year, month):
