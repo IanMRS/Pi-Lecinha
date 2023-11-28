@@ -23,7 +23,7 @@ class Calendario(Frame):
         self.prev_month_button = Button(self.header_frame, text="Previous Month", command=self.show_previous_month)
         self.prev_month_button.grid(row=0, column=0)
 
-        self.current_month = Label(self.header_frame, text=f"{self.num_to_month(self.current_date.month)}, {self.current_date.year}")
+        self.current_month = Label(self.header_frame, text=f"{Calendario.num_to_month(self.current_date.month)}, {self.current_date.year}")
         self.current_month.grid(row=0, column=1, padx=10)  # Adjusted column and added padx for spacing
 
         self.next_month_button = Button(self.header_frame, text="Next Month", command=self.show_next_month)
@@ -41,7 +41,6 @@ class Calendario(Frame):
 
         self.show_month()
 
-
     def ler_alugueis(self):
         self.dados_aluguel = c.BANCOS["aluguel"].read()
         self.dados_casa = c.BANCOS["casa"].read()
@@ -53,8 +52,7 @@ class Calendario(Frame):
         self.ler_alugueis()
         self.create_day_buttons(year, month)
         
-        self.current_month.config(text=f"{self.num_to_month(self.current_date.month)}, {self.current_date.year}")
-
+        self.current_month.config(text=f"{Calendario.num_to_month(self.current_date.month)}, {self.current_date.year}")
 
     def show_previous_month(self):
         year, month = self.current_date.year, self.current_date.month
@@ -66,7 +64,6 @@ class Calendario(Frame):
         self.current_date = self.current_date.replace(year=year, month=month)
         self.show_month()
 
-
     def show_next_month(self):
         year, month = self.current_date.year, self.current_date.month
         if month == 12:
@@ -77,21 +74,8 @@ class Calendario(Frame):
         self.current_date = self.current_date.replace(year=year, month=month)
         self.show_month()
 
-
-    def get_holidays(month, year):
-        brazilian_holidays = holidays.country_holidays('BR')
-        holidays_list = []
-
-        for day in range(1, calendar.monthrange(year, month)[1] + 1):
-            if date(year, month, day) in brazilian_holidays:
-                holidays_list.append(day)
-
-        return holidays_list
-
-
     def show_day(self, day):#função quando vc clica em botão
         self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month:02d}{day:02d}")
-
 
     def create_day_buttons(self, year, month):
         dates_in_month = []
@@ -125,16 +109,14 @@ class Calendario(Frame):
             relief="ridge"
         )
 
-
     def paint_day_button_based_on_rent_status(self, day_button, day):
         formatted_day = f"{self.current_date.year}{self.current_date.month:02d}{day:02d}"
 
         for data in self.dados_aluguel:
-            dates_between = self.get_days_between_dates(str(data[3]), str(data[4]))
+            dates_between = Calendario.get_days_between_dates(str(data[3]), str(data[4]))
             if formatted_day in dates_between:
                 day_button.configure(bg=COLOR_LIGHT_GREEN)
                 break
-
 
     def grid_button(self, day_button, day, first_weekday):
         row = 2 + (day + first_weekday - 2) // 7
@@ -142,8 +124,17 @@ class Calendario(Frame):
         day_button.grid(row=row, column=col)
         self.day_buttons.append(day_button)
 
+    def get_holidays(month, year):
+        brazilian_holidays = holidays.country_holidays('BR')
+        holidays_list = []
 
-    def num_to_month(self,num):
+        for day in range(1, calendar.monthrange(year, month)[1] + 1):
+            if date(year, month, day) in brazilian_holidays:
+                holidays_list.append(day)
+
+        return holidays_list
+
+    def num_to_month(num):
         months = {
             1: "January",
             2: "February",
@@ -160,8 +151,7 @@ class Calendario(Frame):
         }
         return months[num]
 
-
-    def get_days_between_dates(self,start_date_str, end_date_str):
+    def get_days_between_dates(start_date_str, end_date_str):
         # Convert input date strings to datetime objects
         start_date = datetime.strptime(start_date_str, "%Y%m%d")
         end_date = datetime.strptime(end_date_str, "%Y%m%d")
