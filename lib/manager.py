@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkcalendar import DateEntry
 
 class GenericManager(Frame):
     def __init__(self, crud, frame):
@@ -42,6 +43,11 @@ class GenericManager(Frame):
         self.limpa_tela()
 
 
+    def format_date(self, selected_date):
+        formatted_date = selected_date.strftime("%Y%m%d")
+        return formatted_date
+
+
     def frames(self):
         self.top_row = Frame(self)
         self.top_row.pack(padx=10, pady=10)
@@ -59,12 +65,15 @@ class GenericManager(Frame):
         self.entries = []
         for i, column in enumerate(self.crud.columns):
             label = Label(self.inputs, text=column.capitalize())
-            entry = Entry(self.inputs)
+            if "data" in column:
+                entry = DateEntry(self.inputs)
+            else:
+                entry = Entry(self.inputs)
             label.grid(row=0, column=i)
             entry.grid(row=1, column=i)
             self.entries.append(entry)
 
-        def entries_content(): return [entrie_text.get() for entrie_text in self.entries]
+        def entries_content(): return [entrie_text.get() if not isinstance(entrie_text, DateEntry) else self.format_date(entrie_text.get_date()) for entrie_text in self.entries]
 
         self.botoes = [Button(self.top_row, text="Novo",    command=lambda: self.press_button(self.crud.insert(entries_content()))),
                        Button(self.top_row, text="Alterar", command=lambda: self.press_button(self.crud.update(entries_content(), f"id = {entries_content()[0]}"))),

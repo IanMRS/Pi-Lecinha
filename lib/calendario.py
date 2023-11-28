@@ -5,9 +5,6 @@ from lib import crud as c
 from datetime import datetime, timedelta
 
 COLOR_RED = 'red'
-COLOR_BLUE = 'blue'
-COLOR_GREEN = 'green'
-COLOR_MAGENTA = 'magenta'
 
 class Calendario(Frame):
     def __init__(self, frame):
