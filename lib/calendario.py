@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import calendar
 from lib import crud as c
+from datetime import datetime, timedelta
 
 COLOR_RED = 'red'
 COLOR_BLUE = 'blue'
@@ -47,10 +48,6 @@ class Calendario(Frame):
         self.dados_casa = c.BANCOS["casa"].read()
 
 
-    def formatted_date(self):
-        return f"{self.current_date.year}{self.current_date.month}"
-
-
     def show_month(self):
         year, month = self.current_date.year, self.current_date.month
 
@@ -85,6 +82,7 @@ class Calendario(Frame):
     def show_day(self, day):#função quando vc clica em botão
         self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month}{day}")
 
+
     def create_day_buttons(self, year, month):
         dates_in_month = []
 
@@ -99,6 +97,7 @@ class Calendario(Frame):
             self.apply_color_to_button(day_button, i)
             self.grid_button(day_button, i, first_weekday)
 
+
     def create_day_button(self, i):
         return Button(
             self.calendar_frame,
@@ -110,35 +109,16 @@ class Calendario(Frame):
             relief="ridge"
         )
 
+
     def apply_color_to_button(self, day_button, day):
+        formatted_day = f"{self.current_date.year}{self.current_date.month}{day}"
+
         for data in self.dados_aluguel:
-            date_start_year = int(str(data[3])[:4])
-            date_end_year = int(str(data[4])[:4])
-
-            date_start_month = int(str(data[3])[4:6])
-            date_end_month = int(str(data[4])[4:6])
-            
-            date_start_day = int(str(data[3])[6:])
-            date_end_day = int(str(data[4])[6:])
-
-            starts_in_this_month = date_start_month == self.current_date.month
-            ends_in_this_month = date_end_month == self.current_date.month
-
-            day_is_bigger_than_start = date_start_day <= day
-            day_is_smaller_than_end = date_end_day >= day
-
-            within_same_year = self.current_date.year == date_start_year and self.current_date.year == date_end_year
-
-            between_months = date_start_month < self.current_date.month < date_end_month and within_same_year
-
-            if starts_in_this_month and day_is_bigger_than_start and ends_in_this_month and day_is_smaller_than_end and within_same_year:
+            dates_between = self.get_days_between_dates(str(data[3]), str(data[4]))
+            if formatted_day in dates_between:
                 day_button.configure(bg=COLOR_RED)
-            elif not starts_in_this_month and ends_in_this_month and day_is_smaller_than_end and within_same_year:
-                day_button.configure(bg=COLOR_RED)
-            elif starts_in_this_month and day_is_bigger_than_start and not ends_in_this_month and within_same_year:
-                day_button.configure(bg=COLOR_RED)
-            elif between_months and not starts_in_this_month and not ends_in_this_month and within_same_year:
-                day_button.configure(bg=COLOR_RED)
+                break
+
 
     def grid_button(self, day_button, day, first_weekday):
         row = 2 + (day + first_weekday - 2) // 7
@@ -146,7 +126,8 @@ class Calendario(Frame):
         day_button.grid(row=row, column=col)
         self.day_buttons.append(day_button)
 
-    def num_to_month(self, num):
+
+    def num_to_month(self,num):
         months = {
             1: "January",
             2: "February",
@@ -162,3 +143,20 @@ class Calendario(Frame):
             12: "December"
         }
         return months[num]
+
+
+    def get_days_between_dates(self,start_date_str, end_date_str):
+        # Convert input date strings to datetime objects
+        start_date = datetime.strptime(start_date_str, "%Y%m%d")
+        end_date = datetime.strptime(end_date_str, "%Y%m%d")
+
+        # Calculate the number of days between the two dates
+        delta = end_date - start_date
+
+        # Generate a list of all days in between, including start and end dates
+        days_in_between = [start_date + timedelta(days=i) for i in range(delta.days + 1)]
+
+        # Format the result as strings in the YYYYMMDD format
+        result = [day.strftime("%Y%m%d") for day in days_in_between]
+
+        return result
