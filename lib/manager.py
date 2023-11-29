@@ -21,7 +21,6 @@ class GenericManager(Frame):
         self.frames()
         self.widgets()
         self.table()
-        self.update_list()
 
     def frames(self):
         frame_names = ['top_row', 'inputs', 'bottom_row']
@@ -74,30 +73,32 @@ class GenericManager(Frame):
         scroll_list.grid(row=0, column=1, sticky="ns")
         self.item_table.bind("<Double-1>", self.double_click)
 
+        self.refresh_table()
+
     def insert_button_pressed(self):
-        self.crud.insert(self.get_entries_content())
-        self.update_list()
+        self.crud.insert(self.get_inputs_content())
+        self.refresh_table()
         self.clear_inputs()
 
     def update_button_pressed(self):
-        self.crud.update(self.get_entries_content(), f"id = {self.get_entries_content()[0]}")
-        self.update_list()
+        self.crud.update(self.get_inputs_content(), f"id = {self.get_inputs_content()[0]}")
+        self.refresh_table()
         self.clear_inputs()
 
     def search_button_pressed(self):
-        self.crud.search(self.get_entries_content())
-        self.update_list()
+        self.crud.search(self.get_inputs_content())
+        self.refresh_table()
 
     def delete_button_pressed(self):
-        self.crud.delete(f"id = {self.get_entries_content()[0]}")
-        self.update_list()
+        self.crud.delete(f"id = {self.get_inputs_content()[0]}")
+        self.refresh_table()
         self.clear_inputs()
 
     def clear_inputs(self):
         for entry in self.entries:
             entry.delete(0, END)
 
-    def update_list(self, selected_list=None):
+    def refresh_table(self, selected_list=None):
         self.item_table.delete(*self.item_table.get_children())
         if selected_list is None:
             selected_list = self.crud.read()
@@ -123,5 +124,5 @@ class GenericManager(Frame):
         parsed_date = datetime.strptime(str(selected_date), '%Y%m%d')
         return parsed_date.strftime('%d/%m/%y')
 
-    def get_entries_content(self):
+    def get_inputs_content(self):
         return [entry.get() if not isinstance(entry, DateEntry) else self.format_date(entry.get_date()) for entry in self.entries]
