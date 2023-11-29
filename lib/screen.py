@@ -27,7 +27,7 @@ class MainScreen(FullScreenWindow):
             ('Sites',               GenericManager(crud.BANCOS["origem"],self.main_notebook)),
             ('Alugueis',            GenericManager(crud.BANCOS["aluguel"],self.main_notebook)),
             ('Aluguel-Casa',        GenericManager(crud.BANCOS["aluguel_has_casa"],self.main_notebook)),
-            ('Calendário',          GUICalendar.(self.main_notebook))]
+            ('Calendário',          GUICalendar(self.main_notebook))]
             
         for titulo, aba in abas:
             self.main_notebook.add(aba, text = titulo)       
