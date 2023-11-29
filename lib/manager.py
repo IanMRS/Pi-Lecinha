@@ -36,13 +36,11 @@ class GenericManager(Frame):
             setattr(self, name, frame)
 
     def widgets(self):
-        self.entries = []
-        for i, column in enumerate(self.crud.columns):
+        self.entries = [DateEntry(self.inputs) if "data" in column else Entry(self.inputs) for column in self.crud.columns]
+        for i, (column, entry) in enumerate(zip(self.crud.columns, self.entries)):
             label = Label(self.inputs, text=column.capitalize())
-            entry = DateEntry(self.inputs) if "data" in column else Entry(self.inputs)
             label.grid(row=0, column=i)
             entry.grid(row=1, column=i)
-            self.entries.append(entry)
 
         self.buttons = [
             ("Novo", self.insert_button_pressed),
@@ -81,7 +79,8 @@ class GenericManager(Frame):
         self.clear_inputs()
 
     def update_button_pressed(self):
-        self.crud.update(self.get_inputs_content(), f"id = {self.get_inputs_content()[0]}")
+        condition = f"id = {self.get_inputs_content()[0]}"
+        self.crud.update(self.get_inputs_content(), condition)
         self.refresh_table()
         self.clear_inputs()
 
