@@ -20,37 +20,6 @@ class GenericManager(Frame):
         self.table()
         self.update_lista()
 
-    def double_click(self, event):
-        selected_row = self.lista_itens.selection()
-        if selected_row:
-            self.limpa_tela()
-            for row_id in selected_row:
-                columns = self.lista_itens.item(row_id, 'values')
-                [entry.insert(END, col) for col, entry in zip(columns, self.entries)]
-
-    def limpa_tela(self):
-        for entry in self.entries:
-            entry.delete(0, END)
-
-    def update_lista(self, lista=None):
-        self.lista_itens.delete(*self.lista_itens.get_children())
-        if lista is None:
-            lista = self.crud.read()
-        for item in lista:
-            temp_lista = []
-            for index,element in enumerate(item):
-                if "data" in self.crud.columns[index]:
-                    temp_lista.append(GenericManager.unformat_date(element))
-                else:
-                    temp_lista.append(element)
-
-            self.lista_itens.insert("", END, values=temp_lista)
-
-    def press_button(self, action):
-        action
-        self.update_lista()
-        self.limpa_tela()
-
     def frames(self):
         self.top_row = Frame(self)
         self.top_row.pack(padx=PADDING_X, pady=PADDING_Y)
@@ -75,13 +44,15 @@ class GenericManager(Frame):
             entry.grid(row=1, column=i)
             self.entries.append(entry)
 
-        def entries_content(): return [entrie_text.get() if not isinstance(entrie_text, DateEntry) else GenericManager.format_date(entrie_text.get_date()) for entrie_text in self.entries]
+        entries_content = lambda: [entrie_text.get() if not isinstance(entrie_text, DateEntry) else GenericManager.format_date(entrie_text.get_date()) for entrie_text in self.entries]
 
-        self.botoes = [Button(self.top_row, text="Novo",    command=lambda: self.press_button(self.crud.insert(entries_content()))),
-                       Button(self.top_row, text="Alterar", command=lambda: self.press_button(self.crud.update(entries_content(), f"id = {entries_content()[0]}"))),
-                       Button(self.top_row, text="Buscar",  command=lambda: self.update_lista(self.crud.search(entries_content()))),
-                       Button(self.top_row, text="Limpar",  command=self.limpa_tela),
-                       Button(self.top_row, text="Apagar",  command=lambda: self.press_button(self.crud.delete(f"id = {entries_content()[0]}")))]
+        self.botoes = [
+            Button(self.top_row, text="Novo", command=self.insert_button_pressed),
+            Button(self.top_row, text="Alterar", command=self.update_button_pressed),
+            Button(self.top_row, text="Buscar", command=self.search_button_pressed),
+            Button(self.top_row, text="Limpar", command=self.limpa_tela),
+            Button(self.top_row, text="Apagar", command=self.delete_button_pressed)
+        ]
 
         for i, button in enumerate(self.botoes):
             button.grid(row=0, column=i)
@@ -103,6 +74,51 @@ class GenericManager(Frame):
         self.lista_itens.configure(yscroll=self.scroll_lista.set)
         self.scroll_lista.grid(row=0, column=1, sticky="ns")
         self.lista_itens.bind("<Double-1>", self.double_click)
+
+    def insert_button_pressed(self):
+        self.crud.insert(self.entries_content)
+        self.update_lista()
+        self.limpa_tela()
+
+    def update_button_pressed(self):
+        self.crud.update(self.entries_content, f"id = {self.entries_content[0]}")
+        self.update_lista()
+        self.limpa_tela()
+
+    def search_button_pressed(self):
+        self.crud.search(self.entries_content)
+        self.update_lista()
+
+    def delete_button_pressed(self):
+        self.crud.delete(f"id = {self.entries_content[0]}")
+        self.update_lista()
+        self.limpa_tela()
+
+    def limpa_tela(self):
+        for entry in self.entries:
+            entry.delete(0, END)
+
+    def update_lista(self, lista=None):
+        self.lista_itens.delete(*self.lista_itens.get_children())
+        if lista is None:
+            lista = self.crud.read()
+        for item in lista:
+            temp_lista = []
+            for index,element in enumerate(item):
+                if "data" in self.crud.columns[index]:
+                    temp_lista.append(GenericManager.unformat_date(element))
+                else:
+                    temp_lista.append(element)
+
+            self.lista_itens.insert("", END, values=temp_lista)
+
+    def double_click(self, event):
+        selected_row = self.lista_itens.selection()
+        if selected_row:
+            self.limpa_tela()
+            for row_id in selected_row:
+                columns = self.lista_itens.item(row_id, 'values')
+                [entry.insert(END, col) for col, entry in zip(columns, self.entries)]
 
     @staticmethod
     def format_date(selected_date):
