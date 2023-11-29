@@ -36,7 +36,7 @@ class GenericManager(Frame):
             setattr(self, name, frame)
 
     def widgets(self):
-        self.entries = [DateEntry(self.inputs) if "data" in column else Entry(self.inputs) for column in self.crud.columns]
+        self.entries = [DateEntry(self.inputs, date_pattern='dd/mm/yyyy') if "data" in column else Entry(self.inputs) for column in self.crud.columns]
         for i, (column, entry) in enumerate(zip(self.crud.columns, self.entries)):
             label = Label(self.inputs, text=column.capitalize())
             label.grid(row=0, column=i)
@@ -46,7 +46,7 @@ class GenericManager(Frame):
             ("Novo", self.insert_button_pressed),
             ("Alterar", self.update_button_pressed),
             ("Buscar", self.search_button_pressed),
-            ("Limpar", self.clear_inputs),
+            ("Limpar", self.clear_button_pressed),
             ("Apagar", self.delete_button_pressed)
         ]
 
@@ -75,21 +75,27 @@ class GenericManager(Frame):
 
     def insert_button_pressed(self):
         self.crud.insert(self.get_inputs_content())
-        self.refresh_table()
-        self.clear_inputs()
+        self.clear_button_pressed()
 
     def update_button_pressed(self):
         condition = f"id = {self.get_inputs_content()[0]}"
         self.crud.update(self.get_inputs_content(), condition)
-        self.refresh_table()
-        self.clear_inputs()
+        self.clear_button_pressed()
 
     def search_button_pressed(self):
-        self.crud.search(self.get_inputs_content())
-        self.refresh_table()
+        search_result = self.crud.search(self.get_inputs_content())
+        self.refresh_table(search_result)
+        self.clear_inputs()
+
+        if len(search_result) == 1:
+            for col, entry in zip(search_result[0], self.entries):
+                entry.insert(END, col)
 
     def delete_button_pressed(self):
         self.crud.delete(f"id = {self.get_inputs_content()[0]}")
+        self.clear_button_pressed()
+
+    def clear_button_pressed(self):
         self.refresh_table()
         self.clear_inputs()
 
@@ -97,9 +103,9 @@ class GenericManager(Frame):
         for entry in self.entries:
             entry.delete(0, END)
 
-    def refresh_table(self):
+    def refresh_table(self, table_values = None):
+        table_values = self.crud.read() if table_values is None else table_values
         self.item_table.delete(*self.item_table.get_children())
-        table_values = self.crud.read()
         for item in table_values:
             temp_list = [GenericManager.unformat_date(element) if "data" in self.crud.columns[index] else element for index, element in enumerate(item)]
             self.item_table.insert("", END, values=temp_list)
@@ -115,7 +121,10 @@ class GenericManager(Frame):
 
     @staticmethod
     def format_date(selected_date):
-        return datetime.strftime(str(selected_date), "%Y%m%d")
+        if isinstance(selected_date, str):
+            return selected_date  # Already formatted as a string
+        return datetime.strftime(selected_date, "%Y%m%d")
+
 
     @staticmethod
     def unformat_date(selected_date):
