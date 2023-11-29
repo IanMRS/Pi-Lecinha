@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, date
 COLOR_RED = 'red'
 COLOR_LIGHT_GREEN = 'green'
 
-class Calendario(Frame):
+class GUICalendar(Frame):
     MONTHS = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
     DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
@@ -40,7 +40,7 @@ class Calendario(Frame):
         self.show_month()
 
     def get_current_month_text(self):
-        return f"{Calendario.MONTHS[self.current_date.month]}, {self.current_date.year}"
+        return f"{GUICalendar.MONTHS[self.current_date.month]}, {self.current_date.year}"
 
     def show_month(self):
         year, month = self.current_date.year, self.current_date.month
@@ -69,12 +69,12 @@ class Calendario(Frame):
         _, last_day = calendar.monthrange(year, month)
         first_weekday, _ = calendar.monthrange(year, month)
 
-        feriados = Calendario.get_holidays(month, year)
+        holidays_list = GUICalendar.get_holidays(month, year)
 
         for i in range(1, last_day + 1):
             day_element = self.create_day_button(i)
 
-            if i in feriados:
+            if i in holidays_list:
                 day_element.configure(background=COLOR_RED)
 
             self.paint_day_button_based_on_rent_status(day_element, i)
@@ -94,8 +94,8 @@ class Calendario(Frame):
     def paint_day_button_based_on_rent_status(self, day_element, day):
         formatted_day = f"{self.current_date.year}{self.current_date.month:02d}{day:02d}"
 
-        for data in self.dados_aluguel:
-            dates_between = Calendario.get_days_between_dates(str(data[3]), str(data[4]))
+        for data in self.rental_data:
+            dates_between = Calendar.get_days_between_dates(str(data[3]), str(data[4]))
             if formatted_day in dates_between:
                 day_element.configure(bg=COLOR_LIGHT_GREEN)
                 break
@@ -107,8 +107,8 @@ class Calendario(Frame):
         self.day_buttons.append(day_element)
 
     def update_rented_dates(self):
-        self.dados_aluguel = c.BANCOS["aluguel"].read()
-        self.dados_casa = c.BANCOS["casa"].read()
+        self.rental_data = c.BANCOS["aluguel"].read()
+        self.house_data = c.BANCOS["casa"].read()
 
     @staticmethod
     def get_holidays(month, year):

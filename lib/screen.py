@@ -3,7 +3,7 @@ from tkinter import ttk
 from lib.window import FullScreenWindow
 from lib.manager import GenericManager
 from lib import crud
-from lib.calendario import Calendario
+from lib.calendario import GUICalendar
 from lib.dashboard import FinanceiroApp
 
 class MainScreen(FullScreenWindow):
@@ -27,7 +27,7 @@ class MainScreen(FullScreenWindow):
             ('Sites',               GenericManager(crud.BANCOS["origem"],self.main_notebook)),
             ('Alugueis',            GenericManager(crud.BANCOS["aluguel"],self.main_notebook)),
             ('Aluguel-Casa',        GenericManager(crud.BANCOS["aluguel_has_casa"],self.main_notebook)),
-            ('Calendário',          Calendario(self.main_notebook))]
+            ('Calendário',          GUICalendar.(self.main_notebook))]
             
         for titulo, aba in abas:
             self.main_notebook.add(aba, text = titulo)       
