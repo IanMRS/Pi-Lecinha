@@ -1,7 +1,11 @@
-from tkinter import Frame, Label, Entry, Button, Scrollbar
+from tkinter import *
 from tkinter import ttk
 from tkcalendar import DateEntry
 from datetime import datetime
+
+PADDING_X = 10
+PADDING_Y = 10
+BACKGROUND_COLOR = '#444444'
 
 class GenericManager(Frame):
     def __init__(self, crud, frame):
@@ -9,7 +13,7 @@ class GenericManager(Frame):
         self.crud = crud
         self.nome_dado = self.crud.table_name.capitalize()
 
-        self.configure(background='#444444')
+        self.configure(background=BACKGROUND_COLOR)
 
         self.frames()
         self.widgets()
@@ -25,7 +29,8 @@ class GenericManager(Frame):
                 [entry.insert(END, col) for col, entry in zip(columns, self.entries)]
 
     def limpa_tela(self):
-        [entry.delete(0, END) for entry in self.entries]
+        for entry in self.entries:
+            entry.delete(0, END)
 
     def update_lista(self, lista=None):
         self.lista_itens.delete(*self.lista_itens.get_children())
@@ -48,13 +53,13 @@ class GenericManager(Frame):
 
     def frames(self):
         self.top_row = Frame(self)
-        self.top_row.pack(padx=10, pady=10)
+        self.top_row.pack(padx=PADDING_X, pady=PADDING_Y)
 
         self.inputs = Frame(self)
-        self.inputs.pack(padx=10, pady=10)
+        self.inputs.pack(padx=PADDING_X, pady=PADDING_Y)
 
         self.bottom_row = Frame(self)
-        self.bottom_row.pack(fill='both', expand=True, padx=10, pady=10)
+        self.bottom_row.pack(fill='both', expand=True, padx=PADDING_X, pady=PADDING_Y)
         self.bottom_row.grid_columnconfigure(0, weight=1)
         self.bottom_row.grid_rowconfigure(0, weight=1)
 
