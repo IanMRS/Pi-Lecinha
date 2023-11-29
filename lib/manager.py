@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkcalendar import DateEntry
+from datetime import datetime, timedelta, date
 
 class GenericManager(Frame):
     def __init__(self, crud, frame):
@@ -34,7 +35,14 @@ class GenericManager(Frame):
         if lista is None:
             lista = self.crud.read()
         for item in lista:
-            self.lista_itens.insert("", END, values=item)
+            temp_lista = []
+            for index,element in enumerate(item):
+                if "data" in self.crud.columns[index]:
+                    temp_lista.append(GenericManager.unformat_date(element))
+                else:
+                    temp_lista.append(element)
+
+            self.lista_itens.insert("", END, values=temp_lista)
 
 
     def press_button(self, action):
@@ -43,10 +51,16 @@ class GenericManager(Frame):
         self.limpa_tela()
 
 
-    def format_date(self, selected_date):
-        formatted_date = selected_date.strftime("%Y%m%d")
+    def format_date(selected_date):
+        formatted_date = datetime.strftime(str(selected_date), "%Y%m%d")
         return formatted_date
 
+    def unformat_date(selected_date):
+        parsed_date = datetime.strptime(str(selected_date), '%Y%m%d')
+
+        # Format the date as DD/MM/YY
+        formatted_date = parsed_date.strftime('%d/%m/%y')
+        return formatted_date
 
     def frames(self):
         self.top_row = Frame(self)
@@ -73,7 +87,7 @@ class GenericManager(Frame):
             entry.grid(row=1, column=i)
             self.entries.append(entry)
 
-        def entries_content(): return [entrie_text.get() if not isinstance(entrie_text, DateEntry) else self.format_date(entrie_text.get_date()) for entrie_text in self.entries]
+        def entries_content(): return [entrie_text.get() if not isinstance(entrie_text, DateEntry) else GenericManager.format_date(entrie_text.get_date()) for entrie_text in self.entries]
 
         self.botoes = [Button(self.top_row, text="Novo",    command=lambda: self.press_button(self.crud.insert(entries_content()))),
                        Button(self.top_row, text="Alterar", command=lambda: self.press_button(self.crud.update(entries_content(), f"id = {entries_content()[0]}"))),
