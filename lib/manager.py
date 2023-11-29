@@ -49,7 +49,7 @@ class GenericManager(Frame):
             ("Novo", self.insert_button_pressed),
             ("Alterar", self.update_button_pressed),
             ("Buscar", self.search_button_pressed),
-            ("Limpar", self.clear_screen),
+            ("Limpar", self.clear_inputs),
             ("Apagar", self.delete_button_pressed)
         ]
 
@@ -77,12 +77,12 @@ class GenericManager(Frame):
     def insert_button_pressed(self):
         self.crud.insert(self.get_entries_content())
         self.update_list()
-        self.clear_screen()
+        self.clear_inputs()
 
     def update_button_pressed(self):
         self.crud.update(self.get_entries_content(), f"id = {self.get_entries_content()[0]}")
         self.update_list()
-        self.clear_screen()
+        self.clear_inputs()
 
     def search_button_pressed(self):
         self.crud.search(self.get_entries_content())
@@ -91,9 +91,9 @@ class GenericManager(Frame):
     def delete_button_pressed(self):
         self.crud.delete(f"id = {self.get_entries_content()[0]}")
         self.update_list()
-        self.clear_screen()
+        self.clear_inputs()
 
-    def clear_screen(self):
+    def clear_inputs(self):
         for entry in self.entries:
             entry.delete(0, END)
 
@@ -108,10 +108,11 @@ class GenericManager(Frame):
     def double_click(self, event):
         selected_row = self.item_table.selection()
         if selected_row:
-            self.clear_screen()
+            self.clear_inputs()
             for row_id in selected_row:
                 columns = self.item_table.item(row_id, 'values')
-                [entry.insert(END, col) for col, entry in zip(columns, self.entries)]
+                for col, entry in zip(columns, self.entries):
+                    entry.insert(END, col)
 
     @staticmethod
     def format_date(selected_date):
