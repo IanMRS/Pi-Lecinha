@@ -98,11 +98,10 @@ class GenericManager(Frame):
         for entry in self.entries:
             entry.delete(0, END)
 
-    def refresh_table(self, selected_list=None):
+    def refresh_table(self):
         self.item_table.delete(*self.item_table.get_children())
-        if selected_list is None:
-            selected_list = self.crud.read()
-        for item in selected_list:
+        table_values = self.crud.read()
+        for item in table_values:
             temp_list = [GenericManager.unformat_date(element) if "data" in self.crud.columns[index] else element for index, element in enumerate(item)]
             self.item_table.insert("", END, values=temp_list)
 
