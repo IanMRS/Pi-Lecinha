@@ -1,7 +1,7 @@
-from tkinter import *
+from tkinter import Frame, Label, Entry, Button, Scrollbar
 from tkinter import ttk
 from tkcalendar import DateEntry
-from datetime import datetime, timedelta, date
+from datetime import datetime
 
 class GenericManager(Frame):
     def __init__(self, crud, frame):
@@ -16,7 +16,6 @@ class GenericManager(Frame):
         self.table()
         self.update_lista()
 
-
     def double_click(self, event):
         selected_row = self.lista_itens.selection()
         if selected_row:
@@ -25,10 +24,8 @@ class GenericManager(Frame):
                 columns = self.lista_itens.item(row_id, 'values')
                 [entry.insert(END, col) for col, entry in zip(columns, self.entries)]
 
-
     def limpa_tela(self):
         [entry.delete(0, END) for entry in self.entries]
-
 
     def update_lista(self, lista=None):
         self.lista_itens.delete(*self.lista_itens.get_children())
@@ -44,23 +41,10 @@ class GenericManager(Frame):
 
             self.lista_itens.insert("", END, values=temp_lista)
 
-
     def press_button(self, action):
         action
         self.update_lista()
         self.limpa_tela()
-
-
-    def format_date(selected_date):
-        formatted_date = datetime.strftime(str(selected_date), "%Y%m%d")
-        return formatted_date
-
-    def unformat_date(selected_date):
-        parsed_date = datetime.strptime(str(selected_date), '%Y%m%d')
-
-        # Format the date as DD/MM/YY
-        formatted_date = parsed_date.strftime('%d/%m/%y')
-        return formatted_date
 
     def frames(self):
         self.top_row = Frame(self)
@@ -73,7 +57,6 @@ class GenericManager(Frame):
         self.bottom_row.pack(fill='both', expand=True, padx=10, pady=10)
         self.bottom_row.grid_columnconfigure(0, weight=1)
         self.bottom_row.grid_rowconfigure(0, weight=1)
-
 
     def widgets(self):
         self.entries = []
@@ -98,7 +81,6 @@ class GenericManager(Frame):
         for i, button in enumerate(self.botoes):
             button.grid(row=0, column=i)
 
-
     def table(self):
         table_columns = self.crud.columns
 
@@ -116,3 +98,15 @@ class GenericManager(Frame):
         self.lista_itens.configure(yscroll=self.scroll_lista.set)
         self.scroll_lista.grid(row=0, column=1, sticky="ns")
         self.lista_itens.bind("<Double-1>", self.double_click)
+
+    @staticmethod
+    def format_date(selected_date):
+        formatted_date = datetime.strftime(str(selected_date), "%Y%m%d")
+        return formatted_date
+
+    @staticmethod
+    def unformat_date(selected_date):
+        parsed_date = datetime.strptime(str(selected_date), '%Y%m%d')
+
+        formatted_date = parsed_date.strftime('%d/%m/%y')
+        return formatted_date
