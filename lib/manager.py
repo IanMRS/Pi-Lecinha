@@ -6,6 +6,9 @@ from datetime import datetime
 PADDING_X = 10
 PADDING_Y = 10
 BACKGROUND_COLOR = '#444444'
+BUTTON_WIDTH = 10
+BUTTON_HEIGHT = 1
+BUTTON_RELIEF = "raised"
 
 class GenericManager(Frame):
     def __init__(self, crud, frame):
@@ -47,11 +50,11 @@ class GenericManager(Frame):
         entries_content = lambda: [entrie_text.get() if not isinstance(entrie_text, DateEntry) else GenericManager.format_date(entrie_text.get_date()) for entrie_text in self.entries]
 
         self.botoes = [
-            Button(self.top_row, text="Novo", command=self.insert_button_pressed),
-            Button(self.top_row, text="Alterar", command=self.update_button_pressed),
-            Button(self.top_row, text="Buscar", command=self.search_button_pressed),
-            Button(self.top_row, text="Limpar", command=self.limpa_tela),
-            Button(self.top_row, text="Apagar", command=self.delete_button_pressed)
+            Button(self.top_row, text="Novo", command=self.insert_button_pressed, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, relief=BUTTON_RELIEF),
+            Button(self.top_row, text="Alterar", command=self.update_button_pressed, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, relief=BUTTON_RELIEF),
+            Button(self.top_row, text="Buscar", command=self.search_button_pressed, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, relief=BUTTON_RELIEF),
+            Button(self.top_row, text="Limpar", command=self.limpa_tela, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, relief=BUTTON_RELIEF),
+            Button(self.top_row, text="Apagar", command=self.delete_button_pressed, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, relief=BUTTON_RELIEF)
         ]
 
         for i, button in enumerate(self.botoes):
