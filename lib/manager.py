@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from datetime import datetime
 
@@ -92,6 +92,21 @@ class GenericManager(Frame):
                 entry.insert(END, col)
 
     def delete_button_pressed(self):
+        popup = Toplevel()
+        popup.title("Confirmação")
+
+        label = Label(popup, text=f"Você tem certeza?")
+        label.pack(padx=PADDING_X, pady=PADDING_Y)
+
+        yes_button = Button(popup, text="Sim", command=lambda: self.delete_confirmed)
+        yes_button.pack(side="left", padx=PADDING_X)
+
+        no_button = Button(popup, text="Não", command=lambda: popup.destroy())
+        no_button.pack(side="right", padx=PADDING_X)
+
+        popup.wait_window()
+
+    def delete_confirmed(self):
         self.crud.delete(f"id = {self.get_inputs_content()[0]}")
         self.clear_button_pressed()
 
