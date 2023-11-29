@@ -33,7 +33,7 @@ class GUICalendar(Frame):
         self.next_month_button.grid(row=0, column=2)
 
         self.cal_display = Label(self.calendar_frame, text="", justify='left')
-        self.cal_display.grid(row=1, column=0, columnspan=8)
+        self.cal_display.grid(row=1, column=0, columnspan=7)
 
         self.day_buttons = []
 
@@ -95,7 +95,7 @@ class GUICalendar(Frame):
         formatted_day = f"{self.current_date.year}{self.current_date.month:02d}{day:02d}"
 
         for data in self.rental_data:
-            dates_between = Calendar.get_days_between_dates(str(data[3]), str(data[4]))
+            dates_between = GUICalendar.get_days_between_dates(str(data[3]), str(data[4]))
             if formatted_day in dates_between:
                 day_element.configure(bg=COLOR_LIGHT_GREEN)
                 break
