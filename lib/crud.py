@@ -35,7 +35,7 @@ class CRUD:
 
         for i, data in enumerate(dataset):
             if data is not None and data is not "":
-                conditions.append(f" AND {self.columns[i]} LIKE "%{data}%"")
+                conditions.append(f" AND {self.columns[i]} LIKE '%{data}%'")
 
         condition = "".join(conditions)
 
