@@ -3,7 +3,7 @@ import holidays
 import calendar
 
 def get_brazilian_holidays(month, year):
-    brazilian_holidays = holidays.country_holidays('BR')
+    brazilian_holidays = holidays.country_holidays("BR")
     holidays_list = []
 
     for day in range(1, calendar.monthrange(year, month)[1] + 1):

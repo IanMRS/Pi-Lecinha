@@ -4,7 +4,7 @@ def extract_tables_and_columns(sql_code):
     tables = {}
 
     # Use regular expressions to find CREATE TABLE statements
-    create_table_regex = re.compile(r'CREATE TABLE (\w+) \((.*?)\);', re.DOTALL)
+    create_table_regex = re.compile(r"CREATE TABLE (\w+) \((.*?)\);", re.DOTALL)
 
     # Find all CREATE TABLE statements in the SQL code
     table_matches = create_table_regex.findall(sql_code)
@@ -14,7 +14,7 @@ def extract_tables_and_columns(sql_code):
         columns = []
 
         # Use regular expressions to extract column information
-        column_regex = re.compile(r'(\w+) (\w+(\(\d+\))?( \w+)?(,)?)+', re.DOTALL)
+        column_regex = re.compile(r"(\w+) (\w+(\(\d+\))?( \w+)?(,)?)+", re.DOTALL)
         column_matches = column_regex.findall(columns_str)
 
         for column_match in column_matches:

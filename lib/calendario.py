@@ -5,8 +5,9 @@ import holidays
 from lib import crud as c
 from datetime import datetime, timedelta, date
 
-COLOR_RED = 'red'
-COLOR_LIGHT_GREEN = 'green'
+COLOR_RED = "red"
+COLOR_LIGHT_GREEN = "#00FF3F"
+COLOR_DARK_GREEN = "#00BE2F"
 
 class GUICalendar(Frame):
     MONTHS = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
@@ -32,7 +33,7 @@ class GUICalendar(Frame):
         self.next_month_button = Button(self.header_frame, text="Next Month", command=self.show_next_month)
         self.next_month_button.grid(row=0, column=2)
 
-        self.cal_display = Label(self.calendar_frame, text="", justify='left')
+        self.cal_display = Label(self.calendar_frame, text="", justify="left")
         self.cal_display.grid(row=1, column=0, columnspan=7)
 
         self.day_buttons = []
@@ -112,7 +113,7 @@ class GUICalendar(Frame):
 
     @staticmethod
     def get_holidays(month, year):
-        brazilian_holidays = holidays.country_holidays('BR')
+        brazilian_holidays = holidays.country_holidays("BR")
         holidays_list = []
 
         for day in range(1, calendar.monthrange(year, month)[1] + 1):

@@ -20,15 +20,15 @@ def parse_sql(sql_statements):
 
         if not statement:
             continue
-        elif statement.startswith('CREATE TABLE'):
-            match = re.match(r'CREATE TABLE(?: if NOT EXISTS)? (\w+) \(', statement)
+        elif statement.startswith("CREATE TABLE"):
+            match = re.match(r"CREATE TABLE(?: if NOT EXISTS)? (\w+) \(", statement)
             if match:
                 current_table = match.group(1)
                 tables[current_table] = []
         elif current_table and statement[0] in "abcdefghijklmnopqrstuvwxyz":
             column_name = statement.split()[0]
             tables[current_table].append(column_name)
-        elif current_table and statement.endswith(');'):
+        elif current_table and statement.endswith(");"):
             current_table = None
 
     return tables

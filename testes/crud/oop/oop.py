@@ -61,8 +61,8 @@ class CRUD:
             my_crud.insert((1, "John Doe", 50000))
         """
 
-        placeholders = ', '.join(['?'] * len(data))
-        insert_query = f"INSERT INTO {self.table_name} ({', '.join(self.columns)}) VALUES ({placeholders})"
+        placeholders = ", ".join(["?"] * len(data))
+        insert_query = f"INSERT INTO {self.table_name} ({", ".join(self.columns)}) VALUES ({placeholders})"
         self.db_input(insert_query, data)
 
 
@@ -104,7 +104,7 @@ class CRUD:
 
         for i, data in enumerate(dataset):
             if data is not None:
-                condition += f" AND {self.columns[i]} LIKE '%{data}%'"
+                condition += f" AND {self.columns[i]} LIKE "%{data}%""
 
         return self.read(condition)
 
@@ -114,14 +114,14 @@ class CRUD:
         Update records in the database table based on a condition.
 
         Args:
-            data (str): A string representing the columns and values to update, e.g., "name = 'New Name'".
+            data (str): A string representing the columns and values to update, e.g., "name = "New Name"".
             condition (str): A string representing the condition for updating records, e.g., "id = 1".
 
         Raises:
             Exception: If the database connection is not established.
 
         Example usage:
-            my_crud.update("name = 'Updated Name'", "id = 1")
+            my_crud.update("name = "Updated Name"", "id = 1")
         """
 
         update_query = f"UPDATE {self.table_name} SET {data} WHERE {condition}"
@@ -179,6 +179,6 @@ if __name__ == "__main__":
     print(f"{crud.read()}\n")
     
 
-    print(f"{crud.search(['J', None, None])}\n")
+    print(f"{crud.search(["J", None, None])}\n")
 
     crud.close_connection()

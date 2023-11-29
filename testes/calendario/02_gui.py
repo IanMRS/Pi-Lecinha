@@ -100,7 +100,7 @@ def main():
         day_label = tk.Label(frame, text=day)
         day_label.grid(row=1, column=i+1)
 
-    cal_display = tk.Label(frame, text="", justify='left')
+    cal_display = tk.Label(frame, text="", justify="left")
     cal_display.grid(row=3, columnspan=8)
 
     day_buttons = []  # Store day buttons

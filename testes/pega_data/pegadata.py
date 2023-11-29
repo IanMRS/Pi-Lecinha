@@ -12,7 +12,7 @@ root = tk.Tk()
 root.title("Date Input Widget")
 
 # Create a DateEntry widget
-cal = DateEntry(root, width=12, background='darkblue', foreground='white', borderwidth=2)
+cal = DateEntry(root, width=12, background="darkblue", foreground="white", borderwidth=2)
 cal.grid(row=0, column=0, padx=10, pady=10)
 
 # Create a button to get the selected date

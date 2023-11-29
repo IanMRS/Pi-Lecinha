@@ -24,7 +24,7 @@ month_entry.grid(row=1, column=1)
 show_button = tk.Button(frame, text="Show Calendar", command=lambda: show_calendar(int(year_entry.get()), int(month_entry.get())))
 show_button.grid(row=2, columnspan=2)
 
-cal_display = tk.Label(frame, text="", justify='left')
+cal_display = tk.Label(frame, text="", justify="left")
 cal_display.grid(row=3, columnspan=2)
 
 root.mainloop()

@@ -20,7 +20,7 @@ class CRUD:
     def insert(self, data):
         data_no_id = data[1:]
 
-        placeholders = ', '.join(['?'] * len(data_no_id))
+        placeholders = ", ".join(["?"] * len(data_no_id))
         insert_query = f"INSERT INTO {self.table_name} ({', '.join(self.columns_no_id)}) VALUES ({placeholders})"
         self.db_input(insert_query, data_no_id)
 
@@ -35,7 +35,7 @@ class CRUD:
 
         for i, data in enumerate(dataset):
             if data is not None and data is not "":
-                conditions.append(f" AND {self.columns[i]} LIKE '%{data}%'")
+                conditions.append(f" AND {self.columns[i]} LIKE "%{data}%"")
 
         condition = "".join(conditions)
 

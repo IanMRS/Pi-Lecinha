@@ -10,8 +10,8 @@ class FullScreenWindow:
 
 
     def setup_key_bindings(self):
-        self.root.bind('<F11>', self.toggle_full_screen)
-        self.root.bind('<Escape>', self.exit_full_screen)
+        self.root.bind("<F11>", self.toggle_full_screen)
+        self.root.bind("<Escape>", self.exit_full_screen)
 
 
     def start(self):
@@ -25,7 +25,7 @@ class FullScreenWindow:
     def toggle_full_screen(self, event=None):
         """Toggle between fullscreen and normal mode."""
         try:
-            self.root.attributes('-fullscreen', not self.root.attributes('-fullscreen'))
+            self.root.attributes("-fullscreen", not self.root.attributes("-fullscreen"))
         except tk.TclError as e:
             print(f"Error toggling fullscreen: {e}")
 
@@ -33,6 +33,6 @@ class FullScreenWindow:
     def exit_full_screen(self, event=None):
         """Exit fullscreen mode."""
         try:
-            self.root.attributes('-fullscreen', False)
+            self.root.attributes("-fullscreen", False)
         except tk.TclError as e:
             print(f"Error exiting fullscreen: {e}")

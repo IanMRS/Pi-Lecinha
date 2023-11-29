@@ -2,10 +2,10 @@ import mysql.connector
 
 # Replace with your database connection details
 db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'banco',
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "banco",
 }
 
 # Function to establish a database connection
@@ -84,7 +84,7 @@ def delete_aluguel(aluguel_id):
             conn.close()
 
 # Main program
-if __name__ == '__main__':
+if __name__ == "__main__":
     while True:
         print("Select an option:")
         print("1. Create Aluguel")
