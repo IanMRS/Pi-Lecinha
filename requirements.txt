@@ -9,3 +9,4 @@ re
 pyinstaller
 babel.numbers
 holidays.countries
+brotli
