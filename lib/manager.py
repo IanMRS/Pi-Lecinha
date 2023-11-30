@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from datetime import datetime
+from lib import crud as c 
 
 PADDING_X = 10
 PADDING_Y = 10
@@ -18,9 +19,10 @@ class GenericManager(Frame):
 
         self.configure(background=BACKGROUND_COLOR)
 
-        self.frames()
-        self.widgets()
-        self.table()
+        self.init_frames()
+        self.init_inputs()
+        self.init_widgets()
+        self.init_table()
 
         self.bind("<FocusIn>", self.init_keybinds)
         self.bind("<FocusOut>", self.stop_keybinds)
@@ -39,6 +41,7 @@ class GenericManager(Frame):
             self.winfo_toplevel().bind(key, command)
 
         self.unselect_inputs()
+        self.refresh_inputs()
 
     def stop_keybinds(self, event=None):
         self.winfo_toplevel().unbind("<Return>")
@@ -48,7 +51,7 @@ class GenericManager(Frame):
         self.winfo_toplevel().unbind("<Delete>")
         self.winfo_toplevel().unbind("<Escape>")
 
-    def frames(self):
+    def init_frames(self):
         frame_names = ["top_row", "inputs", "bottom_row"]
         for name in frame_names:
             frame = Frame(self)
@@ -61,13 +64,50 @@ class GenericManager(Frame):
 
             setattr(self, name, frame)
 
-    def widgets(self):
-        self.entries = [DateEntry(self.inputs, date_pattern="dd/mm/yyyy") if "data" in column else Entry(self.inputs) for column in self.crud.columns]
+    def init_inputs(self):
+        self.entries = []
+        for column in self.crud.columns:
+            if "data" in column:
+                self.entries.append(DateEntry(self.inputs, date_pattern="dd/mm/yyyy"))
+            elif "id_" in column[:3]:
+                temp_banco = column[3:]
+                temp_search = c.BANCOS[temp_banco].read()
+
+                while "id_" in c.BANCOS[temp_banco].columns[1]:
+                    temp_banco = c.BANCOS[temp_banco].columns[1][3:]
+                    temp_search = c.BANCOS[temp_banco].read()
+
+                options = [element[1] for element in temp_search]
+                dropdown = ttk.Combobox(self.inputs, values=options)
+                self.entries.append(dropdown)
+            else:
+                self.entries.append(Entry(self.inputs))
+
         for i, (column, entry) in enumerate(zip(self.crud.columns, self.entries)):
-            label = Label(self.inputs, text=column.capitalize())
+            column_text = column 
+            if "id_" in column[:3]:
+                label = Label(self.inputs, text=column[3:].capitalize())
+            else:
+                label = Label(self.inputs, text=column.capitalize())
             label.grid(row=0, column=i)
             entry.grid(row=1, column=i)
 
+    def refresh_inputs(self):
+        for index, entry in enumerate(self.entries):
+            if isinstance(entry, ttk.Combobox):
+                banco_anterior = self.crud.table_name
+                temp_banco = self.crud.columns[index][3:]
+                temp_search = c.BANCOS[temp_banco].read()
+
+                while "id_" in c.BANCOS[temp_banco].columns[1]:
+                    banco_anterior = temp_banco
+                    temp_banco = c.BANCOS[temp_banco].columns[1][3:]
+                    temp_search = c.BANCOS[temp_banco].db_input(f"SELECT c.* FROM {temp_banco} c JOIN {banco_anterior} a ON c.id = a.id_{temp_banco};").fetchall()
+
+                options = [element[1] for element in temp_search]
+                entry["values"] = options     
+
+    def init_widgets(self):
         self.buttons = [
             ("Novo", self.insert_button_pressed),
             ("Alterar", self.update_button_pressed),
@@ -79,12 +119,16 @@ class GenericManager(Frame):
         for i, (text, command) in enumerate(self.buttons):
             Button(self.top_row, text=text, command=command, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, relief=BUTTON_RELIEF).grid(row=0, column=i)
 
-    def table(self):
+    def init_table(self):
         table_columns = self.crud.columns
 
         self.item_table = ttk.Treeview(self.bottom_row, columns=table_columns, show="headings")
         for column in table_columns:
-            self.item_table.heading(column, text=column.capitalize())
+            column_text = column 
+            if "id_" in column[:3]:
+                self.item_table.heading(column, text=column[3:].capitalize())
+            else:
+                self.item_table.heading(column, text=column.capitalize())
             self.item_table.column(column, anchor="center")
 
         for i in range(len(table_columns)):
@@ -159,7 +203,28 @@ class GenericManager(Frame):
         table_values = self.crud.read() if table_values is None else table_values
         self.item_table.delete(*self.item_table.get_children())
         for item in table_values:
-            temp_list = [GenericManager.unformat_date(element) if "data" in self.crud.columns[index] else element for index, element in enumerate(item)]
+            temp_list = []
+            for index, element in enumerate(item):
+                if "data" in self.crud.columns[index]:
+                    temp_list.append(GenericManager.unformat_date(element))
+                elif "id_" in self.crud.columns[index][:3]:
+                    temp_banco = self.crud.columns[index][3:]
+                    temp_search = c.BANCOS[temp_banco].read()
+
+                    temp_element = temp_search[element-1][1]
+                    current_index = temp_search[element-1][0]
+                    extracted_index = temp_search[current_index-1][1]
+
+                    while "id_" in c.BANCOS[temp_banco].columns[1]:
+                        print(f"AAAAAAA  {extracted_index}: {temp_search}")
+                        temp_banco = c.BANCOS[temp_banco].columns[1][3:]
+                        temp_search = c.BANCOS[temp_banco].read()
+                        print(f"element: {element} index: {current_index} {temp_search}")
+                        temp_element=temp_search[extracted_index-1][1]
+                        current_index = temp_search[1][0]
+                    temp_list.append(temp_element)
+                else:
+                    temp_list.append(element)
             self.item_table.insert("", END, values=temp_list)
 
     def double_click(self, event=None):
@@ -183,4 +248,13 @@ class GenericManager(Frame):
         return parsed_date.strftime("%d/%m/%y")
 
     def get_inputs_content(self):
-        return [entry.get() if not isinstance(entry, DateEntry) else self.format_date(entry.get_date()) for entry in self.entries]
+        inputs = []
+        for entry in self.entries:
+            if isinstance(entry, DateEntry):
+                inputs.append(self.format_date(entry.get_date()))
+            elif isinstance(entry, ttk.Combobox):
+                inputs.append(entry.current()+1)
+            else:
+                inputs.append(entry.get())
+                
+        return inputs
