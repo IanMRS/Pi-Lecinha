@@ -15,28 +15,26 @@ class GUICalendar(Frame):
 
     def __init__(self, frame):
         super().__init__(frame)
+        self.day_buttons = []
 
         self.header_frame = Frame(self)
-        self.header_frame.grid(row=0, column=0)
+        self.header_frame.grid(row=0, column=0,padx=10, pady=10)
 
         self.calendar_frame = Frame(self)
-        self.calendar_frame.grid(row=1, column=0)
+        self.calendar_frame.grid(row=1, column=0,padx=10, pady=10)
 
         self.current_date = calendar.datetime.datetime.now()
 
         self.prev_month_button = Button(self.header_frame, text="Previous Month", command=self.show_previous_month)
-        self.prev_month_button.grid(row=0, column=0)
+        self.prev_month_button.grid(row=0, column=0,padx=10, pady=10)
 
         self.current_month = Label(self.header_frame, text=self.get_current_month_text())
-        self.current_month.grid(row=0, column=1, padx=10)
+        self.current_month.grid(row=0, column=1, padx=10, pady=10)
 
         self.next_month_button = Button(self.header_frame, text="Next Month", command=self.show_next_month)
-        self.next_month_button.grid(row=0, column=2)
-
-        self.cal_display = Label(self.calendar_frame, text="", justify="left")
-        self.cal_display.grid(row=1, column=0, columnspan=7)
-
-        self.day_buttons = []
+        self.next_month_button.grid(row=0, column=2, pady=10)
+        
+        self.pack(padx=10, pady=10)
 
         self.show_month()
         self.winfo_toplevel().focus_set()        
