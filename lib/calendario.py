@@ -112,9 +112,7 @@ class GUICalendar(Frame):
 
         for relation in self.rental_has_house:
             rent_id, house_id = relation[1], relation[2]
-            print(f"{rent_id} {house_id}")
 
-            # Check if rent_id is within the valid index range
             if 0 <= int(rent_id if rent_id!="" else 0) - 1 < len(self.rental_data):
                 rent_data = self.rental_data[rent_id - 1]
                 self.rental_dictionary.setdefault(house_id, []).append(rent_data)
