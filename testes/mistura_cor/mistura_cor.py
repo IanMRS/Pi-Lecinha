@@ -6,9 +6,9 @@ def blend_colors(color1, color2, percentage):
     r2, g2, b2 = int(color2[1:3], 16), int(color2[3:5], 16), int(color2[5:7], 16)
 
     # Calculate the blended color
-    r = int(r1 + (r2 - r1) * (percentage / 100))
-    g = int(g1 + (g2 - g1) * (percentage / 100))
-    b = int(b1 + (b2 - b1) * (percentage / 100))
+    r = int(r1 + (r2 - r1) * percentage)
+    g = int(g1 + (g2 - g1) * percentage)
+    b = int(b1 + (b2 - b1) * percentage)
 
     # Format the RGB values as hexadecimal
     blended_color = "#{:02X}{:02X}{:02X}".format(r, g, b)
