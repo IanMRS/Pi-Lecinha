@@ -44,14 +44,7 @@ class GenericManager(Frame):
         self.refresh_inputs()
 
     def stop_keybinds(self, event=None):
-        for key in [
-            "<Return>",
-            "<Control-Return>",
-            "<Control-BackSpace>",
-            "<Shift-BackSpace>",
-            "<Delete>",
-            "<Escape>",
-        ]:
+        for key in ["<Return>", "<Control-Return>", "<Control-BackSpace>", "<Shift-BackSpace>", "<Delete>", "<Escape>"]:
             self.winfo_toplevel().unbind(key)
 
     def init_frames(self):
@@ -79,6 +72,30 @@ class GenericManager(Frame):
 
         for i, (column, entry) in enumerate(zip(self.crud.columns, self.entries)):
             self.create_label_and_entry(column, i, entry)
+
+    def init_widgets(self):
+        buttons = [
+            ("Novo", self.insert_button_pressed),
+            ("Alterar", self.update_button_pressed),
+            ("Buscar", self.search_button_pressed),
+            ("Limpar", self.clear_button_pressed),
+            ("Apagar", self.delete_button_pressed)
+        ]
+
+        for i, (text, command) in enumerate(buttons):
+            Button(self.top_row, text=text, command=command, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, relief=BUTTON_RELIEF).grid(row=0, column=i)
+
+    def init_table(self):
+        table_columns = self.crud.columns
+
+        self.item_table = ttk.Treeview(self.bottom_row, columns=table_columns, show="headings")
+        for column in table_columns:
+            self.create_table_heading(column)
+            self.configure_table_column(column)
+
+        self.create_table_and_scroll_list()
+
+        self.refresh_table()
 
     def create_id_dropdown(self, column):
         temp_banco = column[3:]
@@ -115,31 +132,6 @@ class GenericManager(Frame):
 
         options = [element[1] for element in temp_search]
         entry["values"] = options
-
-    def init_widgets(self):
-        buttons = [
-            ("Novo", self.insert_button_pressed),
-            ("Alterar", self.update_button_pressed),
-            ("Buscar", self.search_button_pressed),
-            ("Limpar", self.clear_button_pressed),
-            ("Apagar", self.delete_button_pressed)
-        ]
-
-        for i, (text, command) in enumerate(buttons):
-            Button(self.top_row, text=text, command=command, width=BUTTON_WIDTH,
-                   height=BUTTON_HEIGHT, relief=BUTTON_RELIEF).grid(row=0, column=i)
-
-    def init_table(self):
-        table_columns = self.crud.columns
-
-        self.item_table = ttk.Treeview(self.bottom_row, columns=table_columns, show="headings")
-        for column in table_columns:
-            self.create_table_heading(column)
-            self.configure_table_column(column)
-
-        self.create_table_and_scroll_list()
-
-        self.refresh_table()
 
     def create_table_heading(self, column):
         column_text = column[3:].capitalize(
