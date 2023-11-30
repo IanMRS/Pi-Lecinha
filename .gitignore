@@ -2,3 +2,6 @@ banco.mwb.bak
 __pycache__
 banco_de_dados.db
 banco.db
+main.spec
+build/
+dist/
