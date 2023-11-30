@@ -22,7 +22,11 @@ class GUICalendar(Frame):
         self.init_header_frame()
 
         self.show_month()
-        self.winfo_toplevel().focus_set()        
+        self.bind("<FocusIn>", self.on_focus)
+
+    def on_focus(self, event=None):
+        self.show_month()
+        self.winfo_toplevel().focus_set()
 
     def init_frames(self):
         self.header_frame = Frame(self)
