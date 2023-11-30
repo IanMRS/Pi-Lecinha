@@ -6,7 +6,7 @@ from lib import crud as c
 from datetime import datetime, timedelta, date
 
 COLOR_RED = "red"
-COLOR_LIGHT_GREEN = "#00FF3F"
+COLOR_WHITE = "#FFFFFF"
 COLOR_DARK_GREEN = "#00BE2F"
 
 class GUICalendar(Frame):
@@ -16,7 +16,7 @@ class GUICalendar(Frame):
     def __init__(self, frame):
         super().__init__(frame)
         self.day_buttons = []
-        self.current_date = calendar.datetime.datetime.now()
+        self.current_date = datetime.now()
 
         self.init_frames()
         self.init_header_frame()
@@ -46,7 +46,7 @@ class GUICalendar(Frame):
 
     def show_month(self):
         year, month = self.current_date.year, self.current_date.month
-        self.update_rented_dates()
+        self.update_rental_info()
         self.create_day_buttons(year, month)
         self.current_month.config(text=self.get_current_month_text())
 
@@ -92,11 +92,12 @@ class GUICalendar(Frame):
     def paint_day_button_based_on_rent_status(self, day_element, day):
         formatted_day = f"{self.current_date.year}{self.current_date.month:02d}{day:02d}"
 
-        for data in self.rental_data:
-            dates_between = GUICalendar.get_days_between_dates(str(data[3]), str(data[4]))
-            if formatted_day in dates_between:
-                day_element.configure(bg=COLOR_LIGHT_GREEN)
-                break
+        if formatted_day in self.rented_days:
+            for key,value in self.houses_rented_per_day.items():
+                if formatted_day in value:
+                    day_color = GUICalendar.blend_colors(COLOR_WHITE,COLOR_DARK_GREEN,key/self.houses_in_total)
+                    day_element.configure(bg=day_color)
+                    break
 
     def grid_element(self, day_element, day, first_weekday):
         row = 2 + (day + first_weekday - 2) // 7
@@ -104,22 +105,63 @@ class GUICalendar(Frame):
         day_element.grid(row=row, column=col)
         self.day_buttons.append(day_element)
 
-    def update_rented_dates(self):
+    @staticmethod
+    def blend_colors(color1, color2, percentage):
+        r1, g1, b1 = int(color1[1:3], 16), int(color1[3:5], 16), int(color1[5:7], 16)
+        r2, g2, b2 = int(color2[1:3], 16), int(color2[3:5], 16), int(color2[5:7], 16)
+
+        r = int(r1 + (r2 - r1) * percentage)
+        g = int(g1 + (g2 - g1) * percentage)
+        b = int(b1 + (b2 - b1) * percentage)
+
+        blended_color = "#{:02X}{:02X}{:02X}".format(r, g, b)
+        return blended_color
+
+    @staticmethod
+    def count_date_occurrences(input_dict):
+        date_count = {}
+        
+        for key, date_list in input_dict.items():
+            for dates in date_list:
+                if dates in date_count:
+                    date_count[dates] += 1
+                else:
+                    date_count[dates] = 1
+        
+        result_dict = {}
+        for date, count in date_count.items():
+            if count in result_dict:
+                result_dict[count].append(date)
+            else:
+                result_dict[count] = [date]
+        
+        return result_dict
+
+    def update_rental_info(self):
         self.rental_data = c.BANCOS["aluguel"].read()
         self.house_data = c.BANCOS["casa"].read()
+        self.houses_in_total = len(self.house_data)
         self.rental_has_house = c.BANCOS["aluguel_has_casa"].read()
         self.rental_dictionary = {}
+        self.rented_days = set()
 
         for relation in self.rental_has_house:
             rent_id, house_id = relation[1], relation[2]
 
-            if 0 <= int(rent_id if rent_id!="" else 0) - 1 < len(self.rental_data):
+            if 0 <= rent_id - 1 < len(self.rental_data):
                 rent_data = self.rental_data[rent_id - 1]
-                self.rental_dictionary.setdefault(house_id, []).append(rent_data)
+                start_rental_date, end_rental_date = str(rent_data[3]), str(rent_data[4])
+                rental_dates = GUICalendar.get_days_between_dates(start_rental_date, end_rental_date)
+
+                self.rental_dictionary.setdefault(house_id, set()).update(rental_dates)
+                self.rented_days.update(rental_dates)
             else:
                 print(f"Invalid rent_id: {rent_id}")
 
         print(self.rental_dictionary)
+
+        self.houses_rented_per_day = GUICalendar.count_date_occurrences(self.rental_dictionary)
+        print(self.houses_rented_per_day)
 
     @staticmethod
     def get_holidays(month, year):
