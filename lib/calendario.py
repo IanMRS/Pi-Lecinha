@@ -39,6 +39,7 @@ class GUICalendar(Frame):
         self.day_buttons = []
 
         self.show_month()
+        self.winfo_toplevel().focus_set()        
 
     def get_current_month_text(self):
         return f"{GUICalendar.MONTHS[self.current_date.month]}, {self.current_date.year}"
@@ -60,9 +61,6 @@ class GUICalendar(Frame):
     def update_current_date(self, increment):
         self.current_date = self.current_date + timedelta(days=calendar.monthrange(self.current_date.year, self.current_date.month)[1] * increment)
 
-    def show_day(self, day):
-        self.cal_display.config(text=f"{self.current_date.year}{self.current_date.month:02d}{day:02d}")
-
     def create_day_buttons(self, year, month):
         for button in self.day_buttons:
             button.grid_forget()
@@ -82,12 +80,11 @@ class GUICalendar(Frame):
             self.grid_element(day_element, i, first_weekday)
 
     def create_day_button(self, i):
-        return Button(
+        return Label(
             self.calendar_frame,
             text=str(i),
-            command=lambda i=i: self.show_day(i),
-            width=5,
-            height=2,
+            width=8,
+            height=3,
             borderwidth=2,
             relief="ridge"
         )
@@ -110,6 +107,21 @@ class GUICalendar(Frame):
     def update_rented_dates(self):
         self.rental_data = c.BANCOS["aluguel"].read()
         self.house_data = c.BANCOS["casa"].read()
+        self.rental_has_house = c.BANCOS["aluguel_has_casa"].read()
+        self.rental_dictionary = {}
+
+        for relation in self.rental_has_house:
+            rent_id, house_id = relation[1], relation[2]
+            print(f"{rent_id} {house_id}")
+
+            # Check if rent_id is within the valid index range
+            if 0 <= int(rent_id if rent_id!="" else 0) - 1 < len(self.rental_data):
+                rent_data = self.rental_data[rent_id - 1]
+                self.rental_dictionary.setdefault(house_id, []).append(rent_data)
+            else:
+                print(f"Invalid rent_id: {rent_id}")
+
+        print(self.rental_dictionary)
 
     @staticmethod
     def get_holidays(month, year):
