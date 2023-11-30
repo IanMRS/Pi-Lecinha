@@ -16,15 +16,22 @@ class GUICalendar(Frame):
     def __init__(self, frame):
         super().__init__(frame)
         self.day_buttons = []
+        self.current_date = calendar.datetime.datetime.now()
 
+        self.init_frames()
+        self.init_header_frame()
+
+        self.show_month()
+        self.winfo_toplevel().focus_set()        
+
+    def init_frames(self):
         self.header_frame = Frame(self)
         self.header_frame.grid(row=0, column=0,padx=10, pady=10)
 
         self.calendar_frame = Frame(self)
         self.calendar_frame.grid(row=1, column=0,padx=10, pady=10)
 
-        self.current_date = calendar.datetime.datetime.now()
-
+    def init_header_frame(self):
         self.prev_month_button = Button(self.header_frame, text="Previous Month", command=self.show_previous_month)
         self.prev_month_button.grid(row=0, column=0,padx=10, pady=10)
 
@@ -33,11 +40,6 @@ class GUICalendar(Frame):
 
         self.next_month_button = Button(self.header_frame, text="Next Month", command=self.show_next_month)
         self.next_month_button.grid(row=0, column=2, pady=10)
-        
-        self.pack(padx=10, pady=10)
-
-        self.show_month()
-        self.winfo_toplevel().focus_set()        
 
     def get_current_month_text(self):
         return f"{GUICalendar.MONTHS[self.current_date.month]}, {self.current_date.year}"
