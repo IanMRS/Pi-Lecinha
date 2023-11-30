@@ -15,7 +15,7 @@ class GenericManager(Frame):
         super().__init__(frame)
         self.crud = crud
         self.data_name = self.crud.table_name.capitalize()
-        self.columns_display_names = [column[3:].capitalize() if "id_" in column[:3] else "Código" if "id" in column[:2]  else column.capitalize() for column in self.crud.columns]
+        self.columns_display_names = [column[3:].capitalize().replace("_", " ") if "id_" in column[:3] else "Código" if "id" in column[:2] else column.capitalize().replace("_", " ") for column in self.crud.columns]
 
         self.configure(background=BACKGROUND_COLOR)
 
