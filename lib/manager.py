@@ -26,11 +26,16 @@ class GenericManager(Frame):
         self.bind("<FocusOut>", self.stop_keybinds)
 
     def init_keybinds(self, event=None):
-        self.winfo_toplevel().bind("<Control-Return>", self.on_control_enter)
-        self.winfo_toplevel().bind("<Return>", self.search_button_pressed)
-        self.winfo_toplevel().bind("<Control-BackSpace>", self.clear_button_pressed)
-        self.winfo_toplevel().bind("<Delete>", self.delete_button_pressed)
-        self.winfo_toplevel().bind("<Escape>", self.clear_inputs)
+        shortcut_mapping = {
+            "<Control-Return>": self.on_control_enter,
+            "<Return>": self.search_button_pressed,
+            "<Control-BackSpace>": self.clear_button_pressed,
+            "<Delete>": self.delete_button_pressed,
+            "<Escape>": self.clear_inputs,
+        }
+
+        for key, command in shortcut_mapping.items():
+            self.winfo_toplevel().bind(key, command)
 
     def stop_keybinds(self, event=None):
         self.winfo_toplevel().unbind("<Return>")
