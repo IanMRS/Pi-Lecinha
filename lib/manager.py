@@ -148,7 +148,7 @@ class GenericManager(Frame):
             entry.delete(0, END)
 
     def unselect_inputs(self, event=None):
-        self.winfo_toplevel().focus_set()
+        self.focus_set()
 
     def refresh_table(self, table_values = None):
         table_values = self.crud.read() if table_values is None else table_values
