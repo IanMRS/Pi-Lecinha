@@ -9,13 +9,13 @@ PADDING_Y = 10
 BACKGROUND_COLOR = "#444444"
 BUTTON_WIDTH = 10
 BUTTON_HEIGHT = 1
-BUTTON_RELIEF = "raised"
 
 class GenericManager(Frame):
     def __init__(self, crud, frame):
         super().__init__(frame)
         self.crud = crud
         self.data_name = self.crud.table_name.capitalize()
+        self.columns_display_names = [column[3:].capitalize() if "id_" in column[:3] else "Código" if "id" in column[:2]  else column.capitalize() for column in self.crud.columns]
 
         self.configure(background=BACKGROUND_COLOR)
 
@@ -71,8 +71,8 @@ class GenericManager(Frame):
             else:
                 self.entries.append(Entry(self.inputs))
 
-        for i, (column, entry) in enumerate(zip(self.crud.columns, self.entries)):
-            self.create_label_and_entry(column, i, entry)
+        for index, entry in enumerate(self.entries):
+            self.create_label_and_entry(index, entry)
 
     def init_widgets(self):
         buttons = [
@@ -84,14 +84,14 @@ class GenericManager(Frame):
         ]
 
         for i, (text, command) in enumerate(buttons):
-            Button(self.top_row, text=text, command=command, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, relief=BUTTON_RELIEF).grid(row=0, column=i)
+            Button(self.top_row, text=text, command=command, width=BUTTON_WIDTH, height=BUTTON_HEIGHT).grid(row=0, column=i)
 
     def init_table(self):
         table_columns = self.crud.columns
 
         self.item_table = ttk.Treeview(self.bottom_row, columns=table_columns, show="headings")
-        for column in table_columns:
-            self.create_table_heading(column)
+        for index, column in enumerate(table_columns):
+            self.create_table_heading(index, column)
             self.configure_table_column(column)
 
         self.create_table_and_scroll_list()
@@ -109,14 +109,14 @@ class GenericManager(Frame):
         options = [element[1] for element in temp_search]
         return ttk.Combobox(self.inputs, values=options)
 
-    def create_label_and_entry(self, column, i, entry):
-        label_text = column[3:].capitalize() if "id_" in column[:3] else column.capitalize()
+    def create_label_and_entry(self, column_index, entry):
+        label_text = self.columns_display_names[column_index]
         label = Label(self.inputs, text=label_text)
-        label.grid(row=0, column=i)
-        entry.grid(row=1, column=i)
+        label.grid(row=0, column=column_index)
+        entry.grid(row=1, column=column_index)
 
-    def create_table_heading(self, column):
-        column_text = column[3:].capitalize() if "id_" in column[:3] else column.capitalize()
+    def create_table_heading(self, column_index, column):
+        column_text = self.columns_display_names[column_index]
         self.item_table.heading(column, text=column_text)
 
     def create_table_and_scroll_list(self):
@@ -130,12 +130,10 @@ class GenericManager(Frame):
         self.item_table.column(column, anchor="center")
 
     def on_enter(self, event=None):
-        (self.update_button_pressed if "" not in self.get_inputs_content()
-         else self.search_button_pressed)()
+        (self.update_button_pressed if "" not in self.get_inputs_content() else self.search_button_pressed)()
 
     def on_control_enter(self, event=None):
-        (self.insert_button_pressed if self.get_inputs_content()[0] == ""
-         else self.update_button_pressed)()
+        (self.insert_button_pressed if self.get_inputs_content()[0] == ""else self.update_button_pressed)()
 
     def on_double_click(self, event=None):
         selected_row = self.item_table.selection()
@@ -143,7 +141,7 @@ class GenericManager(Frame):
             self.clear_inputs()
             for row_id in selected_row:
                 columns = self.item_table.item(row_id, "values")
-                self.insert_values_in_entries(columns)
+                self.insert_values_in_inputs(columns)
 
     def insert_button_pressed(self, event=None):
         self.crud.insert(self.get_inputs_content())
@@ -160,11 +158,7 @@ class GenericManager(Frame):
         self.clear_inputs()
 
         if len(search_result) == 1:
-            self.insert_values_in_entries(search_result[0])
-
-    def insert_values_in_entries(self, values):
-        for col, entry in zip(values, self.entries):
-            entry.insert(END, col)
+            self.insert_values_in_inputs(search_result[0])
 
     def delete_button_pressed(self, event=None):
         self.popup = Toplevel()
@@ -194,6 +188,10 @@ class GenericManager(Frame):
     def clear_inputs(self, event=None):
         for entry in self.entries:
             entry.delete(0, END)
+
+    def insert_values_in_inputs(self, values):
+        for col, entry in zip(values, self.entries):
+            entry.insert(END, col)
 
     def unselect_inputs(self, event=None):
         self.focus_set()
