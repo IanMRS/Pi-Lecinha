@@ -213,14 +213,16 @@ class GenericManager(Frame):
 
                     temp_element = temp_search[element-1][1]
                     current_index = temp_search[element-1][0]
-                    extracted_index = temp_search[current_index-1][1]
+                    extracted_index = temp_search[index-1][1]
 
+                    temp_element1 = None
                     while "id_" in c.BANCOS[temp_banco].columns[1]:
                         temp_banco = c.BANCOS[temp_banco].columns[1][3:]
                         temp_search = c.BANCOS[temp_banco].read()
-                        temp_element=temp_search[extracted_index-1][1]
-                        current_index = temp_search[1][0]
-                    temp_list.append(temp_element)
+
+                        temp_element1 = temp_search[temp_element-1][1]
+
+                    temp_list.append(temp_element1 if temp_element1 is not None else temp_element)
                 else:
                     temp_list.append(element)
             self.item_table.insert("", END, values=temp_list)
@@ -237,7 +239,7 @@ class GenericManager(Frame):
     @staticmethod
     def format_date(selected_date):
         if isinstance(selected_date, str):
-            return selected_date  # Already formatted as a string
+            return selected_date
         return datetime.strftime(selected_date, "%Y%m%d")
 
     @staticmethod
