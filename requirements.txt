@@ -7,3 +7,5 @@ matplotlib
 tkcalendar
 re
 pyinstaller
+babel.numbers
+holidays.countries
