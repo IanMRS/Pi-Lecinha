@@ -216,10 +216,8 @@ class GenericManager(Frame):
                     extracted_index = temp_search[current_index-1][1]
 
                     while "id_" in c.BANCOS[temp_banco].columns[1]:
-                        print(f"AAAAAAA  {extracted_index}: {temp_search}")
                         temp_banco = c.BANCOS[temp_banco].columns[1][3:]
                         temp_search = c.BANCOS[temp_banco].read()
-                        print(f"element: {element} index: {current_index} {temp_search}")
                         temp_element=temp_search[extracted_index-1][1]
                         current_index = temp_search[1][0]
                     temp_list.append(temp_element)
