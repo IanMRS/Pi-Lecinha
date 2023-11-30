@@ -22,6 +22,24 @@ class GenericManager(Frame):
         self.widgets()
         self.table()
 
+        self.bind("<FocusIn>", self.init_keybinds)
+        self.bind("<FocusOut>", self.stop_keybinds)
+
+    def init_keybinds(self, event=None):
+        self.winfo_toplevel().bind("<Control-Return>", self.on_control_enter)
+        self.winfo_toplevel().bind("<Return>", self.search_button_pressed)
+        self.winfo_toplevel().bind("<Control-BackSpace>", self.clear_button_pressed)
+        self.winfo_toplevel().bind("<Delete>", self.delete_button_pressed)
+        self.winfo_toplevel().bind("<Escape>", self.clear_inputs)
+
+    def stop_keybinds(self, event=None):
+        self.winfo_toplevel().unbind("<Return>")
+        self.winfo_toplevel().unbind("<Control-Return>")
+        self.winfo_toplevel().unbind("<Control-BackSpace>")
+        self.winfo_toplevel().unbind("<Delete>")
+        self.winfo_toplevel().unbind("<Escape>")
+
+
     def frames(self):
         frame_names = ["top_row", "inputs", "bottom_row"]
         for name in frame_names:
@@ -73,16 +91,19 @@ class GenericManager(Frame):
 
         self.refresh_table()
 
-    def insert_button_pressed(self):
+    def insert_button_pressed(self, event=None):
         self.crud.insert(self.get_inputs_content())
         self.clear_button_pressed()
 
-    def update_button_pressed(self):
+    def update_button_pressed(self, event=None):
         condition = f"id = {self.get_inputs_content()[0]}"
         self.crud.update(self.get_inputs_content(), condition)
         self.clear_button_pressed()
 
-    def search_button_pressed(self):
+    def on_control_enter(self, event=None):
+        (self.update_button_pressed if self.get_inputs_content()[0] != "" else self.insert_button_pressed)()
+
+    def search_button_pressed(self, event=None):
         search_result = self.crud.search(self.get_inputs_content())
         self.refresh_table(search_result)
         self.clear_inputs()
@@ -91,14 +112,19 @@ class GenericManager(Frame):
             for col, entry in zip(search_result[0], self.entries):
                 entry.insert(END, col)
 
-    def delete_button_pressed(self):
+    def delete_button_pressed(self, event=None):
+        def delete_confirmed():
+            self.crud.delete(f"id = {self.get_inputs_content()[0]}")
+            self.clear_button_pressed()
+            popup.destroy()
+
         popup = Toplevel()
         popup.title("Confirmação")
 
         label = Label(popup, text=f"Você tem certeza?")
         label.pack(padx=PADDING_X, pady=PADDING_Y)
 
-        yes_button = Button(popup, text="Sim", command=lambda: self.delete_confirmed)
+        yes_button = Button(popup, text="Sim", command=lambda: delete_confirmed())
         yes_button.pack(side="left", padx=PADDING_X)
 
         no_button = Button(popup, text="Não", command=lambda: popup.destroy())
@@ -106,17 +132,14 @@ class GenericManager(Frame):
 
         popup.wait_window()
 
-    def delete_confirmed(self):
-        self.crud.delete(f"id = {self.get_inputs_content()[0]}")
-        self.clear_button_pressed()
-
-    def clear_button_pressed(self):
+    def clear_button_pressed(self, event=None):
         self.refresh_table()
         self.clear_inputs()
 
-    def clear_inputs(self):
+    def clear_inputs(self, event=None):
         for entry in self.entries:
             entry.delete(0, END)
+            entry.selection_clear()
 
     def refresh_table(self, table_values = None):
         table_values = self.crud.read() if table_values is None else table_values
@@ -125,7 +148,7 @@ class GenericManager(Frame):
             temp_list = [GenericManager.unformat_date(element) if "data" in self.crud.columns[index] else element for index, element in enumerate(item)]
             self.item_table.insert("", END, values=temp_list)
 
-    def double_click(self, event):
+    def double_click(self, event=None):
         selected_row = self.item_table.selection()
         if selected_row:
             self.clear_inputs()
