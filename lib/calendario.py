@@ -34,15 +34,15 @@ class GUICalendar(Frame):
 
     def init_frames(self):
         self.header_frame = Frame(self)
-        self.header_frame.grid(row=0, column=0,padx=PADDING_X, pady=PADDING_Y)
+        self.header_frame.grid(row=0, column=0,padx=PADDING_X)
 
         self.calendar_frame = Frame(self)
-        self.calendar_frame.grid(row=2, column=0,padx=PADDING_X, pady=PADDING_Y)
+        self.calendar_frame.grid(row=1, column=0,padx=PADDING_X)
 
     def init_calendar_weekdays(self):
         for index,day in enumerate(GUICalendar.DAYS):
             day_label = Label(self.calendar_frame, text=day, height=CALENDAR_DAY_HEIGHT)
-            day_label.grid(row=0, column=index+1, padx=PADDING_X, pady=PADDING_Y)
+            day_label.grid(row=0, column=index+1)
 
     def init_header_frame(self):
         self.prev_month_button = Button(self.header_frame, text="Previous Month", command=self.show_previous_month)
