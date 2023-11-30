@@ -16,7 +16,6 @@ class MainScreen(FullScreenWindow):
         self.root.configure(background="#444444")
         self.start()
         
-    
     def create_widgets(self):
         self.main_notebook = ttk.Notebook(self.root)
 
@@ -31,7 +30,6 @@ class MainScreen(FullScreenWindow):
             
         for titulo, aba in abas:
             self.main_notebook.add(aba, text = titulo)       
-
 
     def configure_layout(self):
         self.main_notebook.pack(fill="both", expand=True)
