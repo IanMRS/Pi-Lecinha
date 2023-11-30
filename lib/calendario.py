@@ -10,6 +10,8 @@ COLOR_WHITE = "#FFFFFF"
 COLOR_DARK_GREEN = "#00BE2F"
 PADDING_X = 10
 PADDING_Y = 10
+CALENDAR_DAY_WIDTH = 8
+CALENDAR_DAY_HEIGHT = 3
 
 class GUICalendar(Frame):
     MONTHS = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
@@ -22,8 +24,8 @@ class GUICalendar(Frame):
 
         self.init_frames()
         self.init_header_frame()
+        self.init_calendar_weekdays()
 
-        self.show_month()
         self.bind("<FocusIn>", self.on_focus)
 
     def on_focus(self, event=None):
@@ -35,7 +37,12 @@ class GUICalendar(Frame):
         self.header_frame.grid(row=0, column=0,padx=PADDING_X, pady=PADDING_Y)
 
         self.calendar_frame = Frame(self)
-        self.calendar_frame.grid(row=1, column=0,padx=PADDING_X, pady=PADDING_Y)
+        self.calendar_frame.grid(row=2, column=0,padx=PADDING_X, pady=PADDING_Y)
+
+    def init_calendar_weekdays(self):
+        for index,day in enumerate(GUICalendar.DAYS):
+            day_label = Label(self.calendar_frame, text=day, height=CALENDAR_DAY_HEIGHT)
+            day_label.grid(row=0, column=index+1, padx=PADDING_X, pady=PADDING_Y)
 
     def init_header_frame(self):
         self.prev_month_button = Button(self.header_frame, text="Previous Month", command=self.show_previous_month)
@@ -77,23 +84,13 @@ class GUICalendar(Frame):
         holidays_list = GUICalendar.get_holidays(month, year)
 
         for i in range(1, last_day + 1):
-            day_element = self.create_day_button(i)
+            day_element = Label(self.calendar_frame, text=str(i), width=CALENDAR_DAY_WIDTH, height=CALENDAR_DAY_HEIGHT, borderwidth=2, relief="ridge")
 
             if i in holidays_list:
                 day_element.configure(background=COLOR_RED)
 
             self.paint_day_button_based_on_rent_status(day_element, i)
             self.grid_element(day_element, i, first_weekday)
-
-    def create_day_button(self, i):
-        return Label(
-            self.calendar_frame,
-            text=str(i),
-            width=8,
-            height=3,
-            borderwidth=2,
-            relief="ridge"
-        )
 
     def paint_day_button_based_on_rent_status(self, day_element, day):
         formatted_day = f"{self.current_date.year}{self.current_date.month:02d}{day:02d}"
