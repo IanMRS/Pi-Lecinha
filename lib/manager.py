@@ -31,11 +31,13 @@ class GenericManager(Frame):
             "<Return>": self.search_button_pressed,
             "<Control-BackSpace>": self.clear_button_pressed,
             "<Delete>": self.delete_button_pressed,
-            "<Escape>": self.clear_inputs,
+            "<Escape>": self.unselect_inputs,
         }
 
         for key, command in shortcut_mapping.items():
             self.winfo_toplevel().bind(key, command)
+
+        self.unselect_inputs()
 
     def stop_keybinds(self, event=None):
         self.winfo_toplevel().unbind("<Return>")
@@ -43,7 +45,6 @@ class GenericManager(Frame):
         self.winfo_toplevel().unbind("<Control-BackSpace>")
         self.winfo_toplevel().unbind("<Delete>")
         self.winfo_toplevel().unbind("<Escape>")
-
 
     def frames(self):
         frame_names = ["top_row", "inputs", "bottom_row"]
@@ -140,11 +141,14 @@ class GenericManager(Frame):
     def clear_button_pressed(self, event=None):
         self.refresh_table()
         self.clear_inputs()
+        self.unselect_inputs()
 
     def clear_inputs(self, event=None):
         for entry in self.entries:
             entry.delete(0, END)
-            entry.selection_clear()
+
+    def unselect_inputs(self, event=None):
+        self.winfo_toplevel().focus_set()
 
     def refresh_table(self, table_values = None):
         table_values = self.crud.read() if table_values is None else table_values
@@ -167,7 +171,6 @@ class GenericManager(Frame):
         if isinstance(selected_date, str):
             return selected_date  # Already formatted as a string
         return datetime.strftime(selected_date, "%Y%m%d")
-
 
     @staticmethod
     def unformat_date(selected_date):
