@@ -14,8 +14,8 @@ CALENDAR_DAY_WIDTH = 8
 CALENDAR_DAY_HEIGHT = 3
 
 class GUICalendar(Frame):
-    MONTHS = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
-    DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    MONTHS = {1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril", 5: "Maio", 6: "Junho", 7: "Julho", 8: "Agosto", 9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro"}
+    DAYS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"]
 
     def __init__(self, frame):
         super().__init__(frame)
@@ -108,6 +108,29 @@ class GUICalendar(Frame):
         day_element.grid(row=row, column=col)
         self.day_buttons.append(day_element)
 
+    def update_rental_info(self):
+        self.rental_data = c.BANCOS["aluguel"].read()
+        self.house_data = c.BANCOS["casa"].read()
+        self.houses_in_total = len(self.house_data)
+        self.rental_has_house = c.BANCOS["aluguel_has_casa"].read()
+        self.rental_dictionary = {}
+        self.rented_days = set()
+
+        for relation in self.rental_has_house:
+            rent_id, house_id = relation[1], relation[2]
+
+            if 0 <= rent_id - 1 < len(self.rental_data):
+                rent_data = self.rental_data[rent_id - 1]
+                start_rental_date, end_rental_date = str(rent_data[3]), str(rent_data[4])
+                rental_dates = GUICalendar.get_days_between_dates(start_rental_date, end_rental_date)
+
+                self.rental_dictionary.setdefault(house_id, set()).update(rental_dates)
+                self.rented_days.update(rental_dates)
+            else:
+                print(f"Invalid rent_id: {rent_id}")
+
+        self.houses_rented_per_day = GUICalendar.count_date_occurrences(self.rental_dictionary)
+
     @staticmethod
     def blend_colors(color1, color2, percentage):
         r1, g1, b1 = int(color1[1:3], 16), int(color1[3:5], 16), int(color1[5:7], 16)
@@ -139,29 +162,6 @@ class GUICalendar(Frame):
                 result_dict[count] = [date]
         
         return result_dict
-
-    def update_rental_info(self):
-        self.rental_data = c.BANCOS["aluguel"].read()
-        self.house_data = c.BANCOS["casa"].read()
-        self.houses_in_total = len(self.house_data)
-        self.rental_has_house = c.BANCOS["aluguel_has_casa"].read()
-        self.rental_dictionary = {}
-        self.rented_days = set()
-
-        for relation in self.rental_has_house:
-            rent_id, house_id = relation[1], relation[2]
-
-            if 0 <= rent_id - 1 < len(self.rental_data):
-                rent_data = self.rental_data[rent_id - 1]
-                start_rental_date, end_rental_date = str(rent_data[3]), str(rent_data[4])
-                rental_dates = GUICalendar.get_days_between_dates(start_rental_date, end_rental_date)
-
-                self.rental_dictionary.setdefault(house_id, set()).update(rental_dates)
-                self.rented_days.update(rental_dates)
-            else:
-                print(f"Invalid rent_id: {rent_id}")
-
-        self.houses_rented_per_day = GUICalendar.count_date_occurrences(self.rental_dictionary)
 
     @staticmethod
     def get_holidays(month, year):
