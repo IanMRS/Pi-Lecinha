@@ -11,18 +11,18 @@ CREATE TABLE if NOT EXISTS cliente (
 
 CREATE TABLE if NOT EXISTS aluguel (
     id INTEGER PRIMARY KEY,
-    clienteid INT NOT NULL,
-    origemid INT NOT NULL,
+    id_cliente INT NOT NULL,
+    id_origem INT NOT NULL,
     datainicio DATE NOT NULL,
     datatermino DATE NOT NULL,
     valor FLOAT NOT NULL,
     quantia_inquilinos INT NOT NULL,
     obs VARCHAR(255) NOT NULL,
 
-    FOREIGN KEY (origemid) REFERENCES origem(id)
+    FOREIGN KEY (id_origem) REFERENCES origem(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-    FOREIGN KEY (clienteid) REFERENCES cliente(id)
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
@@ -36,13 +36,13 @@ CREATE TABLE if NOT EXISTS casa (
 
 CREATE TABLE if NOT EXISTS aluguel_has_casa (
     id INTEGER PRIMARY KEY,
-    aluguel_id INT NOT NULL,
-    casa_id INT NOT NULL,
+    id_aluguel INT NOT NULL,
+    id_casa INT NOT NULL,
 
-    FOREIGN KEY (aluguel_id) REFERENCES aluguel(id)
+    FOREIGN KEY (id_aluguel) REFERENCES aluguel(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
 
-    FOREIGN KEY (casa_id) REFERENCES casa (id)
+    FOREIGN KEY (id_casa) REFERENCES casa (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
