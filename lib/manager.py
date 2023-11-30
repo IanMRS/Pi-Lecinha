@@ -28,9 +28,10 @@ class GenericManager(Frame):
     def init_keybinds(self, event=None):
         shortcut_mapping = {
             "<Control-Return>": self.on_control_enter,
-            "<Return>": self.search_button_pressed,
+            "<Return>": self.on_enter,
             "<Control-BackSpace>": self.clear_button_pressed,
             "<Delete>": self.delete_button_pressed,
+            "<Shift-BackSpace>": self.delete_button_pressed,
             "<Escape>": self.unselect_inputs,
         }
 
@@ -43,6 +44,7 @@ class GenericManager(Frame):
         self.winfo_toplevel().unbind("<Return>")
         self.winfo_toplevel().unbind("<Control-Return>")
         self.winfo_toplevel().unbind("<Control-BackSpace>")
+        self.winfo_toplevel().unbind("<Shift-BackSpace>")
         self.winfo_toplevel().unbind("<Delete>")
         self.winfo_toplevel().unbind("<Escape>")
 
@@ -106,8 +108,11 @@ class GenericManager(Frame):
         self.crud.update(self.get_inputs_content(), condition)
         self.clear_button_pressed()
 
+    def on_enter(self, event=None):
+        (self.update_button_pressed if "" not in self.get_inputs_content()  else self.search_button_pressed)()
+
     def on_control_enter(self, event=None):
-        (self.update_button_pressed if self.get_inputs_content()[0] != "" else self.insert_button_pressed)()
+        (self.insert_button_pressed if self.get_inputs_content()[0] == "" else self.update_button_pressed)()
 
     def search_button_pressed(self, event=None):
         search_result = self.crud.search(self.get_inputs_content())
