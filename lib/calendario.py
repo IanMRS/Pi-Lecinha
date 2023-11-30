@@ -8,6 +8,8 @@ from datetime import datetime, timedelta, date
 COLOR_RED = "red"
 COLOR_WHITE = "#FFFFFF"
 COLOR_DARK_GREEN = "#00BE2F"
+PADDING_X = 10
+PADDING_Y = 10
 
 class GUICalendar(Frame):
     MONTHS = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
@@ -30,29 +32,29 @@ class GUICalendar(Frame):
 
     def init_frames(self):
         self.header_frame = Frame(self)
-        self.header_frame.grid(row=0, column=0,padx=10, pady=10)
+        self.header_frame.grid(row=0, column=0,padx=PADDING_X, pady=PADDING_Y)
 
         self.calendar_frame = Frame(self)
-        self.calendar_frame.grid(row=1, column=0,padx=10, pady=10)
+        self.calendar_frame.grid(row=1, column=0,padx=PADDING_X, pady=PADDING_Y)
 
     def init_header_frame(self):
         self.prev_month_button = Button(self.header_frame, text="Previous Month", command=self.show_previous_month)
-        self.prev_month_button.grid(row=0, column=0,padx=10, pady=10)
+        self.prev_month_button.grid(row=0, column=0,padx=PADDING_X, pady=PADDING_Y)
 
-        self.current_month = Label(self.header_frame, text=self.get_current_month_text())
-        self.current_month.grid(row=0, column=1, padx=10, pady=10)
+        self.current_month = Label(self.header_frame, text=self.format_current_month())
+        self.current_month.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
         self.next_month_button = Button(self.header_frame, text="Next Month", command=self.show_next_month)
-        self.next_month_button.grid(row=0, column=2, pady=10)
+        self.next_month_button.grid(row=0, column=2, pady=PADDING_Y)
 
-    def get_current_month_text(self):
+    def format_current_month(self):
         return f"{GUICalendar.MONTHS[self.current_date.month]}, {self.current_date.year}"
 
     def show_month(self):
         year, month = self.current_date.year, self.current_date.month
         self.update_rental_info()
         self.create_day_buttons(year, month)
-        self.current_month.config(text=self.get_current_month_text())
+        self.current_month.config(text=self.format_current_month())
 
     def show_previous_month(self):
         self.update_current_date(-1)
