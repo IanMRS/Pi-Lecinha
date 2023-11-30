@@ -162,10 +162,7 @@ class GUICalendar(Frame):
             else:
                 print(f"Invalid rent_id: {rent_id}")
 
-        print(self.rental_dictionary)
-
         self.houses_rented_per_day = GUICalendar.count_date_occurrences(self.rental_dictionary)
-        print(self.houses_rented_per_day)
 
     @staticmethod
     def get_holidays(month, year):
