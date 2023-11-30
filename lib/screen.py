@@ -29,7 +29,7 @@ class MainScreen(FullScreenWindow):
             ("Calendário",          GUICalendar(self.main_notebook))]
             
         for titulo, aba in abas:
-            self.main_notebook.add(aba, text = titulo)       
+            self.main_notebook.add(aba, text = titulo)
 
     def configure_layout(self):
         self.main_notebook.pack(fill="both", expand=True)
