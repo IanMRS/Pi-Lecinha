@@ -11,9 +11,11 @@ from lib import crud as c
 class FinanceiroApp(Frame):
     def __init__(self, frame):
         super().__init__(frame)
-
-        # Variáveis para armazenar dados
         
+        self.atualizar_grafico()
+        self.bind("<FocusIn>", self.atualizar_grafico)
+
+    def atualizar_grafico(self,event=None):
         self.taxas_sites = [dado[2] for dado in c.BANCOS["origem"].read()]
         
         self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in c.BANCOS["aluguel"].read()]
@@ -22,10 +24,6 @@ class FinanceiroApp(Frame):
         
         self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in c.BANCOS["aluguel"].read()]
         
-        print(f"{self.receitas_aluguel} {self.lucros} {self.receitas_aluguel}")
-        
-
-
         self.plotar_grafico_receitas()
 
     @staticmethod
@@ -58,7 +56,7 @@ class FinanceiroApp(Frame):
         parsed_date = datetime.strptime(str(selected_date), "%Y%m%d")
         return parsed_date.strftime("%d/%m/%y")
 
-    def plotar_grafico_receitas(self):
+    def plotar_grafico_receitas(self, event=None):
         self.plotar_grafico(self.receitas_aluguel, 'Receitas de Aluguel por Data', 'green')
 
     def plotar_grafico(self, transacoes, titulo, cor):
