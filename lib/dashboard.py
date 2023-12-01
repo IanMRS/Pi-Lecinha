@@ -57,7 +57,7 @@ class FinanceiroApp(Frame):
         self.plotar_grafico(self.receitas_aluguel, 'Receitas de Aluguel por Data', 'green')
 
     def plotar_grafico(self, transacoes, titulo, cor):
-        datas = [df.format_date(str(transacao[1])) for transacao in transacoes]
+        datas = [df.unformat_date(str(transacao[1])) for transacao in transacoes]
         valores = [float(self.lucros[index]) for index,transacao in enumerate(transacoes)]
 
         fig, ax = plt.subplots()
