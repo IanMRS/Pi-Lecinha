@@ -8,7 +8,7 @@ class CRUD:
         
         self.columns = columns
         self.columns_no_id = columns[1:]
-        self.columns_display_names = [column[3:].capitalize().replace("_", " ") if "id_" in column[:3] else "Código" if "id" in column[:2] else column.capitalize().replace("_", " ") for column in self.crud.columns]
+        self.columns_display_names = [column[3:].capitalize().replace("_", " ") if "id_" in column[:3] else "Código" if "id" in column[:2] else column.capitalize().replace("_", " ") for column in self.columns]
         
         self.connection = dbc.connect_db()
         self.cursor = dbc.get_db_cursor(self.connection)
