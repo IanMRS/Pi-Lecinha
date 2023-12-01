@@ -18,9 +18,9 @@ class ManagerTable(Frame):
 
         self.create_table_and_scroll_list()
 
-        self.refresh_table()
+        self.refresh()
 
-    def refresh_table(self, table_values=None):
+    def refresh(self, table_values=None):
         table_values = self.crud.read() if table_values is None else table_values
         self.item_table.delete(*self.item_table.get_children())
         for item in table_values:
