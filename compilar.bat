@@ -1,1 +1,0 @@
-pyinstaller --onefile --name administrar_aluguel.exe --add-data "requirements.txt:." --add-data "banco.sql:." --add-data "banco.db:." --hidden-import babel.numbers --hidden-import holidays.countries main.py
