@@ -110,11 +110,11 @@ class GenericManager(Frame):
         (self.insert_button_pressed if self.get_inputs_content()[0] == ""else self.update_button_pressed)()
 
     def on_double_click(self, event=None):
-        selected_row = self.item_table.selection()
+        selected_row = self.data_table.item_table.selection()
         if selected_row:
             self.clear_inputs()
             for row_id in selected_row:
-                columns = self.item_table.item(row_id, "values")
+                columns = self.data_table.item_table.item(row_id, "values")
                 self.insert_values_in_inputs(columns)
 
     def insert_button_pressed(self, event=None):
@@ -155,7 +155,7 @@ class GenericManager(Frame):
         self.popup.destroy()
 
     def clear_button_pressed(self, event=None):
-        self.refresh_table()
+        self.data_table.refresh_table()
         self.clear_inputs()
         self.unselect_inputs()
 
