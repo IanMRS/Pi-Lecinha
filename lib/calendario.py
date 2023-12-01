@@ -124,15 +124,12 @@ class GUICalendar(Frame):
         for relation in self.rental_has_house:
             rent_id, house_id = relation[1], relation[2]
 
-            if 0 <= rent_id - 1 < len(self.rental_data):
-                rent_data = self.rental_data[rent_id - 1]
-                start_rental_date, end_rental_date = str(rent_data[3]), str(rent_data[4])
-                rental_dates = GUICalendar.get_days_between_dates(start_rental_date, end_rental_date)
+            rent_data = self.rental_data[rent_id - 1]
+            start_rental_date, end_rental_date = str(rent_data[3]), str(rent_data[4])
+            rental_dates = GUICalendar.get_days_between_dates(start_rental_date, end_rental_date)
 
-                self.rental_dictionary.setdefault(house_id, set()).update(rental_dates)
-                self.rented_days.update(rental_dates)
-            else:
-                print(f"Invalid rent_id: {rent_id}")
+            self.rental_dictionary.setdefault(house_id, set()).update(rental_dates)
+            self.rented_days.update(rental_dates)
 
         self.houses_rented_per_day = GUICalendar.count_date_occurrences(self.rental_dictionary)
 

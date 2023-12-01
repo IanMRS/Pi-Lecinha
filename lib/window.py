@@ -6,6 +6,7 @@ class FullScreenWindow:
         self.root.title(title)
 
         self.setup_key_bindings()
+        self.toggle_full_screen()
 
     def setup_key_bindings(self):
         self.root.bind("<F11>", self.toggle_full_screen)
