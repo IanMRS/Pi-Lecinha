@@ -30,6 +30,7 @@ class GUICalendar(Frame):
         self.init_header_frame()
         self.init_calendar_weekdays()
 
+        self.show_month()
         self.bind("<FocusIn>", self.on_focus)
 
     def on_focus(self, event=None):
