@@ -16,7 +16,6 @@ class GenericManager(Frame):
         super().__init__(frame)
         self.crud = crud
         self.data_name = self.crud.table_name.capitalize()
-        self.columns_display_names = [column[3:].capitalize().replace("_", " ") if "id_" in column[:3] else "Código" if "id" in column[:2] else column.capitalize().replace("_", " ") for column in self.crud.columns]
 
         self.configure(background=BACKGROUND_COLOR)
 
@@ -24,7 +23,7 @@ class GenericManager(Frame):
         self.init_inputs()
         self.init_widgets()
 
-        self.data_table = ManagerTable(self,self.crud, self.columns_display_names)
+        self.data_table = ManagerTable(self,self.crud)
         self.data_table.grid_columnconfigure(0, weight=1)
         self.data_table.grid_rowconfigure(0, weight=1)
         self.data_table.pack(fill="both", expand=True, padx=PADDING_X, pady=PADDING_Y)
@@ -98,7 +97,7 @@ class GenericManager(Frame):
         return ttk.Combobox(self.inputs, values=options)
 
     def create_label_and_entry(self, column_index, entry):
-        label_text = self.columns_display_names[column_index]
+        label_text = self.crud.columns_display_names[column_index]
         label = Label(self.inputs, text=label_text)
         label.grid(row=0, column=column_index)
         entry.grid(row=1, column=column_index)

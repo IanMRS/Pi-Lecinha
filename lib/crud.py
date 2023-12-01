@@ -5,8 +5,11 @@ BANCOS = {}
 class CRUD:
     def __init__(self, table_name : str, columns : list):
         self.table_name = table_name
+        
         self.columns = columns
         self.columns_no_id = columns[1:]
+        self.columns_display_names = [column[3:].capitalize().replace("_", " ") if "id_" in column[:3] else "Código" if "id" in column[:2] else column.capitalize().replace("_", " ") for column in self.crud.columns]
+        
         self.connection = dbc.connect_db()
         self.cursor = dbc.get_db_cursor(self.connection)
 

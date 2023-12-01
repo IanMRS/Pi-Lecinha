@@ -4,12 +4,12 @@ from lib import date_formatting as df
 from lib import crud as c
 
 class ManagerTable(Frame):
-    def __init__(self,frame,crud,columns_display_names):
+    def __init__(self,frame,crud):
         super().__init__(frame)
 
         self.crud = crud
         self.table_columns = self.crud.columns
-        self.display_names = columns_display_names
+        self.display_names = self.crud.columns_display_names
 
         self.item_table = ttk.Treeview(self, columns=self.table_columns, show="headings")
         for index, column in enumerate(self.table_columns):
