@@ -10,6 +10,8 @@ class CRUD:
         self.connection = dbc.connect_db()
         self.cursor = dbc.get_db_cursor(self.connection)
 
+        print(f"Banco de Dados: Conectando em ({self.table_name})")
+
 
     def db_input(self, query, data = ""):
         output = self.cursor.execute(query if not data else query, data)

@@ -5,7 +5,6 @@ TABLES = {}
 
 def connect_db():
     connection = sql.connect("banco.db")
-    print("Conectando ao banco de Dados\n")
     return connection
 
 def get_db_cursor(connection):
@@ -34,6 +33,7 @@ def parse_sql(sql_statements):
     return tables
 
 def create_db():
+    print("\nBanco de Dados: Criando")
     connection = connect_db()
 
     with open("banco.sql", "r") as banco:
@@ -42,8 +42,8 @@ def create_db():
     script = " ".join(texto_banco)
 
     connection.executescript(script)
-
-    print("Banco de Dados criado\n")
+    
+    print("\nBanco de Dados: Criado com sucesso")
     return texto_banco
 
 text_db = create_db()
