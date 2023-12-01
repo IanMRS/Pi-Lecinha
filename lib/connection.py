@@ -46,7 +46,6 @@ def create_db():
     print("Banco de Dados criado\n")
     return texto_banco
 
-
 text_db = create_db()
 
 TABLES = parse_sql(text_db)
