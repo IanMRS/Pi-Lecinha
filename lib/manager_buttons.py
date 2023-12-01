@@ -1,12 +1,12 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 
-BUTTON_WIDTH = 10
-BUTTON_HEIGHT = 1
-PADDING_X = 10
-PADDING_Y = 10
-
 class ManagerButtons(Frame):
+    BUTTON_WIDTH = 10
+    BUTTON_HEIGHT = 1
+    PADDING_X = 10
+    PADDING_Y = 10
+
     def __init__(self,frame,crud,inputs,table):
         super().__init__(frame)
         self.crud = crud

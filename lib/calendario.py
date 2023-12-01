@@ -9,17 +9,18 @@ from datetime import datetime, timedelta, date
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
-COLOR_RED = "red"
-COLOR_WHITE = "#FFFFFF"
-COLOR_DARK_GREEN = "#00BE2F"
-PADDING_X = 10
-PADDING_Y = 10
-CALENDAR_DAY_WIDTH = 8
-CALENDAR_DAY_HEIGHT = 3
 
 class GUICalendar(Frame):
     MONTHS = {1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril", 5: "Maio", 6: "Junho", 7: "Julho", 8: "Agosto", 9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro"}
     DAYS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"]
+
+    COLOR_RED = "red"
+    COLOR_WHITE = "#FFFFFF"
+    COLOR_DARK_GREEN = "#00BE2F"
+    PADDING_X = 10
+    PADDING_Y = 10
+    CALENDAR_DAY_WIDTH = 8
+    CALENDAR_DAY_HEIGHT = 3
 
     def __init__(self, frame):
         super().__init__(frame)
