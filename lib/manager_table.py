@@ -20,6 +20,9 @@ class ManagerTable(Frame):
 
         self.refresh()
 
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
     def refresh(self, table_values=None):
         table_values = self.crud.read() if table_values is None else table_values
         self.item_table.delete(*self.item_table.get_children())
