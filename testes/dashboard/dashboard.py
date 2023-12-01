@@ -121,20 +121,27 @@ class FinanceiroApp:
         data_inicial = datetime.strptime(data_inicial, "%d/%m/%Y")
         data_final = datetime.strptime(data_final, "%d/%m/%Y")
 
+        # Filtrar transações de acordo com o intervalo de datas
+        transacoes_receitas_filtradas = [transacao for transacao in self.receitas_aluguel
+                                         if data_inicial <= datetime.strptime(transacao[0], "%d/%m/%Y") <= data_final]
+
+        transacoes_despesas_filtradas = [transacao for transacao in self.despesas
+                                         if data_inicial <= datetime.strptime(transacao[0], "%d/%m/%Y") <= data_final]
+
         # Limpar as tabelas antes de aplicar o filtro
         self.tree_receitas.delete(*self.tree_receitas.get_children())
         self.tree_despesas.delete(*self.tree_despesas.get_children())
 
         # Adicionar transações filtradas de acordo com o intervalo de datas
-        for transacao in self.receitas_aluguel:
-            transacao_data = datetime.strptime(transacao[0], "%d/%m/%Y")
-            if data_inicial <= transacao_data <= data_final:
-                self.tree_receitas.insert('', 'end', values=transacao)
+        for transacao in transacoes_receitas_filtradas:
+            self.tree_receitas.insert('', 'end', values=transacao)
 
-        for transacao in self.despesas:
-            transacao_data = datetime.strptime(transacao[0], "%d/%m/%Y")
-            if data_inicial <= transacao_data <= data_final:
-                self.tree_despesas.insert('', 'end', values=transacao)
+        for transacao in transacoes_despesas_filtradas:
+            self.tree_despesas.insert('', 'end', values=transacao)
+
+        # Plotar gráficos filtrados
+        self.plotar_grafico_filtrado(transacoes_receitas_filtradas, 'Receitas de Aluguel por Data (Filtrado)', 'green')
+        self.plotar_grafico_filtrado(transacoes_despesas_filtradas, 'Despesas por Data (Filtrado)', 'red')
 
     def plotar_grafico_receitas(self):
         self.plotar_grafico(self.receitas_aluguel, 'Receitas de Aluguel por Data', 'green')
@@ -156,6 +163,23 @@ class FinanceiroApp:
         canvas = FigureCanvasTkAgg(fig, master=self.root)
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.grid(row=0, column=5, rowspan=12, padx=10, pady=10, sticky='nsew')
+
+# Adicionar um novo método para plotar gráficos com base em datas filtradas
+    def plotar_grafico_filtrado(self, transacoes_filtradas, titulo, cor):
+        datas = [transacao[0] for transacao in transacoes_filtradas]
+        valores = [float(transacao[2]) for transacao in transacoes_filtradas]
+
+        fig, ax = plt.subplots()
+        ax.bar(datas, valores, color=cor)
+        ax.set_xlabel('Data')
+        ax.set_ylabel('Valor')
+        ax.set_title(titulo)
+
+        # Incorporar o gráfico no Tkinter
+        canvas = FigureCanvasTkAgg(fig, master=self.root)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.grid(row=0, column=5, rowspan=12, padx=10, pady=10, sticky='nsew')
+
 
 if __name__ == "__main__":
     root = Tk()
