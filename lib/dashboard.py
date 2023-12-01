@@ -4,113 +4,38 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from datetime import datetime, timedelta, date
 from datetime import datetime
+from lib import crud as c  
 
 class FinanceiroApp(Frame):
     def __init__(self, frame):
         super().__init__(frame)
 
         # Variáveis para armazenar dados
-        self.despesas = []
-        self.receitas_aluguel = []
-
-        # Variáveis para filtrar datas nos gráficos
-        self.data_inicial_var = StringVar()
-        self.data_final_var = StringVar()
-
-        # Widgets
-        self.label_data = Label(self, text="Data:")
-        self.entry_data = DateEntry(self, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yyyy')
-
-        self.label_valor = Label(self, text="Valor:")
-        self.entry_valor = Entry(self)
-
-        self.label_tipo = Label(self, text="Tipo:")
-        self.tipo_var = StringVar()
-        self.tipo_combobox = ttk.Combobox(self, textvariable=self.tipo_var, values=["Receita", "Despesa"])
-        self.tipo_combobox.set("Receita")
-
-        self.button_adicionar = Button(self, text="Adicionar Transação", command=self.adicionar_transacao)
-
-        self.tree_receitas = ttk.Treeview(self, columns=('Data', 'Casa', 'Valor'), show='headings')
-        self.tree_receitas.heading('Data', text='Data')
-        self.tree_receitas.heading('Casa', text='Casa')
-        self.tree_receitas.heading('Valor', text='Valor')
-        self.tree_receitas_scroll = ttk.Scrollbar(self, orient='vertical', command=self.tree_receitas.yview)
-        self.tree_receitas.configure(yscrollcommand=self.tree_receitas_scroll.set)
-
-        self.tree_despesas = ttk.Treeview(self, columns=('Data', 'Tipo', 'Valor'), show='headings')
-        self.tree_despesas.heading('Data', text='Data')
-        self.tree_despesas.heading('Tipo', text='Tipo')
-        self.tree_despesas.heading('Valor', text='Valor')
-        self.tree_despesas_scroll = ttk.Scrollbar(self, orient='vertical', command=self.tree_despesas.yview)
-        self.tree_despesas.configure(yscrollcommand=self.tree_despesas_scroll.set)
-
-        self.button_filtrar = Button(self, text="Filtrar por Data", command=self.filtrar_por_data)
-
-        self.button_plot_receitas = Button(self, text="Plotar Gráfico Receitas", command=self.plotar_grafico_receitas)
-        self.button_plot_despesas = Button(self, text="Plotar Gráfico Despesas", command=self.plotar_grafico_despesas)
-
-        # Widgets para filtrar datas nos gráficos
-        self.label_data_inicial = Label(self, text="Data Inicial:")
-        self.entry_data_inicial = DateEntry(self, width=12, background='darkblue', foreground='white', borderwidth=2,
-                                            textvariable=self.data_inicial_var, date_pattern='dd/mm/yyyy')
-
-        self.label_data_final = Label(self, text="Data Final:")
-        self.entry_data_final = DateEntry(self, width=12, background='darkblue', foreground='white', borderwidth=2,
-                                          textvariable=self.data_final_var, date_pattern='dd/mm/yyyy')
-
-        # Layout
-        self.label_data.grid(row=0, column=0, padx=10, pady=5)
-        self.entry_data.grid(row=0, column=1, padx=10, pady=5)
-
-        self.label_valor.grid(row=1, column=0, padx=10, pady=5)
-        self.entry_valor.grid(row=1, column=1, padx=10, pady=5)
-
-        self.label_tipo.grid(row=2, column=0, padx=10, pady=5)
-        self.tipo_combobox.grid(row=2, column=1, padx=10, pady=5)
-
-        self.button_adicionar.grid(row=3, column=0, columnspan=2, pady=10)
-
-        self.tree_receitas.grid(row=4, column=0, columnspan=2, pady=10, rowspan=3, sticky='nsew')
-        self.tree_receitas_scroll.grid(row=4, column=2, rowspan=3, sticky='ns')
-
-        self.tree_despesas.grid(row=7, column=0, columnspan=2, pady=10, rowspan=3, sticky='nsew')
-        self.tree_despesas_scroll.grid(row=7, column=2, rowspan=3, sticky='ns')
-
-        self.button_filtrar.grid(row=10, column=0, columnspan=2, pady=10)
-
-        self.button_plot_receitas.grid(row=4, column=3, rowspan=3, padx=10, pady=10, sticky='nsew')
-        self.button_plot_despesas.grid(row=7, column=3, rowspan=3, padx=10, pady=10, sticky='nsew')
-
-        self.label_data_inicial.grid(row=10, column=3, padx=10, pady=5)
-        self.entry_data_inicial.grid(row=10, column=4, padx=10, pady=5)
-
-        self.label_data_final.grid(row=11, column=3, padx=10, pady=5)
-        self.entry_data_final.grid(row=11, column=4, padx=10, pady=5)
+        
+        self.taxas_sites = [dado[2] for dado in c.BANCOS["origem"].read()]
+        
+        self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in c.BANCOS["aluguel"].read()]
+        
+        self.lucros = [dado[2] - self.taxas_sites[dado[0]-1] * 0.01 * dado[2] for dado in self.receitas_aluguel]
+        
+        self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in c.BANCOS["aluguel"].read()]
+        
+        print(f"{self.receitas_aluguel} {self.lucros} {self.receitas_aluguel}")
         
 
-    def adicionar_transacao(self):
-        data = self.entry_data.get()
-        tipo = self.tipo_var.get()
-        valor = self.entry_valor.get()
 
-        try:
-            valor = float(valor)
-        except ValueError:
-            messagebox.showerror("Erro", "Valor deve ser um número.")
-            return
+        self.plotar_grafico_receitas()
 
-        if data and tipo and valor:
-            transacao = (data, tipo, valor)
-            if tipo.lower() == 'receita':
-                self.receitas_aluguel.append(transacao)
-                self.tree_receitas.insert('', 'end', values=transacao)
-                self.plotar_grafico(self.receitas_aluguel, 'Receitas de Aluguel por Data', 'green')
-            elif tipo.lower() == 'despesa':
-                self.despesas.append(transacao)
-                self.tree_despesas.insert('', 'end', values=transacao)
-                self.plotar_grafico(self.despesas, 'Despesas por Data', 'red')
+    @staticmethod
+    def get_days_between_dates(start_date_str, end_date_str):
+        start_date = datetime.strptime(start_date_str, "%Y%m%d")
+        end_date = datetime.strptime(end_date_str, "%Y%m%d")
+        delta = end_date - start_date
+        days_in_between = [start_date + timedelta(days=i) for i in range(delta.days + 1)]
+        result = [day.strftime("%Y%m%d") for day in days_in_between]
+        return result
 
     def filtrar_por_data(self):
         data_inicial = self.data_inicial_var.get()
@@ -122,7 +47,6 @@ class FinanceiroApp(Frame):
 
         # Limpar as tabelas antes de aplicar o filtro
         self.tree_receitas.delete(*self.tree_receitas.get_children())
-        self.tree_despesas.delete(*self.tree_despesas.get_children())
 
         # Adicionar transações filtradas de acordo com o intervalo de datas
         for transacao in self.receitas_aluguel:
@@ -130,20 +54,16 @@ class FinanceiroApp(Frame):
             if data_inicial <= transacao_data <= data_final:
                 self.tree_receitas.insert('', 'end', values=transacao)
 
-        for transacao in self.despesas:
-            transacao_data = datetime.strptime(transacao[0], "%d/%m/%Y")
-            if data_inicial <= transacao_data <= data_final:
-                self.tree_despesas.insert('', 'end', values=transacao)
+    def format_date(self, selected_date):
+        parsed_date = datetime.strptime(str(selected_date), "%Y%m%d")
+        return parsed_date.strftime("%d/%m/%y")
 
     def plotar_grafico_receitas(self):
         self.plotar_grafico(self.receitas_aluguel, 'Receitas de Aluguel por Data', 'green')
 
-    def plotar_grafico_despesas(self):
-        self.plotar_grafico(self.despesas, 'Despesas por Data', 'red')
-
     def plotar_grafico(self, transacoes, titulo, cor):
-        datas = [transacao[0] for transacao in transacoes]
-        valores = [float(transacao[2]) for transacao in transacoes]
+        datas = [self.format_date(str(transacao[1])) for transacao in transacoes]
+        valores = [float(self.lucros[index]) for index,transacao in enumerate(transacoes)]
 
         fig, ax = plt.subplots()
         ax.bar(datas, valores, color=cor)

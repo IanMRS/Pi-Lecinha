@@ -1,9 +1,13 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
+from tkcalendar import DateEntry
 import calendar
 import holidays
 from lib import crud as c
 from datetime import datetime, timedelta, date
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 
 COLOR_RED = "red"
 COLOR_WHITE = "#FFFFFF"

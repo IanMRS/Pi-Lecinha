@@ -13,10 +13,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 from data import *
 
-
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Github\Tkinter-Designer\build\assets\frame0")
-
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
