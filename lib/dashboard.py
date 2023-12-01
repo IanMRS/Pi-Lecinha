@@ -10,13 +10,27 @@ from lib import crud as c
 from lib import date_formatting as df
 
 class FinanceiroApp(Frame):
+    """A class representing a financial application with graphical representation of rental revenues."""
+
     def __init__(self, frame):
+        """
+        Initialize the FinanceiroApp instance.
+
+        Parameters:
+        - frame: The Tkinter frame to which the FinanceiroApp belongs.
+        """
         super().__init__(frame)
         
         self.atualizar_grafico()
         self.bind("<FocusIn>", self.atualizar_grafico)
 
-    def atualizar_grafico(self,event=None):
+    def atualizar_grafico(self, event=None):
+        """
+        Update the financial chart.
+
+        Parameters:
+        - event: The event that triggered the update (default is None).
+        """
         self.taxas_sites = [dado[2] for dado in c.BANCOS["origem"].read()]
         
         self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in c.BANCOS["aluguel"].read()]
@@ -29,6 +43,16 @@ class FinanceiroApp(Frame):
 
     @staticmethod
     def get_days_between_dates(start_date_str, end_date_str):
+        """
+        Get a list of days between two given dates.
+
+        Parameters:
+        - start_date_str: The start date as a string (format: %Y%m%d).
+        - end_date_str: The end date as a string (format: %Y%m%d).
+
+        Returns:
+        A list of days between the start and end dates.
+        """
         start_date = datetime.strptime(start_date_str, "%Y%m%d")
         end_date = datetime.strptime(end_date_str, "%Y%m%d")
         delta = end_date - start_date
@@ -37,6 +61,7 @@ class FinanceiroApp(Frame):
         return result
 
     def filtrar_por_data(self):
+        """Filter transactions based on date range."""
         data_inicial = self.data_inicial_var.get()
         data_final = self.data_final_var.get()
 
@@ -54,11 +79,20 @@ class FinanceiroApp(Frame):
                 self.tree_receitas.insert('', 'end', values=transacao)
 
     def plotar_grafico_receitas(self, event=None):
+        """Plot the rental revenues chart."""
         self.plotar_grafico(self.receitas_aluguel, 'Receitas de Aluguel por Data', 'green')
 
     def plotar_grafico(self, transacoes, titulo, cor):
+        """
+        Plot a bar chart for given transactions.
+
+        Parameters:
+        - transacoes: List of transactions to be plotted.
+        - titulo: Title of the chart.
+        - cor: Color of the bars in the chart.
+        """
         datas = [df.unformat_date(str(transacao[1])) for transacao in transacoes]
-        valores = [float(self.lucros[index]) for index,transacao in enumerate(transacoes)]
+        valores = [float(self.lucros[index]) for index, transacao in enumerate(transacoes)]
 
         fig, ax = plt.subplots()
         ax.bar(datas, valores, color=cor)

@@ -6,12 +6,21 @@ from lib.manager import GenericManager
 from lib.doubledgraph import DoubleGraph
 
 class MainNotebook(Notebook):
+    """A class representing a main notebook with multiple tabs for managing different entities."""
+
     def __init__(self, frame):
+        """
+        Initialize the MainNotebook instance.
+
+        Parameters:
+        - frame: The Tkinter frame to which the MainNotebook belongs.
+        """
         print("\nNotebook: Criando")
         super().__init__(frame)
         self.criar_abas()
     
     def criar_abas(self):
+        """Create tabs (notebook pages) and add them to the MainNotebook."""
         self.abas = [
             ("Clientes", GenericManager(crud.BANCOS["cliente"], self)),
             ("Casas", GenericManager(crud.BANCOS["casa"], self)),

@@ -4,11 +4,21 @@ from lib.manager_inputs import ManagerInputs
 from lib.manager_buttons import ManagerButtons
 
 class GenericManager(Frame):
+    """A generic manager for handling CRUD operations with a Tkinter interface."""
+
+    # Class constants
     PADDING_X = 10
     PADDING_Y = 10
     BACKGROUND_COLOR = "#444444"
     
-    def __init__(self, crud, frame = None):
+    def __init__(self, crud, frame=None):
+        """
+        Initialize the GenericManager instance.
+
+        Parameters:
+        - crud: An instance of CRUD operations for managing data.
+        - frame: The Tkinter frame to which the GenericManager belongs.
+        """
         self.crud = crud
         self.data_name = self.crud.table_name.capitalize()
         print(f"\nAdmin. {self.data_name}: Inicializando")
@@ -17,19 +27,30 @@ class GenericManager(Frame):
         self.configure_widgets()
         self.pack_widgets()
 
+        # Bind key events for focus in and out
         self.bind("<FocusIn>", self.buttons.init_keybinds)
         self.bind("<FocusOut>", self.buttons.stop_keybinds)
 
     def configure_widgets(self):
+        """
+        Configure widgets for the GenericManager.
+
+        This method initializes and configures the necessary widgets for the manager.
+        """
         print(f"Admin. {self.data_name}: Configurando Widgets")
-        self.configure(background=BACKGROUND_COLOR)
+        self.configure(background=self.BACKGROUND_COLOR)
 
         self.inputs = ManagerInputs(self, self.crud)
         self.table = ManagerTable(self, self.crud)
         self.buttons = ManagerButtons(self, self.crud, self.inputs, self.table)
 
     def pack_widgets(self):
+        """
+        Pack widgets into the GenericManager.
+
+        This method packs the configured widgets into the manager's frame.
+        """
         print(f"Admin. {self.data_name}: Empacotando Widgets")
-        self.buttons.pack(padx=PADDING_X, pady=PADDING_Y)
-        self.inputs.pack(padx=PADDING_X, pady=PADDING_Y)
-        self.table.pack(fill="both", expand=True, padx=PADDING_X, pady=PADDING_Y)
+        self.buttons.pack(padx=self.PADDING_X, pady=self.PADDING_Y)
+        self.inputs.pack(padx=self.PADDING_X, pady=self.PADDING_Y)
+        self.table.pack(fill="both", expand=True, padx=self.PADDING_X, pady=self.PADDING_Y)

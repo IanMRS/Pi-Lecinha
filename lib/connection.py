@@ -4,13 +4,37 @@ import re
 TABLES = {}
 
 def connect_db():
+    """
+    Connect to the SQLite database.
+
+    Returns:
+    A SQLite database connection.
+    """
     connection = sql.connect("banco.db")
     return connection
 
 def get_db_cursor(connection):
+    """
+    Get the database cursor.
+
+    Parameters:
+    - connection: The SQLite database connection.
+
+    Returns:
+    The database cursor.
+    """
     return connection.cursor()
 
 def parse_sql(sql_statements):
+    """
+    Parse SQL statements to extract table names and column names.
+
+    Parameters:
+    - sql_statements: A list of SQL statements.
+
+    Returns:
+    A dictionary containing table names as keys and lists of column names as values.
+    """
     tables = {}
     current_table = None
 
@@ -33,6 +57,12 @@ def parse_sql(sql_statements):
     return tables
 
 def create_db():
+    """
+    Create the SQLite database based on the SQL script.
+
+    Returns:
+    The SQL script used to create the database.
+    """
     print("\nBanco de Dados: Criando")
     connection = connect_db()
 
