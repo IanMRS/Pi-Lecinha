@@ -205,7 +205,7 @@ class GUICalendar(Frame):
 
             rent_data = self.rental_data[rent_id - 1]
             start_rental_date, end_rental_date = str(rent_data[3]), str(rent_data[4])
-            rental_dates = self.get_days_between_dates(start_rental_date, end_rental_date)
+            rental_dates = df.get_days_between_dates(start_rental_date, end_rental_date)
 
             self.rental_dictionary.setdefault(house_id, set()).update(rental_dates)
             self.rented_days.update(rental_dates)
@@ -284,22 +284,3 @@ class GUICalendar(Frame):
                 holidays_list.append(day)
 
         return holidays_list
-
-    @staticmethod
-    def get_days_between_dates(start_date_str, end_date_str):
-        """
-        Get a list of days between two dates.
-
-        Parameters:
-        - start_date_str: The start date string.
-        - end_date_str: The end date string.
-
-        Returns:
-        A list of day strings between the start and end dates.
-        """
-        start_date = datetime.strptime(start_date_str, "%Y%m%d")
-        end_date = datetime.strptime(end_date_str, "%Y%m%d")
-        delta = end_date - start_date
-        days_in_between = [start_date + timedelta(days=i) for i in range(delta.days + 1)]
-        result = [day.strftime("%Y%m%d") for day in days_in_between]
-        return result

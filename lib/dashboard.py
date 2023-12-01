@@ -41,25 +41,6 @@ class FinanceiroApp(Frame):
         
         self.plotar_grafico_receitas()
 
-    @staticmethod
-    def get_days_between_dates(start_date_str, end_date_str):
-        """
-        Get a list of days between two given dates.
-
-        Parameters:
-        - start_date_str: The start date as a string (format: %Y%m%d).
-        - end_date_str: The end date as a string (format: %Y%m%d).
-
-        Returns:
-        A list of days between the start and end dates.
-        """
-        start_date = datetime.strptime(start_date_str, "%Y%m%d")
-        end_date = datetime.strptime(end_date_str, "%Y%m%d")
-        delta = end_date - start_date
-        days_in_between = [start_date + timedelta(days=i) for i in range(delta.days + 1)]
-        result = [day.strftime("%Y%m%d") for day in days_in_between]
-        return result
-
     def filtrar_por_data(self):
         """Filter transactions based on date range."""
         data_inicial = self.data_inicial_var.get()
