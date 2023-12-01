@@ -7,6 +7,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime, timedelta, date
 from datetime import datetime
 from lib import crud as c  
+from lib import date_formatting as df
 
 class FinanceiroApp(Frame):
     def __init__(self, frame):
@@ -52,15 +53,11 @@ class FinanceiroApp(Frame):
             if data_inicial <= transacao_data <= data_final:
                 self.tree_receitas.insert('', 'end', values=transacao)
 
-    def format_date(self, selected_date):
-        parsed_date = datetime.strptime(str(selected_date), "%Y%m%d")
-        return parsed_date.strftime("%d/%m/%y")
-
     def plotar_grafico_receitas(self, event=None):
         self.plotar_grafico(self.receitas_aluguel, 'Receitas de Aluguel por Data', 'green')
 
     def plotar_grafico(self, transacoes, titulo, cor):
-        datas = [self.format_date(str(transacao[1])) for transacao in transacoes]
+        datas = [df.format_date(str(transacao[1])) for transacao in transacoes]
         valores = [float(self.lucros[index]) for index,transacao in enumerate(transacoes)]
 
         fig, ax = plt.subplots()

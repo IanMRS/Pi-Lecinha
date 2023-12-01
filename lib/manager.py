@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
-from datetime import datetime
 from lib import crud as c
+from lib import date_formatting as df
+from lib.manager_table import ManagerTable
 
 PADDING_X = 10
 PADDING_Y = 10
@@ -22,7 +23,11 @@ class GenericManager(Frame):
         self.init_frames()
         self.init_inputs()
         self.init_widgets()
-        self.init_table()
+
+        self.data_table = ManagerTable(self,self.crud, self.columns_display_names)
+        self.data_table.grid_columnconfigure(0, weight=1)
+        self.data_table.grid_rowconfigure(0, weight=1)
+        self.data_table.pack(fill="both", expand=True, padx=PADDING_X, pady=PADDING_Y)
 
         self.bind("<FocusIn>", self.init_keybinds)
         self.bind("<FocusOut>", self.stop_keybinds)
@@ -49,15 +54,10 @@ class GenericManager(Frame):
             self.winfo_toplevel().unbind(key)
 
     def init_frames(self):
-        frame_names = ["top_row", "inputs", "bottom_row"]
+        frame_names = ["top_row", "inputs"]
         for name in frame_names:
             frame = Frame(self)
-            if name == "bottom_row":
-                frame.pack(fill="both", expand=True, padx=PADDING_X, pady=PADDING_Y)
-                frame.grid_columnconfigure(0, weight=1)
-                frame.grid_rowconfigure(0, weight=1)
-            else:
-                frame.pack(padx=PADDING_X, pady=PADDING_Y)
+            frame.pack(padx=PADDING_X, pady=PADDING_Y)
 
             setattr(self, name, frame)
 
@@ -86,18 +86,6 @@ class GenericManager(Frame):
         for i, (text, command) in enumerate(buttons):
             Button(self.top_row, text=text, command=command, width=BUTTON_WIDTH, height=BUTTON_HEIGHT).grid(row=0, column=i)
 
-    def init_table(self):
-        table_columns = self.crud.columns
-
-        self.item_table = ttk.Treeview(self.bottom_row, columns=table_columns, show="headings")
-        for index, column in enumerate(table_columns):
-            self.create_table_heading(index, column)
-            self.configure_table_column(column)
-
-        self.create_table_and_scroll_list()
-
-        self.refresh_table()
-
     def create_id_dropdown(self, column):
         temp_banco = column[3:]
         temp_search = c.BANCOS[temp_banco].read()
@@ -114,20 +102,6 @@ class GenericManager(Frame):
         label = Label(self.inputs, text=label_text)
         label.grid(row=0, column=column_index)
         entry.grid(row=1, column=column_index)
-
-    def create_table_heading(self, column_index, column):
-        column_text = self.columns_display_names[column_index]
-        self.item_table.heading(column, text=column_text)
-
-    def create_table_and_scroll_list(self):
-        self.item_table.grid(row=0, column=0, sticky="nsew")
-
-        scroll_list = Scrollbar(self.bottom_row, orient=VERTICAL, command=self.item_table.yview)
-        self.item_table.configure(yscroll=scroll_list.set)
-        scroll_list.grid(row=0, column=1, sticky="ns")
-
-    def configure_table_column(self, column):
-        self.item_table.column(column, anchor="center")
 
     def on_enter(self, event=None):
         (self.update_button_pressed if "" not in self.get_inputs_content() else self.search_button_pressed)()
@@ -214,53 +188,14 @@ class GenericManager(Frame):
         options = [element[1] for element in temp_search]
         entry["values"] = options
 
-    def refresh_table(self, table_values = None):
-        table_values = self.crud.read() if table_values is None else table_values
-        self.item_table.delete(*self.item_table.get_children())
-        for item in table_values:
-            temp_list = []
-            for index, element in enumerate(item):
-                if "data" in self.crud.columns[index]:
-                    temp_list.append(GenericManager.unformat_date(element))
-                elif "id_" in self.crud.columns[index][:3]:
-                    temp_banco = self.crud.columns[index][3:]
-                    temp_search = c.BANCOS[temp_banco].read()
-
-                    temp_element = temp_search[element-1][1]
-                    current_index = temp_search[element-1][0]
-                    extracted_index = temp_search[index-1][1]
-
-                    temp_element1 = None
-                    while "id_" in c.BANCOS[temp_banco].columns[1]:
-                        temp_banco = c.BANCOS[temp_banco].columns[1][3:]
-                        temp_search = c.BANCOS[temp_banco].read()
-
-                        temp_element1 = temp_search[temp_element-1][1]
-
-                    temp_list.append(temp_element1 if temp_element1 is not None else temp_element)
-                else:
-                    temp_list.append(element)
-            self.item_table.insert("", END, values=temp_list)
-
     def get_inputs_content(self):
         inputs = []
         for entry in self.entries:
             if isinstance(entry, DateEntry):
-                inputs.append(self.format_date(entry.get_date()))
+                inputs.append(df.format_date(entry.get_date()))
             elif isinstance(entry, ttk.Combobox):
                 inputs.append(entry.current() + 1)
             else:
                 inputs.append(entry.get())
 
         return inputs
-
-    @staticmethod
-    def format_date(selected_date):
-        if isinstance(selected_date, str):
-            return selected_date
-        return datetime.strftime(selected_date, "%Y%m%d")
-
-    @staticmethod
-    def unformat_date(selected_date):
-        parsed_date = datetime.strptime(str(selected_date), "%Y%m%d")
-        return parsed_date.strftime("%d/%m/%y")
