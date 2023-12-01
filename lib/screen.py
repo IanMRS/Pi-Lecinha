@@ -1,7 +1,7 @@
 from tkinter import ttk
 
 from lib.window import FullScreenWindow
-from lib.abas import MainNotebook
+from lib.notebook import MainNotebook
 
 class MainScreen(FullScreenWindow):
     def __init__(self):
