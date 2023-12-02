@@ -24,7 +24,10 @@ def unformat_date(selected_date):
     Returns:
     A formatted date string.
     """
-    parsed_date = datetime.strptime(str(selected_date), "%Y%m%d")
+    try:
+        parsed_date = datetime.strptime(str(selected_date), "%Y%m%d")
+    except:
+        parsed_date = datetime.strptime(str(selected_date), "%d%m%Y")
     return parsed_date.strftime("%d/%m/%y")
 
 def get_days_between_dates(start_date_str, end_date_str):
