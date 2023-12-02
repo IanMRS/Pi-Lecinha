@@ -4,27 +4,8 @@ import os
 
 TABLES = {}
 
-def connect_db():
-    """
-    Connect to the SQLite database.
-
-    Returns:
-    A SQLite database connection.
-    """
-    connection = sql.connect("banco.db")
-    return connection
-
-def get_db_cursor(connection):
-    """
-    Get the database cursor.
-
-    Parameters:
-    - connection: The SQLite database connection.
-
-    Returns:
-    The database cursor.
-    """
-    return connection.cursor()
+CONNECTION = sql.connect("banco.db")
+CURSOR = CONNECTION.cursor()
 
 def parse_sql(sql_statements):
     """
