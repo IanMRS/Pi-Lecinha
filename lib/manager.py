@@ -37,7 +37,6 @@ class GenericManager(Frame):
     def on_focus_out(self,event=None):
         self.buttons.stop_keybinds()
 
-
     def configure_widgets(self):
         """
         Configure widgets for the GenericManager.
