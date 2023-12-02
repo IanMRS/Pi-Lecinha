@@ -1,5 +1,6 @@
 import sqlite3 as sql
 import re
+import os
 
 TABLES = {}
 
@@ -56,6 +57,11 @@ def parse_sql(sql_statements):
 
     return tables
 
+def read_sql():
+    with open("banco.sql", "r") as banco:
+        texto_banco = banco.readlines()
+    return texto_banco
+
 def create_db():
     """
     Create the SQLite database based on the SQL script.
@@ -66,16 +72,14 @@ def create_db():
     print("\nBanco de Dados: Criando")
     connection = connect_db()
 
-    with open("banco.sql", "r") as banco:
-        texto_banco = banco.readlines()
-
-    script = " ".join(texto_banco)
+    script = " ".join(read_sql())
 
     connection.executescript(script)
     
     print("\nBanco de Dados: Criado com sucesso")
-    return texto_banco
 
-text_db = create_db()
+if not os.path.isfile("banco.db"):
+    create_db()
 
+text_db = read_sql()
 TABLES = parse_sql(text_db)
