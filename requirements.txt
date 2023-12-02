@@ -1,12 +1,7 @@
-tkinter
-sqlite3
-calendar
 holidays
 datetime
 matplotlib
 tkcalendar
-re
 pyinstaller
-babel.numbers
-holidays.countries
+babel
 brotli
