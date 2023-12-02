@@ -29,7 +29,15 @@ class CRUD:
         self.columns_display_names = [column[3:].capitalize().replace("_", " ") if "id_" in column[:3] else "Código" if "id" in column[:2] else column.capitalize().replace("_", " ") for column in self.columns]
         self.connection = dbc.connect_db()
         self.cursor = dbc.get_db_cursor(self.connection)
+
+    def connection_start(self):
+        self.connection = dbc.connect_db()
+        self.cursor = dbc.get_db_cursor(self.connection)
         print(f"Banco de Dados: Conectando em ({self.table_name})")
+
+    def connection_stop(self):
+        self.connection.close()
+        print(f"Banco de Dados: Desconectando-se de ({self.table_name})")
 
     def db_input(self, query, data=""):
         """
