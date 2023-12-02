@@ -1,10 +1,7 @@
 from tkinter import *
-from tkinter import ttk
-from tkinter import messagebox
-from tkcalendar import DateEntry
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from datetime import datetime, timedelta, date
+from datetime import datetime
 from datetime import datetime
 from lib import crud as c  
 from lib import date_formatting as df
@@ -36,8 +33,7 @@ class FinanceiroApp(Frame):
         self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in c.BANCOS["aluguel"].read()]
         
         self.lucros = [dado[2] - self.taxas_sites[dado[0]-1] * 0.01 * dado[2] for dado in self.receitas_aluguel]
-        
-        
+             
         self.plotar_grafico_receitas()
 
     def filtrar_por_data(self):
