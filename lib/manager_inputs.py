@@ -42,12 +42,12 @@ class ManagerInputs(Frame):
         Returns:
         A ttk.Combobox representing the ID dropdown.
         """
-        temp_banco = column[3:]
-        temp_search = c.BANCOS[temp_banco].read()
+        nome_banco = column[3:]
+        temp_search = c.BANCOS[nome_banco].read()
 
-        while "id_" in c.BANCOS[temp_banco].columns[1]:
-            temp_banco = c.BANCOS[temp_banco].columns[1][3:]
-            temp_search = c.BANCOS[temp_banco].read()
+        while "id_" in c.BANCOS[nome_banco].columns[1]:
+            nome_banco = c.BANCOS[nome_banco].columns[1][3:]
+            temp_search = c.BANCOS[nome_banco].read()
 
         options = [element[1] for element in temp_search]
         return ttk.Combobox(self, values=options)
@@ -99,13 +99,13 @@ class ManagerInputs(Frame):
         - index: The index of the column associated with the Combobox.
         """
         banco_anterior = self.crud.table_name
-        temp_banco = self.crud.columns[index][3:]
-        temp_search = c.BANCOS[temp_banco].read()
+        nome_banco = self.crud.columns[index][3:]
+        temp_search = c.BANCOS[nome_banco].read()
 
-        while "id_" in c.BANCOS[temp_banco].columns[1]:
-            banco_anterior = temp_banco
-            temp_banco = c.BANCOS[temp_banco].columns[1][3:]
-            temp_search = c.BANCOS[temp_banco].db_input(f"SELECT c.* FROM {temp_banco} c JOIN {banco_anterior} a ON c.id = a.id_{temp_banco};").fetchall()
+        while "id_" in c.BANCOS[nome_banco].columns[1]:
+            banco_anterior = nome_banco
+            nome_banco = c.BANCOS[nome_banco].columns[1][3:]
+            temp_search = c.BANCOS[nome_banco].db_input(f"SELECT c.* FROM {nome_banco} c JOIN {banco_anterior} a ON c.id = a.id_{nome_banco};").fetchall()
 
         options = [element[1] for element in temp_search]
         entry["values"] = options
