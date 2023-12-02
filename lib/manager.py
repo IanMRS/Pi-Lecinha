@@ -32,12 +32,10 @@ class GenericManager(Frame):
         self.bind("<FocusOut>", self.on_focus_out)
 
     def on_focus_in(self,event=None):
-        self.crud.start_connection()
         self.buttons.init_keybinds()
 
     def on_focus_out(self,event=None):
         self.buttons.stop_keybinds()
-        self.crud.stop_connection()
 
 
     def configure_widgets(self):

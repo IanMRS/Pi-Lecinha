@@ -30,12 +30,12 @@ class CRUD:
         self.connection = dbc.connect_db()
         self.cursor = dbc.get_db_cursor(self.connection)
 
-    def connection_start(self):
+    def start_connection(self):
         self.connection = dbc.connect_db()
         self.cursor = dbc.get_db_cursor(self.connection)
         print(f"Banco de Dados: Conectando em ({self.table_name})")
 
-    def connection_stop(self):
+    def stop_connection(self):
         self.connection.close()
         print(f"Banco de Dados: Desconectando-se de ({self.table_name})")
 
