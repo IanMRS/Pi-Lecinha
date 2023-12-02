@@ -37,7 +37,6 @@ class FinanceiroApp(Frame):
         
         self.lucros = [dado[2] - self.taxas_sites[dado[0]-1] * 0.01 * dado[2] for dado in self.receitas_aluguel]
         
-        self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in c.BANCOS["aluguel"].read()]
         
         self.plotar_grafico_receitas()
 
