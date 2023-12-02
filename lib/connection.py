@@ -75,7 +75,7 @@ def create_db():
     script = " ".join(read_sql())
 
     connection.executescript(script)
-    
+    connection.close()
     print("\nBanco de Dados: Criado com sucesso")
 
 if not os.path.isfile("banco.db"):
