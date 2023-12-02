@@ -51,12 +51,11 @@ def create_db():
     The SQL script used to create the database.
     """
     print("\nBanco de Dados: Criando")
-    connection = connect_db()
 
     script = " ".join(read_sql())
 
-    connection.executescript(script)
-    connection.close()
+    CONNECTION.executescript(script)
+    CONNECTION.close()
     print("\nBanco de Dados: Criado com sucesso")
 
 if not os.path.isfile("banco.db"):
