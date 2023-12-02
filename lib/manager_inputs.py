@@ -98,14 +98,18 @@ class ManagerInputs(Frame):
         - entry: The Combobox to be refreshed.
         - index: The index of the column associated with the Combobox.
         """
-        banco_anterior = self.crud.table_name
+        nome_banco_anterior = self.crud.table_name
         nome_banco = self.crud.columns[index][3:]
-        temp_search = c.BANCOS[nome_banco].read()
+        banco = c.BANCOS[nome_banco]
+        temp_search = banco.read()
 
-        while "id_" in c.BANCOS[nome_banco].columns[1]:
-            banco_anterior = nome_banco
-            nome_banco = c.BANCOS[nome_banco].columns[1][3:]
-            temp_search = c.BANCOS[nome_banco].db_input(f"SELECT c.* FROM {nome_banco} c JOIN {banco_anterior} a ON c.id = a.id_{nome_banco};").fetchall()
+        while "id_" in banco.columns[1]:
+            nome_banco_anterior = nome_banco
+            nome_banco = banco.columns[1][3:]
+            
+            banco = c.BANCOS[nome_banco]
+            
+            temp_search = banco.db_input(f"SELECT c.* FROM {nome_banco} c JOIN {nome_banco_anterior} a ON c.id = a.id_{nome_banco};").fetchall()
 
         options = [element[1] for element in temp_search]
         entry["values"] = options

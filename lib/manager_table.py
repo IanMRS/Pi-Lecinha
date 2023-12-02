@@ -78,12 +78,16 @@ class ManagerTable(Frame):
         The processed value corresponding to the ID.
         """
         nome_banco = column[3:]
-        temp_search = c.BANCOS[nome_banco].read()
+        banco = c.BANCOS[nome_banco]
+        temp_search = banco.read()
         temp_element = temp_search[element - 1][1]
 
-        while "id_" in c.BANCOS[nome_banco].columns[1]:
-            nome_banco = c.BANCOS[nome_banco].columns[1][3:]
-            temp_search = c.BANCOS[nome_banco].read()
+        while "id_" in banco.columns[1]:
+            nome_banco = banco.columns[1][3:]
+
+            banco = c.BANCOS[nome_banco]
+
+            temp_search = banco.read()
             temp_element = temp_search[temp_element - 1][1]
         return temp_element
 
