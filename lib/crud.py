@@ -41,9 +41,12 @@ class CRUD:
         Returns:
         The result of the query execution.
         """
-        output = self.cursor.execute(query if not data else query, data)
-        self.connection.commit()
-        return output
+        try:
+            output = self.cursor.execute(query if not data else query, data)
+            self.connection.commit()
+            return output
+        except:
+            print(f"ERRO: {query}")
 
     def insert(self, data):
         """
