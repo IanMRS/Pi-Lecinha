@@ -15,6 +15,7 @@ class GUIDayGrid(Frame):
     COLOR_DARK_GREEN = "#00BE2F"
 
     def __init__(self,frame):
+        """TODO: ATUALIZAR COMENTÁRIOS"""
         super().__init__(frame)
         self.day_buttons = []
         self.init_calendar_weekdays()

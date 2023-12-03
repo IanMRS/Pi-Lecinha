@@ -8,7 +8,7 @@ class GUICalendarHeader(Frame):
     PADDING_X = 10
     PADDING_Y = 10
     def __init__(self,frame,calendar_frame):
-        """
+        """TODO: ATUALIZAR COMENTÁRIOS
         Initialize header elements including buttons and labels.
         """
         super().__init__(frame)
@@ -34,7 +34,7 @@ class GUICalendarHeader(Frame):
         """
         return f"{self.MONTHS[self.current_date.month]}, {self.current_date.year}"
 
-    def show_month(self):
+    def refresh_calendar(self):
         """
         Show the current month on the calendar.
         """
@@ -48,14 +48,14 @@ class GUICalendarHeader(Frame):
         Show the previous month on the calendar.
         """
         self.update_current_date(-1)
-        self.show_month()
+        self.refresh_calendar()
 
     def show_next_month(self):
         """
         Show the next month on the calendar.
         """
         self.update_current_date(1)
-        self.show_month()
+        self.refresh_calendar()
 
     def update_current_date(self, increment):
         """
