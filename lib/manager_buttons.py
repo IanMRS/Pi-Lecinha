@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import ttk, messagebox
 
 class ManagerButtons(Frame):
     """A class representing buttons for CRUD operations in a Tkinter interface."""

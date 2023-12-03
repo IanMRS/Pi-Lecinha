@@ -1,5 +1,4 @@
 from tkinter.ttk import Notebook
-from tkinter import Frame
 
 from lib import crud
 from lib.manager import GenericManager

@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk, messagebox
+from tkinter import ttk
 from tkcalendar import DateEntry
 from lib import crud as c
 from lib import date_formatting as df
