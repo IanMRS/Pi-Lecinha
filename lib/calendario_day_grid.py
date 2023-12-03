@@ -20,6 +20,10 @@ class GUIDayGrid(Frame):
         self.day_buttons = []
         self.init_calendar_weekdays()
 
+    def refresh(self, year, month):
+        self.update_rental_info()
+        self.create_day_buttons(year, month)
+
     def init_calendar_weekdays(self):
         """
         Initialize labels for calendar weekdays.

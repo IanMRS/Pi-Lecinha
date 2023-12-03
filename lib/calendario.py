@@ -26,6 +26,8 @@ class GUICalendar(Frame):
         self.configure_widgets()
         self.place_widgets()
 
+        self.header_frame.refresh_calendar()
+
         self.bind("<FocusIn>", self.on_focus)
 
     def on_focus(self, event=None):

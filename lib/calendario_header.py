@@ -16,13 +16,18 @@ class GUICalendarHeader(Frame):
         self.current_date = datetime.now()
         self.calendar_frame = calendar_frame
 
+        self.configure_widgets()
+        self.place_widgets()
+
+        
+    def configure_widgets(self):
         self.prev_month_button = Button(self, text="Previous Month", command=self.show_previous_month)
-        self.prev_month_button.grid(row=0, column=0, padx=self.PADDING_X, pady=self.PADDING_Y)
-
         self.current_month = Label(self, text=self.format_current_month())
-        self.current_month.grid(row=0, column=1, padx=self.PADDING_X, pady=self.PADDING_Y)
-
         self.next_month_button = Button(self, text="Next Month", command=self.show_next_month)
+
+    def place_widgets(self):
+        self.prev_month_button.grid(row=0, column=0, padx=self.PADDING_X, pady=self.PADDING_Y)
+        self.current_month.grid(row=0, column=1, padx=self.PADDING_X, pady=self.PADDING_Y)        
         self.next_month_button.grid(row=0, column=2, pady=self.PADDING_Y)
 
     def format_current_month(self):
@@ -39,8 +44,7 @@ class GUICalendarHeader(Frame):
         Show the current month on the calendar.
         """
         year, month = self.current_date.year, self.current_date.month
-        self.calendar_frame.update_rental_info()
-        self.calendar_frame.create_day_buttons(year, month)
+        self.calendar_frame.refresh(year, month)
         self.current_month.config(text=self.format_current_month())
 
     def show_previous_month(self):
