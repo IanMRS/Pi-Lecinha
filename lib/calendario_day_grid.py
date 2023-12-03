@@ -2,7 +2,6 @@ from tkinter import *
 import calendar
 import holidays
 from datetime import date
-from lib import crud as c
 from lib import date_formatting as df
 
 class GUIDayGrid(Frame):
@@ -14,10 +13,13 @@ class GUIDayGrid(Frame):
     COLOR_WHITE = "#FFFFFF"
     COLOR_DARK_GREEN = "#00BE2F"
 
-    def __init__(self,frame):
+    def __init__(self,frame, crud_alugueis, crud_casa, crud_aluguel_casa):
         """TODO: ATUALIZAR COMENTÁRIOS"""
         super().__init__(frame)
         self.day_buttons = []
+        self.crud_casa = crud_casa
+        self.crud_alugueis = crud_alugueis
+        self.crud_aluguel_casa = crud_aluguel_casa
         self.init_calendar_weekdays()
 
     def refresh(self, year, month):
@@ -79,10 +81,10 @@ class GUIDayGrid(Frame):
         """
         Update rental information including rental data, house data, rental-has-house data, and dictionaries for rentals and rented days.
         """
-        self.rental_data = c.BANCOS["aluguel"].read()
-        self.house_data = c.BANCOS["casa"].read()
+        self.rental_data = self.crud_alugueis.read()
+        self.house_data = self.crud_casa.read()
         self.houses_in_total = len(self.house_data)
-        self.rental_has_house = c.BANCOS["aluguel_has_casa"].read()
+        self.rental_has_house = self.crud_aluguel_casa.read()
         self.rental_dictionary = {}
         self.rented_days = set()
 

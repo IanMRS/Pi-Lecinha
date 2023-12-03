@@ -1,5 +1,3 @@
-from tkinter import ttk
-
 from lib.window import FullScreenWindow
 from lib.notebook import MainNotebook
 

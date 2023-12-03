@@ -3,13 +3,12 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime
 from datetime import datetime
-from lib import crud as c  
 from lib import date_formatting as df
 
 class FinanceiroApp(Frame):
     """A class representing a financial application with graphical representation of rental revenues."""
 
-    def __init__(self, frame):
+    def __init__(self, frame, crud_origem, crud_aluguel):
         """
         Initialize the FinanceiroApp instance.
 
@@ -17,7 +16,9 @@ class FinanceiroApp(Frame):
         - frame: The Tkinter frame to which the FinanceiroApp belongs.
         """
         super().__init__(frame)
-        
+        self.crud_origem = crud_origem
+        self.crud_aluguel = crud_aluguel
+
         self.atualizar_grafico()
         self.bind("<FocusIn>", self.atualizar_grafico)
 
@@ -28,9 +29,9 @@ class FinanceiroApp(Frame):
         Parameters:
         - event: The event that triggered the update (default is None).
         """
-        self.taxas_sites = [dado[2] for dado in c.BANCOS["origem"].read()]
+        self.taxas_sites = [dado[2] for dado in self.crud_origem.read()]
         
-        self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in c.BANCOS["aluguel"].read()]
+        self.receitas_aluguel = [(dado[2], dado[3], dado[5]) for dado in self.crud_aluguel.read()]
         
         self.lucros = [dado[2] - self.taxas_sites[dado[0]-1] * 0.01 * dado[2] for dado in self.receitas_aluguel]
              

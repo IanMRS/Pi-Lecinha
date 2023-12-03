@@ -14,7 +14,7 @@ class GUICalendar(Frame):
     PADDING_X = 10
     PADDING_Y = 10
 
-    def __init__(self, frame):
+    def __init__(self, frame, crud_alugueis, crud_casa, crud_aluguel_casa):
         """
         Initialize the GUICalendar.
 
@@ -22,8 +22,9 @@ class GUICalendar(Frame):
         - frame: The parent frame.
         """
         super().__init__(frame)
+        self.calendar_frame = GUIDayGrid(self, crud_alugueis, crud_casa, crud_aluguel_casa)
+        self.header_frame = GUICalendarHeader(self,self.calendar_frame)
 
-        self.configure_widgets()
         self.place_widgets()
 
         self.header_frame.refresh_calendar()
@@ -34,11 +35,6 @@ class GUICalendar(Frame):
         """Handle the focus event by updating and showing the current month."""
         self.header_frame.refresh_calendar()
         self.winfo_toplevel().focus_set()
-
-    def configure_widgets(self):
-        """Initialize frame elements for the calendar."""
-        self.calendar_frame = GUIDayGrid(self)
-        self.header_frame = GUICalendarHeader(self,self.calendar_frame)
 
     def place_widgets(self):        
         self.header_frame.grid(row=0, column=0, padx=self.PADDING_X)
