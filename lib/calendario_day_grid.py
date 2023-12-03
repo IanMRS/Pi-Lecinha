@@ -51,7 +51,7 @@ class GUIDayGrid(Frame):
 
             formated_date = f"{year}{month:02d}{day:02d}"
 
-            self.paint_day_button_based_on_rent_status(day_element, day)
+            self.paint_day_button_based_on_rent_status(day_element, formated_date)
             self.grid_element(day_element, day, first_weekday)
 
     def paint_day_button_based_on_rent_status(self, day_element, rent_day):
