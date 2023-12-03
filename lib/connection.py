@@ -4,6 +4,7 @@ import os
 
 TABLES = {}
 
+DB_EXISTS = os.path.isfile("banco.db")
 CONNECTION = sql.connect("banco.db")
 CURSOR = CONNECTION.cursor()
 
@@ -54,11 +55,13 @@ def create_db():
 
     script = " ".join(read_sql())
 
+    print(script)
+
     CONNECTION.executescript(script)
     CONNECTION.close()
     print("\nBanco de Dados: Criado com sucesso")
 
-if not os.path.isfile("banco.db"):
+if not DB_EXISTS:
     create_db()
 
 text_db = read_sql()
